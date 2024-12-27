@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\daniel.tenkorang\\Documents\\Code\\AuthSystem\\AuthSystem\\AuthSystem.csproj": {}
+    "C:\\Users\\daniel.tenkorang\\Documents\\Code\\Finacle\\AuthSystem\\AuthSystem\\AuthSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\daniel.tenkorang\\Documents\\Code\\AuthSystem\\AuthSystem\\AuthSystem.csproj": {
+    "C:\\Users\\daniel.tenkorang\\Documents\\Code\\Finacle\\AuthSystem\\AuthSystem\\AuthSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\daniel.tenkorang\\Documents\\Code\\AuthSystem\\AuthSystem\\AuthSystem.csproj",
+        "projectUniqueName": "C:\\Users\\daniel.tenkorang\\Documents\\Code\\Finacle\\AuthSystem\\AuthSystem\\AuthSystem.csproj",
         "projectName": "AuthSystem",
-        "projectPath": "C:\\Users\\daniel.tenkorang\\Documents\\Code\\AuthSystem\\AuthSystem\\AuthSystem.csproj",
+        "projectPath": "C:\\Users\\daniel.tenkorang\\Documents\\Code\\Finacle\\AuthSystem\\AuthSystem\\AuthSystem.csproj",
         "packagesPath": "C:\\Users\\daniel.tenkorang\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\daniel.tenkorang\\Documents\\Code\\AuthSystem\\AuthSystem\\obj\\",
+        "outputPath": "C:\\Users\\daniel.tenkorang\\Documents\\Code\\Finacle\\AuthSystem\\AuthSystem\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

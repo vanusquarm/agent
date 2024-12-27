@@ -19,14 +19,16 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        var result = await _userService.RegisterUserAsync(request);
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        var result = await _userService.RegisterUserAsync(request, ipAddress);
         return result ? Ok("User registered successfully.") : BadRequest("Registration failed.");
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var user = await _userService.AuthenticateAsync(request);
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        var user = await _userService.AuthenticateAsync(request, ipAddress);
         if (user != null)
         {
             var token = JwtMiddleware.GenerateToken(user, _configuration);

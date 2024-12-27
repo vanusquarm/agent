@@ -14,7 +14,7 @@ public class UserService:IUserService
         _context = context;
     }
 
-    public async Task<bool> RegisterUserAsync(RegisterRequest request)
+    public async Task<bool> RegisterUserAsync(RegisterRequest request, string? ipAddress)
     {
         if (await _context.Users.AnyAsync(u => u.Email == request.Email)) return false;
 
@@ -23,7 +23,8 @@ public class UserService:IUserService
             Username = request.Username,
             Email = request.Email,
             Password = HashPassword(request.Password),
-            Role = "User"
+            Role = "User",
+            IPAddress = ipAddress
         };
 
         _context.Users.Add(user);
@@ -31,14 +32,20 @@ public class UserService:IUserService
         return true;
     }
 
-    public async Task<User?> AuthenticateAsync(LoginRequest request)
+    public async Task<User?> AuthenticateAsync(LoginRequest request, string? ipAddress)
     {
+       
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
         if (user != null && VerifyPassword(request.Password, user.Password))
         {
+            if (user.IPAddress != ipAddress)
+            {
+                return null;
+            }
             return user;
         }
         return null;
+    
     }
 
     public async Task<bool> SendPasswordResetTokenAsync(ForgetPasswordRequest request)
