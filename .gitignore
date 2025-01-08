@@ -1,0 +1,11 @@
+bin/
+obj/
+AuthSystem/bin
+AuthSystem/obj
+.env
+.vs
+.vscode
+*.csproj.user
+*.generated.sln
+*.zip
+app
