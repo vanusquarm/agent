@@ -23,8 +23,8 @@ app.MapReverseProxy(config =>
 {
     config.Use(async (context, next) =>
     {
-        string? token = await context.GetTokenAsync("access_token");
-        context.Request.Headers["Authorization"] = $"Bearer {token}";
+        //string? token = await context.GetTokenAsync("access_token");
+        //context.Request.Headers["Authorization"] = $"Bearer {token}";
 
         await next().ConfigureAwait(false);
     });
