@@ -20,8 +20,7 @@ public static class Extensions
             options.AddPolicy(name: AllowAllOrigins,
                               builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
         });
-        builder.Services.AddExceptionMiddleware(); 
-        builder.Services.AddJwtMiddleware();
+        //builder.Services.AddExceptionMiddleware(); 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         // builder.ConfigureSerilog(appOptions.Name);
@@ -32,8 +31,7 @@ public static class Extensions
     {
         //Preserve Order
         app.UseCors(AllowAllOrigins);
-        app.UseExceptionMiddleware();
-        app.UseJwtMiddleware();
+        //app.UseExceptionMiddleware();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();

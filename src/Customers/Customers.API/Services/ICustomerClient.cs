@@ -17,7 +17,7 @@ namespace Customers.API.Services
         Task<CreateRCResponse> CreateRetailCustomer(CreateRCRequest createRCRequest);
 
         [Get("/retail-customers/{customerId}")]
-        Task<GetRCResponse> GetRetailCustomer(string customerIdentifier);
+        Task<GetRCResponse> GetRetailCustomer(string customerId);
 
     }
 }
