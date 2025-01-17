@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Finacle.Infrastructure.Auth.BasicJwt;
+using Microsoft.EntityFrameworkCore;
+using Finacle.Infrastructure.Services;
 
 namespace Finacle.Infrastructure;
 
@@ -25,6 +27,9 @@ public static class Extensions
         builder.Services.AddEndpointsApiExplorer();
         // builder.ConfigureSerilog(appOptions.Name);
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+        // In-memory Database for OTPs
+        builder.Services.AddDbContext<OtpDb>(opt => opt.UseInMemoryDatabase("CustomerOtps"));
     }
 
     public static void UseInfrastructure(this WebApplication app, IWebHostEnvironment env, bool enableSwagger = true)
