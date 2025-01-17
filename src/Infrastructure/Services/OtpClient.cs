@@ -1,8 +1,6 @@
 using System.Security.Principal;
-using Notification.Entities;
-using Notification.Entities;
 
-namespace Notification.Services;
+namespace Finacle.Infrastructure.Services;
 
 public class OtpClient
 {

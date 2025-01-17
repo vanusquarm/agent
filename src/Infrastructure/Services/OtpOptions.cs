@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Finacle.Infrastructure.Services
 {
-    class OtpDb : DbContext
+    public class OtpDb : DbContext
     {
         public OtpDb(DbContextOptions<OtpDb> options) : base(options)
         { }

@@ -27,9 +27,6 @@ public static class Extensions
         builder.Services.AddEndpointsApiExplorer();
         // builder.ConfigureSerilog(appOptions.Name);
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
-
-        // In-memory Database for OTPs
-        builder.Services.AddDbContext<OtpDb>(opt => opt.UseInMemoryDatabase("CustomerOtps"));
     }
 
     public static void UseInfrastructure(this WebApplication app, IWebHostEnvironment env, bool enableSwagger = true)

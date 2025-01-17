@@ -1,7 +1,8 @@
+using Microsoft.Extensions.Configuration;
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace Notification.Services;
+namespace Finacle.Infrastructure.Services;
 
 public class SmsClient
 {
