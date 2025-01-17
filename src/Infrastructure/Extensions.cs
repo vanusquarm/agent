@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Finacle.Infrastructure.Auth.BasicJwt;
 using Microsoft.EntityFrameworkCore;
-using Finacle.Infrastructure.Services;
+using Finacle.Infrastructure.Notifications;
 
 namespace Finacle.Infrastructure;
 

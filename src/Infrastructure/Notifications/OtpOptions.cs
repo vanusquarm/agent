@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Finacle.Infrastructure.Services
+namespace Finacle.Infrastructure.Notifications
 {
     public class OtpDb : DbContext
     {

@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using System.Net.Mail;
 //using Serilog;
 
-namespace Finacle.Infrastructure.Services;
+namespace Finacle.Infrastructure.Notifications;
 
 public class EmailClient
 {

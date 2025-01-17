@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 
-namespace Finacle.Infrastructure.Services
+namespace Finacle.Infrastructure.Notifications
 {
 
     public static class Extensions
@@ -14,7 +14,7 @@ namespace Finacle.Infrastructure.Services
             services.AddScoped<SmsClient>();
             services.AddScoped<EmailClient>();
             services.AddScoped<OtpClient>();
-            
+
 
             return services;
         }
