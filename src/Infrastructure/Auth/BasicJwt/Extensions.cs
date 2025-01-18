@@ -1,14 +1,8 @@
 ﻿using Refit;
-using Finacle.Infrastructure.Exceptions;
-using MassTransit.JobService;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Finacle.Infrastructure.Auth.OpenId;
-using Microsoft.Extensions.Options;
 
 namespace Finacle.Infrastructure.Auth.BasicJwt
 {

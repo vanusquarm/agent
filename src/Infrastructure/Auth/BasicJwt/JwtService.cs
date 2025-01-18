@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Finacle.Infrastructure.Auth.OpenId;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Finacle.Infrastructure.Auth.BasicJwt
 {
-    using Finacle.Infrastructure.Auth.OpenId;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Options;
-    using Microsoft.IdentityModel.Tokens;
-    using System;
-    using System.Collections.Generic;
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Security.Claims;
-    using System.Text;
-    using System.Text.Json;
-    using System.Text.Json.Serialization;
-
     public interface IJwtService
     {
         string GenerateToken();
@@ -84,7 +75,6 @@ namespace Finacle.Infrastructure.Auth.BasicJwt
         // Call the API to get the token
         public async Task<string> GetTokenAsync()
         {
-            //return "eyJraWQiOiJmaW5hY2xlIiwiYWxnIjoiUlMyNTYifQ.eyJpc3MiOiJGaW5pbmZyYSIsImF1ZCI6IkFQSUhVQiIsImlhdCI6MS43MzcxNDIxNTdFOSwiZXhwIjoxLjczNzE0NTc1N0U5LCJzdWIiOiJBUElIVUJWVVNSNCIsIlVTRVJfSUQiOiJBUElIVUJWVVNSNCIsIkhPTUVfRU5USVRZIjoiMDIiLCJERUZBVUxUX1RJTUVaT05FIjoiR01UIiwiREVGQVVMVF9DQUxFTkRBUiI6IkciLCJVU0VSX0FDQ0VTU19JTkZPIjoiW10ifQ.Z4xGOsWWtdutShjq_IiRZuqs-VwWhbxh07xt_Sm7QWrJixzUlw56ZNeUncUFaaG4NP2Ixvp7EDQhiwmG0RdKJbfUxEZPc9nHwqBGnHM9b2Xx1kBak8HRDttZ38zPIHh4ZGKjHrm2UQehrwKOuzfpOyOf_d6Db0AWpa1v1TnFkBm1f3fyHueQJpgz1d5V20-s090vKyUskmgXWGvyHSE73vmgM3skPf_VOhmxWT_4X6CqQkv778Ewc4GRS5k5qzivKQxyi85gKpmvJAH4F_InY1fLUJVeWFobyI39Ow2yvV25vaUhIKWwXWpu47tanDQA2Ap4NM3HJ_wQfVsL5n7Gag";
             if (string.IsNullOrEmpty(_accessToken))
             {
                 await RefreshTokenAsync(); // Retrieve a new token if it doesn't exist
