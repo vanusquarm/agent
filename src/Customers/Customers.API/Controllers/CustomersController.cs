@@ -10,23 +10,49 @@ namespace Customers.API.Controllers
     public class CustomersController(ICustomerClient customerClient) : ControllerBase
     {
 
-        [HttpGet("{customerIdentifier}")]
-        public async Task<IActionResult> GetCustomer(string customerIdentifier)
+        [HttpGet("{customerId}")]
+        public async Task<IActionResult> GetCustomer(string customerId)
         {
-            if (customerIdentifier.StartsWith("C"))
+            if (customerId.StartsWith("C"))
             {
-                var customer = await customerClient.GetCorporateCustomer(customerIdentifier);
+                var customer = await customerClient.GetCorporateCustomer(customerId);
                 return Ok(customer);
             }
-            else if (customerIdentifier.StartsWith("R"))
+            else if (customerId.StartsWith("R"))
             {
-                var customer = await customerClient.GetRetailCustomer(customerIdentifier);
+                var customer = await customerClient.GetRetailCustomer(customerId);
                 return Ok(customer);
             }
             else
             {
                 return NotFound();
             }
+        }
+
+        [HttpGet("{customerId}/accounts")]
+        public async Task<IActionResult> GetCustomerAccounts(string customerId)
+        {
+            var accounts = await customerClient.GetCustomerAccounts(customerId);
+            return Ok(accounts);
+        }
+
+        [HttpGet("{customerId}/account-balances")]
+        public async Task<IActionResult> GetCustomerAccountsBalances(string customerId)
+        {
+            var accountsBalances = await customerClient.GetCustomerAccountsBalances(customerId);
+            return Ok(accountsBalances);
+        }
+
+        [HttpGet("{customerId}/accounts/{accountId}/transactions")]
+        public async Task<IActionResult> GetCustomerAccountTransactions(string customerId, string accountId)
+        {
+            var customerExits = await GetCustomer(customerId);
+            if (customerExits == null)
+            {
+                return NotFound();
+            }
+            var accountsBalances = await customerClient.GetCustomerAccountTransactions(accountId);
+            return Ok(accountsBalances);
         }
     }
 }

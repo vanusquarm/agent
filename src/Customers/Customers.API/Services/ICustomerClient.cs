@@ -19,5 +19,15 @@ namespace Customers.API.Services
         [Get("/retail-customers/{customerId}")]
         Task<GetRCResponse> GetRetailCustomer(string customerId);
 
+        // All Customers
+        [Get("/customers/{customerId}/accounts")]
+        Task<object> GetCustomerAccounts(string customerId);
+
+        [Get("/customers/{customerId}/account-balances")]
+        Task<object> GetCustomerAccountsBalances(string customerId);
+
+        [Get("/accounts/{accountId}/transactions")]
+        Task<object> GetCustomerAccountTransactions(string accountId);
+
     }
 }
