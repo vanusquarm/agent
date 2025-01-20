@@ -1,14 +1,14 @@
 ﻿using Acccount.API.Entities.DTOs;
 using Refit;
 
-namespace Accounts.API.Services
+namespace Acccount.API.Services
 {
     public interface IAccountClient
     {
         [Get("/accounts/{accountId}/balances")] // example CustomerId 35000000055
-        Task<GetAccountBalanceResponse> GetAccountBalance(string accountId);
+        Task<AccountBalanceDto> GetAccountBalance(string accountId);
 
-        [Get("/accounts/{transactionId}/transactions")] 
-        Task<List<TransactionDetailsDto>> GetAccountTrasactions(string transactionId);
+        [Get("/accounts/{accountId}/transactions")]
+        Task<List<TransactionDetailsDto>> GetAccountTrasactions(string accountId);
     }
 }

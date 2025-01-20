@@ -2,7 +2,7 @@
 
 namespace Acccount.API.Entities.DTOs
 {
-    public class GetAccountBalanceResponse
+    public class AccountBalanceDto
     {
         [JsonPropertyName("accountIdentification")]
         public string? AccountIdentification { get; set; }

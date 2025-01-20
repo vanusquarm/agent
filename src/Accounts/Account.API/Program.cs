@@ -1,6 +1,6 @@
 // using Finacle.Infrastructure;
+using Acccount.API.Services;
 using Refit;
-using Todo.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddRefitClient<ITodoClient>()
+builder.Services.AddRefitClient<IAccountClient>()
     .ConfigureHttpClient(c =>
     {
         c.BaseAddress = new Uri(builder.Configuration["BaseUrl"]); // Replace with your API base URL
