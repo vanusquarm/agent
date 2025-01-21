@@ -39,14 +39,6 @@ namespace Finacle.Infrastructure.Auth.BasicJwt
                     // Setting the BaseAddress for Finacle ApiHub
                     c.BaseAddress = new Uri(baseUrl);
                 })
-                .ConfigurePrimaryHttpMessageHandler(() =>
-                {
-                    return new HttpClientHandler
-                    {
-                        // Disabling SSL validation, but ensure this is safe and intentional
-                        ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
-                    };
-                })
                 .AddHttpMessageHandler<AuthHttpClientHandler>(); // Add the custom handler for adding the token to requests
 
             return services;

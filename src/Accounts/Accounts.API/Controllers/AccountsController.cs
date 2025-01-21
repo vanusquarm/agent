@@ -1,13 +1,13 @@
-using Acccount.API.Services;
+using Acccounts.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Acccount.API.Controllers
+namespace Acccounts.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
     //[Authorize]
-    public class AccountController(IAccountClient accountClient) : ControllerBase
+    public class AccountsController(IAccountClient accountClient) : ControllerBase
     {
 
         [HttpGet("{accountId}")]

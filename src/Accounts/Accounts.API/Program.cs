@@ -1,20 +1,18 @@
 // using Finacle.Infrastructure;
-using Acccount.API.Services;
+using Acccounts.API.Services;
+using Finacle.Infrastructure.Auth.BasicJwt;
+using Microsoft.Extensions.Configuration;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 // Add services to the container.
 // builder.AddInfrastructure(enableSwagger: enableSwagger);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddRefitClient<IAccountClient>()
-    .ConfigureHttpClient(c =>
-    {
-        c.BaseAddress = new Uri(builder.Configuration["BaseUrl"]); // Replace with your API base URL
-    });
+builder.Services.AddJwtMiddleware<IAccountClient>(configuration);
 
 var app = builder.Build();
 // app.UseInfrastructure(builder.Environment, enableSwagger: enableSwagger);

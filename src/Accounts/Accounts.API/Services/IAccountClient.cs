@@ -1,7 +1,7 @@
-﻿using Acccount.API.Entities.DTOs;
+﻿using Acccounts.API.Entities.DTOs;
 using Refit;
 
-namespace Acccount.API.Services
+namespace Acccounts.API.Services
 {
     public interface IAccountClient
     {
