@@ -14,7 +14,7 @@ namespace Acccount.API.Controllers
         public async Task<IActionResult> GetAccountBalance([FromRoute] string accountId, [FromQuery] string accountType = null)
         {
             var balances = await accountClient.GetAccountBalance(accountId);
-            var balance = balances.Balances.FirstOrDefault(balance => balance.BalanceType == accountType);
+            var balance = balances?.Balances?.FirstOrDefault(balance => balance.BalanceType == accountType);
             if (balance != null) 
             {
                 return Ok(balance);
