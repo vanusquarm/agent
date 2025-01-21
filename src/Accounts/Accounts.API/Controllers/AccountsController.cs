@@ -10,7 +10,7 @@ namespace Acccounts.API.Controllers
     public class AccountsController(IAccountClient accountClient) : ControllerBase
     {
 
-        [HttpGet("{accountId}")]
+        [HttpGet("{accountId}/balances")]
         public async Task<IActionResult> GetAccountBalance([FromRoute] string accountId, [FromQuery] string accountType = null)
         {
             var balances = await accountClient.GetAccountBalance(accountId);
