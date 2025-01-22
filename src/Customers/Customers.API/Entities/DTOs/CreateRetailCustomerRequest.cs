@@ -2,11 +2,8 @@
 
 namespace Customers.API.Entities.DTOs
 {
-    public class CreateRCResponse
+    public class CreateRetailCustomerRequest
     {
-        [JsonPropertyName("customerIdentifier")]
-        public string CustomerIdentifier { get; set; }
-
         [JsonPropertyName("salutation")]
         public string Salutation { get; set; }
 
@@ -269,65 +266,65 @@ namespace Customers.API.Entities.DTOs
     //    public string DocumentFor { get; set; }
     //}
 
-    //public class EducationDetail
-    //{
-    //    [JsonPropertyName("qualification")]
-    //    public string Qualification { get; set; }
+    public class EducationDetail
+    {
+        [JsonPropertyName("qualification")]
+        public string Qualification { get; set; }
 
-    //    [JsonPropertyName("course")]
-    //    public string Course { get; set; }
+        [JsonPropertyName("course")]
+        public string Course { get; set; }
 
-    //    [JsonPropertyName("institute")]
-    //    public string Institute { get; set; }
+        [JsonPropertyName("institute")]
+        public string Institute { get; set; }
 
-    //    [JsonPropertyName("university")]
-    //    public string University { get; set; }
+        [JsonPropertyName("university")]
+        public string University { get; set; }
 
-    //    [JsonPropertyName("courseStatus")]
-    //    public string CourseStatus { get; set; }
+        [JsonPropertyName("courseStatus")]
+        public string CourseStatus { get; set; }
 
-    //    [JsonPropertyName("courseStartDate")]
-    //    public string CourseStartDate { get; set; }
+        [JsonPropertyName("courseStartDate")]
+        public string CourseStartDate { get; set; }
 
-    //    [JsonPropertyName("courseEndDate")]
-    //    public string CourseEndDate { get; set; }
+        [JsonPropertyName("courseEndDate")]
+        public string CourseEndDate { get; set; }
 
-    //    [JsonPropertyName("scoreType")]
-    //    public string ScoreType { get; set; }
+        [JsonPropertyName("scoreType")]
+        public string ScoreType { get; set; }
 
-    //    [JsonPropertyName("scoreObtained")]
-    //    public string ScoreObtained { get; set; }
+        [JsonPropertyName("scoreObtained")]
+        public string ScoreObtained { get; set; }
 
-    //    [JsonPropertyName("classObtained")]
-    //    public string ClassObtained { get; set; }
+        [JsonPropertyName("classObtained")]
+        public string ClassObtained { get; set; }
 
-    //    [JsonPropertyName("addressLine1")]
-    //    public string AddressLine1 { get; set; }
+        [JsonPropertyName("addressLine1")]
+        public string AddressLine1 { get; set; }
 
-    //    [JsonPropertyName("addressLine2")]
-    //    public string AddressLine2 { get; set; }
+        [JsonPropertyName("addressLine2")]
+        public string AddressLine2 { get; set; }
 
-    //    [JsonPropertyName("addressLine3")]
-    //    public string AddressLine3 { get; set; }
+        [JsonPropertyName("addressLine3")]
+        public string AddressLine3 { get; set; }
 
-    //    [JsonPropertyName("postalCode")]
-    //    public string PostalCode { get; set; }
+        [JsonPropertyName("postalCode")]
+        public string PostalCode { get; set; }
 
-    //    [JsonPropertyName("country")]
-    //    public string Country { get; set; }
+        [JsonPropertyName("country")]
+        public string Country { get; set; }
 
-    //    [JsonPropertyName("state")]
-    //    public string State { get; set; }
+        [JsonPropertyName("state")]
+        public string State { get; set; }
 
-    //    [JsonPropertyName("city")]
-    //    public string City { get; set; }
+        [JsonPropertyName("city")]
+        public string City { get; set; }
 
-    //    [JsonPropertyName("phoneNumber")]
-    //    public string PhoneNumber { get; set; }
+        [JsonPropertyName("phoneNumber")]
+        public string PhoneNumber { get; set; }
 
-    //    [JsonPropertyName("emailAddress")]
-    //    public string EmailAddress { get; set; }
-    //}
+        [JsonPropertyName("emailAddress")]
+        public string EmailAddress { get; set; }
+    }
 
     //public class EmailDetail
     //{
@@ -341,104 +338,104 @@ namespace Customers.API.Entities.DTOs
     //    public string PreferredEmailAddress { get; set; }
     //}
 
-    //public class EmploymentDetail
-    //{
-    //    [JsonPropertyName("natureOfEmployment")]
-    //    public string NatureOfEmployment { get; set; }
+    public class EmploymentDetail
+    {
+        [JsonPropertyName("natureOfEmployment")]
+        public string NatureOfEmployment { get; set; }
 
-    //    [JsonPropertyName("employmentStatus")]
-    //    public string EmploymentStatus { get; set; }
+        [JsonPropertyName("employmentStatus")]
+        public string EmploymentStatus { get; set; }
 
-    //    [JsonPropertyName("employerName")]
-    //    public string EmployerName { get; set; }
+        [JsonPropertyName("employerName")]
+        public string EmployerName { get; set; }
 
-    //    [JsonPropertyName("employerId")]
-    //    public string EmployerId { get; set; }
+        [JsonPropertyName("employerId")]
+        public string EmployerId { get; set; }
 
-    //    [JsonPropertyName("employerType")]
-    //    public string EmployerType { get; set; }
+        [JsonPropertyName("employerType")]
+        public string EmployerType { get; set; }
 
-    //    [JsonPropertyName("industry")]
-    //    public string Industry { get; set; }
+        [JsonPropertyName("industry")]
+        public string Industry { get; set; }
 
-    //    [JsonPropertyName("countryOfDeputation")]
-    //    public string CountryOfDeputation { get; set; }
+        [JsonPropertyName("countryOfDeputation")]
+        public string CountryOfDeputation { get; set; }
 
-    //    [JsonPropertyName("occupation")]
-    //    public string Occupation { get; set; }
+        [JsonPropertyName("occupation")]
+        public string Occupation { get; set; }
 
-    //    [JsonPropertyName("businessName")]
-    //    public string BusinessName { get; set; }
+        [JsonPropertyName("businessName")]
+        public string BusinessName { get; set; }
 
-    //    [JsonPropertyName("currentEmployment")]
-    //    public string CurrentEmployment { get; set; }
+        [JsonPropertyName("currentEmployment")]
+        public string CurrentEmployment { get; set; }
 
-    //    [JsonPropertyName("employmentStartDate")]
-    //    public string EmploymentStartDate { get; set; }
+        [JsonPropertyName("employmentStartDate")]
+        public string EmploymentStartDate { get; set; }
 
-    //    [JsonPropertyName("employmentEndDate")]
-    //    public string EmploymentEndDate { get; set; }
+        [JsonPropertyName("employmentEndDate")]
+        public string EmploymentEndDate { get; set; }
 
-    //    [JsonPropertyName("addressLine1")]
-    //    public string AddressLine1 { get; set; }
+        [JsonPropertyName("addressLine1")]
+        public string AddressLine1 { get; set; }
 
-    //    [JsonPropertyName("addressLine2")]
-    //    public string AddressLine2 { get; set; }
+        [JsonPropertyName("addressLine2")]
+        public string AddressLine2 { get; set; }
 
-    //    [JsonPropertyName("addressLine3")]
-    //    public string AddressLine3 { get; set; }
+        [JsonPropertyName("addressLine3")]
+        public string AddressLine3 { get; set; }
 
-    //    [JsonPropertyName("postalCode")]
-    //    public string PostalCode { get; set; }
+        [JsonPropertyName("postalCode")]
+        public string PostalCode { get; set; }
 
-    //    [JsonPropertyName("country")]
-    //    public string Country { get; set; }
+        [JsonPropertyName("country")]
+        public string Country { get; set; }
 
-    //    [JsonPropertyName("state")]
-    //    public string State { get; set; }
+        [JsonPropertyName("state")]
+        public string State { get; set; }
 
-    //    [JsonPropertyName("city")]
-    //    public string City { get; set; }
+        [JsonPropertyName("city")]
+        public string City { get; set; }
 
-    //    [JsonPropertyName("phoneNumber")]
-    //    public string PhoneNumber { get; set; }
+        [JsonPropertyName("phoneNumber")]
+        public string PhoneNumber { get; set; }
 
-    //    [JsonPropertyName("emailAddress")]
-    //    public string EmailAddress { get; set; }
+        [JsonPropertyName("emailAddress")]
+        public string EmailAddress { get; set; }
 
-    //    [JsonPropertyName("grossIncome")]
-    //    public int? GrossIncome { get; set; }
+        [JsonPropertyName("grossIncome")]
+        public int? GrossIncome { get; set; }
 
-    //    [JsonPropertyName("incomeFrequency")]
-    //    public string IncomeFrequency { get; set; }
-    //}
+        [JsonPropertyName("incomeFrequency")]
+        public string IncomeFrequency { get; set; }
+    }
 
-    //public class GuardianDetails
-    //{
-    //    [JsonPropertyName("relationshipType")]
-    //    public string RelationshipType { get; set; }
+    public class GuardianDetails
+    {
+        [JsonPropertyName("relationshipType")]
+        public string RelationshipType { get; set; }
 
-    //    [JsonPropertyName("guardianType")]
-    //    public string GuardianType { get; set; }
+        [JsonPropertyName("guardianType")]
+        public string GuardianType { get; set; }
 
-    //    [JsonPropertyName("guardianCifType")]
-    //    public string GuardianCifType { get; set; }
+        [JsonPropertyName("guardianCifType")]
+        public string GuardianCifType { get; set; }
 
-    //    [JsonPropertyName("guardianId")]
-    //    public string GuardianId { get; set; }
+        [JsonPropertyName("guardianId")]
+        public string GuardianId { get; set; }
 
-    //    [JsonPropertyName("guardianName")]
-    //    public string GuardianName { get; set; }
+        [JsonPropertyName("guardianName")]
+        public string GuardianName { get; set; }
 
-    //    [JsonPropertyName("guardianPhoneNumber")]
-    //    public string GuardianPhoneNumber { get; set; }
+        [JsonPropertyName("guardianPhoneNumber")]
+        public string GuardianPhoneNumber { get; set; }
 
-    //    [JsonPropertyName("guardianEmailAddress")]
-    //    public string GuardianEmailAddress { get; set; }
+        [JsonPropertyName("guardianEmailAddress")]
+        public string GuardianEmailAddress { get; set; }
 
-    //    [JsonPropertyName("guardianRemarks")]
-    //    public string GuardianRemarks { get; set; }
-    //}
+        [JsonPropertyName("guardianRemarks")]
+        public string GuardianRemarks { get; set; }
+    }
 
     //public class PhoneDetail
     //{
@@ -598,7 +595,5 @@ namespace Customers.API.Entities.DTOs
     //    [JsonPropertyName("riskRatingOverriddenBy")]
     //    public string RiskRatingOverriddenBy { get; set; }
     //}
-
-
 
 }

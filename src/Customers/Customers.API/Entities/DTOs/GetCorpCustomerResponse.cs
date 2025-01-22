@@ -2,7 +2,7 @@
 
 namespace Customers.API.Entities.DTOs
 {
-    public class GetCCResponse
+    public class GetCorpCustomerResponse
     {
         [JsonPropertyName("customerIdentifier")]
         public string CustomerIdentifier { get; set; }

@@ -3,7 +3,7 @@
 namespace Customers.API.Entities.DTOs
 {
     // Create Corporate Customer Response Object
-    public class CreateCCResponse
+    public class CreateCorpCustomerResponse
     {
         [JsonPropertyName("customerIdentifier")]
         public string CustomerIdentifier { get; set; }

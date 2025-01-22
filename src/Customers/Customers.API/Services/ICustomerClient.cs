@@ -7,17 +7,17 @@ namespace Customers.API.Services
     {
         // Corporate Customer
         [Post("/corporate-customers")] 
-        Task<CreateCCResponse> CreateCorporateCustomer(CreateCCRequest createCCRequest);
+        Task<CreateCorpCustomerResponse> CreateCorporateCustomer(CreateCorpCustomerRequest createCCRequest);
 
         [Get("/corporate-customers/{customerId}")] //specify the finacle resource endpoint
-        Task<GetCCResponse> GetCorporateCustomer(string customerId);
+        Task<GetCorpCustomerResponse> GetCorporateCustomer(string customerId);
 
         // Retail Customer
         [Post("/retail-customers")] 
-        Task<CreateRCResponse> CreateRetailCustomer(CreateRCRequest createRCRequest);
+        Task<CreateRetailCustomerResponse> CreateRetailCustomer(CreateRetailCustomerRequest createRCRequest);
 
         [Get("/retail-customers/{customerId}")]
-        Task<GetRCResponse> GetRetailCustomer(string customerId);
+        Task<GetRetailCustomerResponse> GetRetailCustomer(string customerId);
 
         // All Customers
         [Get("/customers/{customerId}/accounts")]

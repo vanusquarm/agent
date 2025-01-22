@@ -2,7 +2,7 @@
 
 namespace Customers.API.Entities.DTOs
 {
-    public class CreateCCRequest
+    public class CreateCorpCustomerRequest
     {
         [JsonPropertyName("corporateName")]
         public required string CorporateName { get; set; }
