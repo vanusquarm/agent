@@ -13,5 +13,8 @@ namespace Acccounts.API.Services
 
         [Post("/v2/current-accounts")]
         Task<CreateCurrentAcctResponse> CreateCurrentAccount(CreateCurrentAcctRequest createAcctRequest);
+
+        [Post("/v2/savings-accounts")]
+        Task<CreateCurrentAcctResponse> CreateSavingsAccount(CreateSavingsAcctRequest createAcctRequest);
     }
 }

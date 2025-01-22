@@ -29,5 +29,11 @@ namespace Acccounts.API.Controllers
         {
             return Ok(await accountClient.CreateCurrentAccount(createCurrentAcct));
         }
+
+        [HttpPost("savings-account")]
+        public async Task<IActionResult> CreateSavingsAccount([FromBody] CreateSavingsAcctRequest createSavingsAcct)
+        {
+            return Ok(await accountClient.CreateSavingsAccount(createSavingsAcct));
+        }
     }
 }
