@@ -21,6 +21,9 @@ namespace Acccounts.API.Entities.DTOs
 
         [JsonPropertyName("branchReference")]
         public string BranchReference { get; set; }
+
+        [JsonPropertyName("accountOpeningDate")]
+        public string AccountOpeningDate { get; set; }
     }
 
 }
