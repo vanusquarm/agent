@@ -10,5 +10,8 @@ namespace Acccounts.API.Services
 
         [Get("/v2/accounts/{accountId}/transactions")]
         Task<List<TransactionDetailsDto>> GetAccountTrasactions(string accountId);
+
+        [Get("/v2/current-accounts")]
+        Task<object> CreateCurrentAccount(object createAcctRequest);
     }
 }

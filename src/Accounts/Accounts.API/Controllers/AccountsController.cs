@@ -1,3 +1,4 @@
+using Acccounts.API.Entities.DTOs;
 using Acccounts.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,12 @@ namespace Acccounts.API.Controllers
             }
 
             return Ok(balances);
+        }
+
+        [HttpPost("current-account")]
+        public async Task<IActionResult> CreateCurrentAccount([FromBody] CreateCurrentAcctRequest createCurrentAcct)
+        {
+            return Ok(await accountClient.CreateCurrentAccount(createCurrentAcct));
         }
     }
 }
