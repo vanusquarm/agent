@@ -7,6 +7,7 @@ using System.Reflection;
 using Finacle.Infrastructure.Auth.BasicJwt;
 using Microsoft.EntityFrameworkCore;
 using Finacle.Infrastructure.Notifications;
+using Finacle.Infrastructure.Swagger;
 
 namespace Finacle.Infrastructure;
 
@@ -27,6 +28,7 @@ public static class Extensions
         builder.Services.AddEndpointsApiExplorer();
         // builder.ConfigureSerilog(appOptions.Name);
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
+        if (enableSwagger) builder.Services.AddSwaggerExtension(config);
     }
 
     public static void UseInfrastructure(this WebApplication app, IWebHostEnvironment env, bool enableSwagger = true)
@@ -37,5 +39,6 @@ public static class Extensions
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
+        if (enableSwagger) app.UseSwaggerExtension(env);
     }
 }
