@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Finacle.Core.Domain
 {
-    internal class GetRetailCustomerResponse
+    public class GetRetailCustomerResponse
     {
         [JsonPropertyName("customerIdentifier")]
         public string CustomerIdentifier { get; set; }

@@ -1,8 +1,39 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
-namespace Finacle.Core.Domain
+namespace Finacle.Core
 {
-    public class TransactionDetailsDto
+    public class GetAcctTransactionsResponse
+    {
+        [JsonPropertyName("transactionDetailsList")]
+        public List<Transaction> TransactionDetailsList { get; set; }
+
+        [JsonPropertyName("isLastSet")]
+        public string IsLastSet { get; set; }
+
+        [JsonPropertyName("setNumber")]
+        public int? SetNumber { get; set; }
+    }
+
+    public class TransactionAmount
+    {
+        [JsonPropertyName("currency")]
+        public string Currency { get; set; }
+
+        [JsonPropertyName("value")]
+        public int? Value { get; set; }
+    }
+
+    public class TransactionBalance
+    {
+        [JsonPropertyName("currency")]
+        public string Currency { get; set; }
+
+        [JsonPropertyName("value")]
+        public int? Value { get; set; }
+    }
+
+    public class Transaction
     {
         [JsonPropertyName("accountIdentification")]
         public string AccountIdentification { get; set; }
@@ -77,23 +108,6 @@ namespace Finacle.Core.Domain
         public string TodRequired { get; set; }
     }
 
-    public class TransactionAmount
-    {
-        [JsonPropertyName("currency")]
-        public string Currency { get; set; }
-
-        [JsonPropertyName("value")]
-        public int? Value { get; set; }
-    }
-
-    public class TransactionBalance
-    {
-        [JsonPropertyName("currency")]
-        public string Currency { get; set; }
-
-        [JsonPropertyName("value")]
-        public int? Value { get; set; }
-    }
 
 
 }

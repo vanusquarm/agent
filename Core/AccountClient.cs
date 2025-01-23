@@ -1,34 +1,35 @@
-﻿using System;
+﻿using Finacle.Core.Domain;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Finacle.Core
 {
-    internal class AccountClient: FinacleClient
+    public partial class FinacleClient
     {
-        public AccountClient(string baseUrl) : base(baseUrl)
-        {
-        }
 
         // Get account details
-        public async Task<string> GetAccountAsync(string accountId)
+        public async Task<Account> GetAccountAsync(string accountId)
         {
             var response = await _httpClient.GetAsync($"/api/v1/Accounts/{accountId}");
 
-            response.EnsureSuccessStatusCode(); // Throws exception if not 2xx response
+            var content = await response.Content.ReadAsStringAsync();
+            var accountDetails = JsonSerializer.Deserialize<Account>(content);
 
-            return await response.Content.ReadAsStringAsync();
+            return accountDetails;
         }
 
         // Get account balances
-        public async Task<string> GetAccountBalancesAsync(string accountId)
+        public async Task<List<CustomerAccountBalance>> GetAccountBalancesAsync(string accountId)
         {
             var response = await _httpClient.GetAsync($"/api/v1/Accounts/{accountId}/balances");
 
-            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+            var accountsBalances = JsonSerializer.Deserialize<GetAcctBalancesResponse>(content);
 
-            return await response.Content.ReadAsStringAsync();
+            return accountsBalances.CustomerAccountBalances;
         }
 
         // Get account transactions

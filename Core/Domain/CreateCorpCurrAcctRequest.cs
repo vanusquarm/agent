@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Finacle.Core.Domain
 {
-    internal class CreateCorpCurrAcctRequest
+    public class CreateCorpCurrAcctRequest
     {
         [JsonPropertyName("customerReference")]
         public string CustomerReference { get; set; }

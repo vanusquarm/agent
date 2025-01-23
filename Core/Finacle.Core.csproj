@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputPath>bin\Release</OutputPath>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Andrew Sam</Authors>
     <Company>GTBank</Company>
-    <Description>Fincle client libraries</Description>
+    <Description>Finacle client libraries</Description>
     <PackageTags>your;tags;here</PackageTags>
     <RepositoryUrl>https://devops.gtbghana.com/DevOps/APIs/Finacle%20Integrations</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
