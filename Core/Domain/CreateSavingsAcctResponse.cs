@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.Json.Serialization;
+
+namespace Finacle.Core.Domain
+{
+    internal class CreateSavingsAcctResponse
+    {
+        [JsonPropertyName("accountIdentification")]
+        public string AccountIdentification { get; set; }
+
+        [JsonPropertyName("iBAN")]
+        public string IBAN { get; set; }
+    }
+}
