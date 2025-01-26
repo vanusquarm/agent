@@ -5,7 +5,7 @@ namespace Acccounts.API.Services
 {
     public interface IAccountClient
     {
-        [Get("/v2/accounts/{accountId}/balances")] // example CustomerId 35000000055
+        [Get("/v2/accounts/{accountId}/balances")] // example accountId 35000000055
         Task<AccountBalanceDto> GetAccountBalance(string accountId);
 
         [Get("/v2/accounts/{accountId}/transactions")]
