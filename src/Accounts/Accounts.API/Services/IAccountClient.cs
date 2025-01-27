@@ -23,15 +23,18 @@ namespace Acccounts.API.Services
         [Post("/v2/corporate-current-accounts")]
         Task<object?> CreateCorpCurrentAccount(CreateCorpCurrentAcctRequest createAcctRequest);
 
-        // Get Account Details - Example of a Savings Account is 1205001000000471
+        // Get Account Details - Example of a Savings Account is 1205001000000471 
+
+        [Post("/v2/accntdetails/getaccntdetails")]
+        Task<object> GetAccountDetails(object accountId);
 
         [Get("/v2/savings-accounts/{accountId}/account-details")]
-        Task<AccountDto> GetSavingsAccount(string accountId);
+        Task<object> GetSavingsAccount(string accountId);
 
         [Get("/v2/current-accounts/{accountId}/account-details")]
-        Task<AccountDto> GetCurrentAccount(string accountId);
+        Task<object> GetCurrentAccount(string accountId);
 
         [Get("/v2/corporate-current-accounts/{accountId}/account-details")]
-        Task<AccountDto> GetCorpCurrentAccount(string accountId);
+        Task<object> GetCorpCurrentAccount(string accountId);
     }
 }

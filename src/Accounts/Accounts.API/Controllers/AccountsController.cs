@@ -13,9 +13,15 @@ namespace Acccounts.API.Controllers
         [HttpGet("{accountId}")]
         public async Task<IActionResult> GetAccountAsync(string accountId)
         {
-            var accountDetails = await accountClient.GetSavingsAccount(accountId)
+            var accountDetails = await accountClient.GetAccountDetails(new { accountId })
+                ?? await accountClient.GetSavingsAccount(accountId)
                 ?? await accountClient.GetCurrentAccount(accountId)
                 ?? await accountClient.GetCorpCurrentAccount(accountId);
+
+            if (accountDetails == null) 
+            { 
+                return NotFound();
+            }
 
             return Ok(accountDetails);
         }
