@@ -5,7 +5,7 @@ namespace Acccounts.API.Services
 {
     public interface IAccountClient
     {
-        [Get("/v2/accounts/{accountId}/balances")] // example accountId 35000000055
+        [Get("/v2/accounts/{accountId}/balances")] // example CustomerId 35000000055
         Task<AccountBalanceDto> GetAccountBalance(string accountId);
 
         [Get("/v2/accounts/{accountId}/transactions")]
@@ -16,5 +16,16 @@ namespace Acccounts.API.Services
 
         [Post("/v2/savings-accounts")]
         Task<CreateCurrentAcctResponse> CreateSavingsAccount(CreateSavingsAcctRequest createAcctRequest);
+
+        [Get("/v2/savings-accounts/{accountId}/account-details")]
+        Task<AccountDto> GetSavingsAccount(string accountId);
+
+        [Get("/v2/current-accounts/{accountId}/account-details")]
+        Task<AccountDto> GetCurrentAccount(string accountId);
+
+        // Corporate Entities only have Current Accounts
+
+        [Get("/v2/corporate-current-accounts/{accountId}/account-details")]
+        Task<AccountDto> GetCorpCurrentAccount(string accountId);
     }
 }

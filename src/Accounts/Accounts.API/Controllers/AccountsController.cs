@@ -10,6 +10,15 @@ namespace Acccounts.API.Controllers
     //[Authorize]
     public class AccountsController(IAccountClient accountClient) : ControllerBase
     {
+        [HttpGet("{accountId}")]
+        public async Task<IActionResult> GetAccountAsync(string accountId)
+        {
+            var accountDetails = await accountClient.GetSavingsAccount(accountId)
+                ?? await accountClient.GetCurrentAccount(accountId)
+                ?? await accountClient.GetCorpCurrentAccount(accountId);
+
+            return Ok(accountDetails);
+        }
 
         [HttpGet("{accountId}/balances")]
         public async Task<IActionResult> GetAccountBalance([FromRoute] string accountId, [FromQuery] string accountType = null)
