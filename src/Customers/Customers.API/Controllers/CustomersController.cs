@@ -4,6 +4,7 @@ using Customers.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Customers.API.Controllers
 {
@@ -27,6 +28,11 @@ namespace Customers.API.Controllers
                 var customer = await customerClient.GetRetailCustomer(customerId);
                 var filteredProperty = filter == null ? customer : customer.GetType().GetProperty(filter)?.GetValue(customer);
                 return Ok(filteredProperty);
+            }
+            else if (IsValidPhoneNumber(customerId))
+            {
+                var customer = await customerClient.GetCustomerDetailsByPhoneAsync(new { phone = customerId });
+                return Ok(customer);
             }
             else
             {
@@ -55,9 +61,9 @@ namespace Customers.API.Controllers
         }
 
         [HttpGet("{customerId}/accounts")]
-        public async Task<IActionResult> GetCustomerAccounts(string customerId)
+        public async Task<IActionResult> GetCustomerAccounts(string customerId, string includeClosedAccounts = "Y")
         {
-            var accounts = await customerClient.GetCustomerAccounts(customerId);
+            var accounts = await customerClient.GetCustomerAccounts(customerId, includeClosedAccounts);
             return Ok(accounts);
         }
 
@@ -78,6 +84,14 @@ namespace Customers.API.Controllers
             }
             var accountsBalances = await customerClient.GetCustomerAccountTransactions(accountId);
             return Ok(accountsBalances);
+        }
+
+        private bool IsValidPhoneNumber(string phoneNumber)
+        {
+            // Simple regex pattern to validate phone number (adjust as needed)
+            var regex = new Regex(@"^\+?[1-9]\d{1,14}$"); // Allows optional "+" followed by digits
+
+            return regex.IsMatch(phoneNumber);
         }
     }
 }

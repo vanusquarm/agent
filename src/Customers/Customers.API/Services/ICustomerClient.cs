@@ -20,8 +20,14 @@ namespace Customers.API.Services
         Task<GetRetailCustomerResponse> GetRetailCustomer(string customerId);
 
         // All Customers
-        [Get("/customers/{customerId}/accounts")]
-        Task<object> GetCustomerAccounts(string customerId);
+        [Post("/v2/CustomerDtls/getCustomerDtls")]
+        Task<GetRetailCustomerResponse> GetCustomerDetailsByPhoneAsync([Body] object request);
+
+        [Get("/v2/customers/{customerId}/accounts?includeClosedAccounts={includeClosedAccounts}")]
+        Task<object> GetCustomerAccounts(string customerId, string includeClosedAccounts);
+
+        [Get("/customers/{customerId}/accounts?includeClosedAccounts={includeClosedAccounts}")]
+        Task<object> GetCustomerAccountsStatements(string customerId, string includeClosedAccounts);
 
         [Get("/customers/{customerId}/account-balances")]
         Task<object> GetCustomerAccountsBalances(string customerId);
