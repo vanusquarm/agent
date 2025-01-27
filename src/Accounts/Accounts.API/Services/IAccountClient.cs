@@ -5,11 +5,14 @@ namespace Acccounts.API.Services
 {
     public interface IAccountClient
     {
-        [Get("/v2/accounts/{accountId}/balances")] // example CustomerId 35000000055
+        // Get Account Balance - Example of a Savings Account is 1205001000000471
+        [Get("/v2/accounts/{accountId}/balances")] 
         Task<AccountBalanceDto> GetAccountBalance(string accountId);
 
         [Get("/v2/accounts/{accountId}/transactions")]
         Task<List<TransactionDetailsDto>> GetAccountTrasactions(string accountId);
+
+        // Create Account - Corporate Entities only have Current Accounts
 
         [Post("/v2/current-accounts")]
         Task<CreateCurrentAcctResponse> CreateCurrentAccount(CreateCurrentAcctRequest createAcctRequest);
@@ -17,13 +20,16 @@ namespace Acccounts.API.Services
         [Post("/v2/savings-accounts")]
         Task<CreateCurrentAcctResponse> CreateSavingsAccount(CreateSavingsAcctRequest createAcctRequest);
 
+        [Post("/v2/corporate-current-accounts")]
+        Task<object?> CreateCorpCurrentAccount(CreateCorpCurrentAcctRequest createAcctRequest);
+
+        // Get Account Details - Example of a Savings Account is 1205001000000471
+
         [Get("/v2/savings-accounts/{accountId}/account-details")]
         Task<AccountDto> GetSavingsAccount(string accountId);
 
         [Get("/v2/current-accounts/{accountId}/account-details")]
         Task<AccountDto> GetCurrentAccount(string accountId);
-
-        // Corporate Entities only have Current Accounts
 
         [Get("/v2/corporate-current-accounts/{accountId}/account-details")]
         Task<AccountDto> GetCorpCurrentAccount(string accountId);

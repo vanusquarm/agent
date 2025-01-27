@@ -34,15 +34,21 @@ namespace Acccounts.API.Controllers
         }
 
         [HttpPost("current-account")]
-        public async Task<IActionResult> CreateCurrentAccount([FromBody] CreateCurrentAcctRequest createCurrentAcct)
+        public async Task<IActionResult> CreateCurrentAccount([FromBody] CreateCurrentAcctRequest currentAcct)
         {
-            return Ok(await accountClient.CreateCurrentAccount(createCurrentAcct));
+            return Ok(await accountClient.CreateCurrentAccount(currentAcct));
         }
 
         [HttpPost("savings-account")]
-        public async Task<IActionResult> CreateSavingsAccount([FromBody] CreateSavingsAcctRequest createSavingsAcct)
+        public async Task<IActionResult> CreateSavingsAccount([FromBody] CreateSavingsAcctRequest savingsAcct)
         {
-            return Ok(await accountClient.CreateSavingsAccount(createSavingsAcct));
+            return Ok(await accountClient.CreateSavingsAccount(savingsAcct));
+        }
+
+        [HttpPost("corporate-current-account")]
+        public async Task<IActionResult> CreateCorpCurrentAccount([FromBody] CreateCorpCurrentAcctRequest corpCurrentAcct)
+        {
+            return Ok(await accountClient.CreateCorpCurrentAccount(corpCurrentAcct));
         }
     }
 }
