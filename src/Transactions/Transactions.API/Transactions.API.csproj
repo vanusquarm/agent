@@ -18,4 +18,8 @@
     <ProjectReference Include="..\..\Infrastructure\Finacle.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\Models\" />
+  </ItemGroup>
+
 </Project>

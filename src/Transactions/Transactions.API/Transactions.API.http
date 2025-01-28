@@ -1,6 +1,6 @@
-@Todo.API_HostAddress = http://localhost:5049
+@Transactions.API_HostAddress = http://localhost:5050
 
-GET {{Todo.API_HostAddress}}/api/v1/todos
+GET {{Transactions.API_HostAddress}}/api/v1/transactions
 Accept: application/json
 
 ###
