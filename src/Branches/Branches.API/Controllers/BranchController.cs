@@ -4,7 +4,7 @@ using Todo.API.Services;
 namespace Todo.API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/v1/[controller]")]
 public class BranchController : ControllerBase
 {
     private readonly IBranchesClient _branchesClient;
