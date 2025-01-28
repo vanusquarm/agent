@@ -54,6 +54,13 @@ namespace Customers.API.Controllers
             
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCustomerAccounts(string customerId)
+        {
+            var accounts = await customerClient.GetCustomerAccounts(customerId, "Y");
+            return Ok(accounts);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateCustomer(object customerDto, string customerType)
         {
