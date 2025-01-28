@@ -21,7 +21,7 @@ namespace Customers.API.Services
 
         // All Customers
         [Post("/v2/CustomerDtls/getCustomerDtls")]
-        Task<GetRetailCustomerResponse> GetCustomerDetailsByPhoneAsync([Body] object request);
+        Task<CustomerDetailsResponse> GetCustomerDetailsByPhoneAsync([Body] Dictionary<string, string> request);
 
         [Get("/v2/customers/{customerId}/accounts?includeClosedAccounts={includeClosedAccounts}")]
         Task<object> GetCustomerAccounts(string customerId, string includeClosedAccounts);

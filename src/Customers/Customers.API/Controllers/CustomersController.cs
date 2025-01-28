@@ -17,29 +17,42 @@ namespace Customers.API.Controllers
         [HttpGet("{customerId}")]
         public async Task<IActionResult> GetCustomer(string customerId, string? filter = null)
         {
-            if (customerId.StartsWith("C"))
+            try
             {
-                var customer = await customerClient.GetCorporateCustomer(customerId);
-                var filteredProperty = filter == null? customer: customer.GetType().GetProperty(filter)?.GetValue(customer);
-                return Ok(filteredProperty);
+                if (customerId.StartsWith("C"))
+                {
+                    var customer = await customerClient.GetCorporateCustomer(customerId);
+                    var filteredProperty = filter == null ? customer : customer.GetType().GetProperty(filter)?.GetValue(customer);
+                    return Ok(filteredProperty);
+                }
+                else if (customerId.StartsWith("R"))
+                {
+                    var customer = await customerClient.GetRetailCustomer(customerId);
+                    var filteredProperty = filter == null ? customer : customer.GetType().GetProperty(filter)?.GetValue(customer);
+                    return Ok(filteredProperty);
+                }
+                else if (IsValidPhoneNumber(customerId))
+                {
+                    var request = new Dictionary<string, string>
+                    {
+                        { "PhoneNumber", customerId }
+                    };
+                    var customer = await customerClient.GetCustomerDetailsByPhoneAsync(request);
+                    var retailCustomer = customer?.Transform();
+                    return Ok(retailCustomer);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else if (customerId.StartsWith("R"))
+            catch (Exception ex)
             {
-                var customer = await customerClient.GetRetailCustomer(customerId);
-                var filteredProperty = filter == null ? customer : customer.GetType().GetProperty(filter)?.GetValue(customer);
-                return Ok(filteredProperty);
-            }
-            else if (IsValidPhoneNumber(customerId))
-            {
-                var customer = await customerClient.GetCustomerDetailsByPhoneAsync(new { phone = customerId });
-                return Ok(customer);
-            }
-            else
-            {
+                Console.WriteLine(ex.Message);
                 return NotFound();
             }
+            
         }
-
 
         [HttpPost]
         public async Task<IActionResult> CreateCustomer(object customerDto, string customerType)
@@ -86,12 +99,15 @@ namespace Customers.API.Controllers
             return Ok(accountsBalances);
         }
 
-        private bool IsValidPhoneNumber(string phoneNumber)
+        private bool IsValidPhoneNumber(string phone)
         {
-            // Simple regex pattern to validate phone number (adjust as needed)
-            var regex = new Regex(@"^\+?[1-9]\d{1,14}$"); // Allows optional "+" followed by digits
 
-            return regex.IsMatch(phoneNumber);
+            // Remove all non-digit characters (spaces, dashes, parentheses) for general length checking
+            string cleanPhoneNumber = Regex.Replace(phone, @"[^\d]", "");
+
+            // Ensure that the phone number has the correct number of digits
+            return ((cleanPhoneNumber.Length == 10 && phone.StartsWith("0")) || (cleanPhoneNumber.Length < 15 && phone.StartsWith("+") && cleanPhoneNumber.Length >= 11));
+
         }
     }
 }

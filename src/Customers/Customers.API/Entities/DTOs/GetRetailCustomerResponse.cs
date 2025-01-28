@@ -280,4 +280,112 @@ namespace Customers.API.Entities.DTOs
     //    public object TeamEmail { get; set; }
     //}
 
+    // Get By Phone Number response
+    public class CustomerDetail
+    {
+        [JsonPropertyName("cifId")]
+        public string CifId { get; set; }
+
+        [JsonPropertyName("Foracid")]
+        public string Foracid { get; set; }
+
+        [JsonPropertyName("SchemeType")]
+        public string SchemeType { get; set; }
+
+        [JsonPropertyName("SchemeCode")]
+        public string SchemeCode { get; set; }
+
+        [JsonPropertyName("Firstname")]
+        public string Firstname { get; set; }
+
+        [JsonPropertyName("MiddleName")]
+        public string MiddleName { get; set; }
+
+        [JsonPropertyName("Lastname")]
+        public string Lastname { get; set; }
+
+        [JsonPropertyName("CifStatus")]
+        public string CifStatus { get; set; }
+
+        [JsonPropertyName("DOB")]
+        public string DOB { get; set; }
+
+        [JsonPropertyName("Gender")]
+        public string Gender { get; set; }
+
+        [JsonPropertyName("BVN")]
+        public string BVN { get; set; }
+
+        [JsonPropertyName("Tier")]
+        public string Tier { get; set; }
+
+        [JsonPropertyName("PhoneNumber")]
+        public string PhoneNumber { get; set; }
+
+        [JsonPropertyName("Address")]
+        public string Address { get; set; }
+
+        [JsonPropertyName("CustomerType")]
+        public string CustomerType { get; set; }
+
+        [JsonPropertyName("Email")]
+        public string Email { get; set; }
+
+        [JsonPropertyName("currency")]
+        public string Currency { get; set; }
+
+        [JsonPropertyName("balance")]
+        public string Balance { get; set; }
+
+        [JsonPropertyName("acctOpendate")]
+        public string AcctOpendate { get; set; }
+
+        [JsonPropertyName("acctSolId")]
+        public string AcctSolId { get; set; }
+    }
+
+    public class CustomerDetailsResponse
+    {
+        [JsonPropertyName("CustomerDetails")]
+        public List<CustomerDetail> CustomerDetails { get; set; }
+
+        [JsonPropertyName("errorFlg")]
+        public string ErrorFlg { get; set; }
+
+        public GetRetailCustomerResponse Transform()
+        {
+            var response = new GetRetailCustomerResponse();
+            response.CustomerIdentifier = CustomerDetails[0].CifId;
+            response.FirstName = CustomerDetails[0].Firstname;
+            response.MiddleName = CustomerDetails[0].MiddleName;
+            response.LastName = CustomerDetails[0].Lastname;
+            response.PrimaryBranch = CustomerDetails[0].AcctSolId;
+            response.RelationshipStartDate = CustomerDetails[0].AcctOpendate;
+            response.TierInformation = CustomerDetails[0].Tier;
+            response.KycStatus = CustomerDetails[0].CifStatus == "A" ? "APPROVED" : "PENDING";
+            response.Gender = CustomerDetails[0].Gender;
+            response.EmailDetails = new List<object>
+            {
+                new
+                {
+                    CustomerDetails[0].Email
+                }
+            };
+            response.AddressDetails = new List<AddressDetail>
+            {
+                new AddressDetail
+                {
+                    Line1 = CustomerDetails[0].Address
+                }
+            };
+            response.PhoneDetails = new List<object>
+            {
+                new
+                {
+                    CustomerDetails[0].PhoneNumber
+                }
+            };
+            return response;
+        }
+    }
 }
