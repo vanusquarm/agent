@@ -14,10 +14,10 @@ namespace Finacle.Core.Domain
         public string Salutation { get; set; }
 
         [JsonPropertyName("BVN")]
-        public object BVN { get; set; }
+        public string BVN { get; set; }
 
         [JsonPropertyName("TierInformation")]
-        public object TierInformation { get; set; }
+        public string TierInformation { get; set; }
 
         [JsonPropertyName("firstName")]
         public string FirstName { get; set; }
@@ -32,7 +32,7 @@ namespace Finacle.Core.Domain
         public string CustomerName { get; set; }
 
         [JsonPropertyName("suffix")]
-        public object Suffix { get; set; }
+        public string Suffix { get; set; }
 
         [JsonPropertyName("gender")]
         public string Gender { get; set; }
@@ -47,13 +47,13 @@ namespace Finacle.Core.Domain
         public string SeniorCitizen { get; set; }
 
         [JsonPropertyName("guardianDetails")]
-        public List<object> GuardianDetails { get; set; }
+        public List<GuardianDetails> GuardianDetails { get; set; }
 
         [JsonPropertyName("phoneDetails")]
-        public List<object> PhoneDetails { get; set; }
+        public List<PhoneDetail> PhoneDetails { get; set; }
 
         [JsonPropertyName("emailDetails")]
-        public List<object> EmailDetails { get; set; }
+        public List<EmailDetail> EmailDetails { get; set; }
 
         [JsonPropertyName("addressDetails")]
         public List<AddressDetail> AddressDetails { get; set; }
@@ -65,7 +65,7 @@ namespace Finacle.Core.Domain
         public List<RelationshipManagerDetail> RelationshipManagerDetails { get; set; }
 
         [JsonPropertyName("employmentDetails")]
-        public List<object> EmploymentDetails { get; set; }
+        public List<EmploymentDetail> EmploymentDetails { get; set; }
 
         [JsonPropertyName("riskRatingDetails")]
         public List<object> RiskRatingDetails { get; set; }
@@ -86,7 +86,7 @@ namespace Finacle.Core.Domain
         public string PrimaryBranch { get; set; }
 
         [JsonPropertyName("segment")]
-        public object Segment { get; set; }
+        public string Segment { get; set; }
 
         [JsonPropertyName("subsegment")]
         public object Subsegment { get; set; }
@@ -123,9 +123,6 @@ namespace Finacle.Core.Domain
     }
     public class AddressDetail
     {
-        [JsonPropertyName("addressId")]
-        public string AddressId { get; set; }
-
         [JsonPropertyName("addressFormat")]
         public string AddressFormat { get; set; }
 
@@ -136,25 +133,25 @@ namespace Finacle.Core.Domain
         public string Line1 { get; set; }
 
         [JsonPropertyName("line2")]
-        public string Line2 { get; set; }
+        public object Line2 { get; set; }
 
         [JsonPropertyName("line3")]
-        public string Line3 { get; set; }
+        public object Line3 { get; set; }
 
         [JsonPropertyName("houseNumber")]
-        public string HouseNumber { get; set; }
+        public object HouseNumber { get; set; }
 
         [JsonPropertyName("buildingLevel")]
         public object BuildingLevel { get; set; }
 
         [JsonPropertyName("premiseName")]
-        public string PremiseName { get; set; }
+        public object PremiseName { get; set; }
 
         [JsonPropertyName("streetNumber")]
-        public string StreetNumber { get; set; }
+        public object StreetNumber { get; set; }
 
         [JsonPropertyName("streetName")]
-        public string StreetName { get; set; }
+        public object StreetName { get; set; }
 
         [JsonPropertyName("locality")]
         public object Locality { get; set; }
@@ -163,7 +160,7 @@ namespace Finacle.Core.Domain
         public object Suburb { get; set; }
 
         [JsonPropertyName("town")]
-        public string Town { get; set; }
+        public object Town { get; set; }
 
         [JsonPropertyName("postalCode")]
         public string PostalCode { get; set; }
@@ -226,19 +223,16 @@ namespace Finacle.Core.Domain
         public string DocumentType { get; set; }
 
         [JsonPropertyName("issueDate")]
-        public object IssueDate { get; set; }
+        public string IssueDate { get; set; }
 
         [JsonPropertyName("expiryDate")]
-        public object ExpiryDate { get; set; }
+        public string ExpiryDate { get; set; }
 
         [JsonPropertyName("placeOfIssue")]
-        public object PlaceOfIssue { get; set; }
-
-        [JsonPropertyName("issuingAuthority")]
-        public object IssuingAuthority { get; set; }
+        public string PlaceOfIssue { get; set; }
 
         [JsonPropertyName("countryOfIssue")]
-        public object CountryOfIssue { get; set; }
+        public string CountryOfIssue { get; set; }
     }
 
     public class DocumentForDetail
@@ -247,19 +241,82 @@ namespace Finacle.Core.Domain
         public List<string> DocumentFor { get; set; }
     }
 
+    public class EmploymentDetail
+    {
+        [JsonPropertyName("employmentId")]
+        public string EmploymentId { get; set; }
+
+        [JsonPropertyName("natureOfEmployment")]
+        public string NatureOfEmployment { get; set; }
+
+        [JsonPropertyName("employmentStatus")]
+        public string EmploymentStatus { get; set; }
+
+        [JsonPropertyName("employerName")]
+        public string EmployerName { get; set; }
+
+        [JsonPropertyName("employerType")]
+        public string EmployerType { get; set; }
+
+        [JsonPropertyName("industry")]
+        public string Industry { get; set; }
+
+        [JsonPropertyName("countryOfDeputation")]
+        public string CountryOfDeputation { get; set; }
+
+        [JsonPropertyName("occupation")]
+        public string Occupation { get; set; }
+
+        [JsonPropertyName("businessName")]
+        public object BusinessName { get; set; }
+
+        [JsonPropertyName("employmentStartDate")]
+        public string EmploymentStartDate { get; set; }
+
+        [JsonPropertyName("employmentEndDate")]
+        public object EmploymentEndDate { get; set; }
+
+        [JsonPropertyName("currentEmployment")]
+        public string CurrentEmployment { get; set; }
+    }
+
+    public class PhoneDetail
+    {
+        [JsonPropertyName("phoneId")]
+        public string PhoneId { get; set; }
+
+        [JsonPropertyName("countryCode")]
+        public string CountryCode { get; set; }
+
+        [JsonPropertyName("phoneType")]
+        public string PhoneType { get; set; }
+
+        [JsonPropertyName("phoneNumber")]
+        public string PhoneNumber { get; set; }
+
+        [JsonPropertyName("preferredPhoneNumber")]
+        public string PreferredPhoneNumber { get; set; }
+    }
+
     public class RelationshipManagerDetail
     {
-        [JsonPropertyName("department")]
-        public object Department { get; set; }
-
         [JsonPropertyName("relationshipManagerId")]
         public string RelationshipManagerId { get; set; }
 
         [JsonPropertyName("relationshipManagerName")]
         public string RelationshipManagerName { get; set; }
 
+        [JsonPropertyName("relationshipManagerPhoneNumber")]
+        public object RelationshipManagerPhoneNumber { get; set; }
+
+        [JsonPropertyName("relationshipManagerEmailAddress")]
+        public object RelationshipManagerEmailAddress { get; set; }
+
         [JsonPropertyName("primaryRelationshipManager")]
         public string PrimaryRelationshipManager { get; set; }
+
+        [JsonPropertyName("department")]
+        public object Department { get; set; }
 
         [JsonPropertyName("pcCode")]
         public object PcCode { get; set; }
@@ -280,4 +337,42 @@ namespace Finacle.Core.Domain
         public object TeamEmail { get; set; }
     }
 
+    public class EmailDetail
+    {
+        [JsonPropertyName("emailType")]
+        public string EmailType { get; set; }
+
+        [JsonPropertyName("emailAddress")]
+        public string EmailAddress { get; set; }
+
+        [JsonPropertyName("preferredEmailAddress")]
+        public string PreferredEmailAddress { get; set; }
+    }
+
+    public class GuardianDetails
+    {
+        [JsonPropertyName("relationshipType")]
+        public string RelationshipType { get; set; }
+
+        [JsonPropertyName("guardianType")]
+        public string GuardianType { get; set; }
+
+        [JsonPropertyName("guardianCifType")]
+        public string GuardianCifType { get; set; }
+
+        [JsonPropertyName("guardianId")]
+        public string GuardianId { get; set; }
+
+        [JsonPropertyName("guardianName")]
+        public string GuardianName { get; set; }
+
+        [JsonPropertyName("guardianPhoneNumber")]
+        public string GuardianPhoneNumber { get; set; }
+
+        [JsonPropertyName("guardianEmailAddress")]
+        public string GuardianEmailAddress { get; set; }
+
+        [JsonPropertyName("guardianRemarks")]
+        public string GuardianRemarks { get; set; }
+    }
 }

@@ -24,6 +24,14 @@ namespace Finacle.Core
             return customer;
         }
 
+        public async Task<string> GetCustomerPreferredNameAsync(string customerId)
+        {
+            var customerName = (await GetCustomerAsync<GetRetailCustomerResponse>(customerId)).CustomerName ??
+                (await GetCustomerAsync<GetCorpCustomerResponse>(customerId)).CorporateName;
+
+            return customerName;
+        }
+
         // Get accounts of a customer
         public async Task<List<Account>> GetCustomerAccountsAsync(string customerId)
         {

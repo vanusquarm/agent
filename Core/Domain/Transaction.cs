@@ -2,7 +2,7 @@
 
 namespace Finacle.Core.Domain
 {
-    public class TransactionDetails
+    public class Transaction
     {
         [JsonPropertyName("accountIdentification")]
         public string AccountIdentification { get; set; }
