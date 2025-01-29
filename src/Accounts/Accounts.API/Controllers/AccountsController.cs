@@ -1,3 +1,4 @@
+using Acccounts.API.Entities;
 using Acccounts.API.Entities.DTOs;
 using Acccounts.API.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -27,16 +28,47 @@ namespace Acccounts.API.Controllers
         }
 
         [HttpGet("{accountId}/balances")]
-        public async Task<IActionResult> GetAccountBalance([FromRoute] string accountId, [FromQuery] string accountType = null)
+        public async Task<IActionResult> GetAccountBalance([FromRoute] string accountId, [FromQuery] string? accountType)
         {
-            var balances = await accountClient.GetAccountBalance(accountId);
-            var balance = balances?.Balances?.FirstOrDefault(balance => balance.BalanceType == accountType);
-            if (balance != null) 
+            try
             {
-                return Ok(balance);
-            }
+                // Validate accountType using the enum
+                if (string.IsNullOrEmpty(accountType))
+                {
+                    accountType = null;
+                }
+                else 
+                {
+                    if (!Enum.IsDefined(typeof(AccountType), accountType))
+                    {
+                        return BadRequest($"Invalid account type: {accountType}. Please provide a valid account type.");
+                    }
+                }
+               
+                var balances = await accountClient.GetAccountBalance(accountId);
+                // Check if the balances object is null or does not contain any balances
+                if (balances == null || balances.Balances == null || !balances.Balances.Any())
+                {
+                    return NotFound("No balances found for the specified account.");
+                }
 
-            return Ok(balances);
+                //filter for a specific account here
+
+                // Look for the specific balance matching the accountType
+                var balance = balances.Balances.FirstOrDefault(b => b.BalanceType == accountType);
+
+                if (balance != null)
+                {
+                    return Ok(balance);
+                }
+
+                // If no balance matches the accountType, return all balances
+                return Ok(balances);
+            }
+            catch (Exception ex)
+            {
+                return NoContent();
+            }
         }
 
         [HttpPost("current-account")]
