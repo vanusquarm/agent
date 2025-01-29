@@ -26,7 +26,7 @@ namespace Acccounts.API.Entities.DTOs
         public string? Currency { get; set; }
 
         [JsonPropertyName("value")]
-        public int? Value { get; set; }
+        public decimal? Value { get; set; }
     }
 
     public class Balance

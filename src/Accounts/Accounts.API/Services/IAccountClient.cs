@@ -36,5 +36,17 @@ namespace Acccounts.API.Services
 
         [Get("/v2/corporate-current-accounts/{accountId}/account-details")]
         Task<object> GetCorpCurrentAccount(string accountId);
+
+        // Get Customer Details of an Account
+        [Post("/v2/accountCustomerDtls/getaccountCustomerDtls")]
+        Task<CustomerDto> GetCustomerDetailsByAccountIdAsync(object accountId);
+
+
+        // Account Restriction
+        [Post("/v2/CustomerAccountfreezeDtls/createCustomerAccountfreezeDtls")]
+        Task<object> AddAccountRestriction(FreezeAccountRequest accountId);
+
+        [Post("/v2/CustomerAccountUnfreezeDtls/createCustomerAccountUnfreezeDtls")]
+        Task<object> RemoveAccountRestriction(UnFreezeAccountRequest request);
     }
 }

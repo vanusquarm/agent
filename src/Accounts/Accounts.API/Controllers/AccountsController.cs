@@ -27,6 +27,45 @@ namespace Acccounts.API.Controllers
             return Ok(accountDetails);
         }
 
+        [HttpPost("{accountId}/freeze")]
+        public async Task<IActionResult> AddAccountRestrictionAsync(FreezeAccountRequest request)
+        {
+            var accountDetails = await accountClient.AddAccountRestriction(request);
+
+            if (accountDetails == null)
+            {
+                return Ok("Account Restriction Not Successful");
+            }
+
+            return Ok(accountDetails);
+        }
+
+        [HttpPost("{accountId}/unfreeze")]
+        public async Task<IActionResult> RemoveAccountRestrictionAsync(UnFreezeAccountRequest request)
+        {
+            var accountDetails = await accountClient.RemoveAccountRestriction(request);
+
+            if (accountDetails == null)
+            {
+                return Ok("Account Restriction Removal Not Successful");
+            }
+
+            return Ok(accountDetails);
+        }
+
+        [HttpGet("{accountId}/customers")]
+        public async Task<IActionResult> GetCustomerDetailsByAccountIdAsync(string accountId)
+        {
+            var customerDetails = await accountClient.GetCustomerDetailsByAccountIdAsync(new { accountId });
+
+            if (customerDetails == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(customerDetails);
+        }
+
         [HttpGet("{accountId}/balances")]
         public async Task<IActionResult> GetAccountBalance([FromRoute] string accountId, [FromQuery] string? accountType)
         {
