@@ -48,5 +48,9 @@ namespace Acccounts.API.Services
 
         [Post("/v2/CustomerAccountUnfreezeDtls/createCustomerAccountUnfreezeDtls")]
         Task<object> RemoveAccountRestriction(UnFreezeAccountRequest request);
+
+        // Account Statements
+        [Post("/v2/acctstmnt/statementDetails")]
+        Task<object> GetAccountStatements(AccountStatementRequest request);
     }
 }
