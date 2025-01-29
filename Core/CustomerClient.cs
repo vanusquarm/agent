@@ -70,5 +70,42 @@ namespace Finacle.Core
 
             return transactions.TransactionDetailsList;
         }
+        
+        public async Task<CreateRetailCustomerResponse> CreateRetailCustomerAsync<T>(RetailCustomerRequest request)
+        {
+            try
+            {
+                var jsonContent = JsonSerializer.Serialize(request);
+                var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync("/retail-customers", httpContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<CreateRetailCustomerResponse>(content, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    throw new HttpRequestException($"Error creating customer. Status: {response.StatusCode}, Response: {errorContent}");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new Exception($"HTTP Request error: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                throw new Exception($"JSON Serialization/Deserialization error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An unexpected error occurred: {ex.Message}");
+            }
+        }
     }
 }
