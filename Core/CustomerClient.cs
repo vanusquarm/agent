@@ -24,6 +24,27 @@ namespace Finacle.Core
             return customer;
         }
 
+        public async Task<string> GetCustomerDataAsync(string customerId, string route)
+        {
+            // Construct the URL
+            var url = $"/api/v1/Customers/{customerId}/{route}";
+
+            try
+            {
+                var response = await _httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                var content = await response.Content.ReadAsStringAsync();
+
+                return content;
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors that occur during the API request
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<string> GetCustomerPreferredNameAsync(string customerId)
         {
             var customerName = (await GetCustomerAsync<GetRetailCustomerResponse>(customerId)).CustomerName ??

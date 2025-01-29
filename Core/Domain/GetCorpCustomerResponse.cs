@@ -14,10 +14,10 @@ namespace Finacle.Core.Domain
         public string CorporateName { get; set; }
 
         [JsonPropertyName("BVN")]
-        public object BVN { get; set; }
+        public string BVN { get; set; }
 
         [JsonPropertyName("TierInformation")]
-        public object TierInformation { get; set; }
+        public string TierInformation { get; set; }
 
         [JsonPropertyName("dateOfIncorporation")]
         public string DateOfIncorporation { get; set; }
@@ -35,7 +35,7 @@ namespace Finacle.Core.Domain
         public string CorporateEntityType { get; set; }
 
         [JsonPropertyName("corporateClassification")]
-        public object CorporateClassification { get; set; }
+        public string CorporateClassification { get; set; }
 
         [JsonPropertyName("standardIndustryCode")]
         public object StandardIndustryCode { get; set; }
@@ -50,10 +50,10 @@ namespace Finacle.Core.Domain
         public object PubliclyHeld { get; set; }
 
         [JsonPropertyName("healthCode")]
-        public object HealthCode { get; set; }
+        public string HealthCode { get; set; }
 
         [JsonPropertyName("noOfEmployees")]
-        public object NoOfEmployees { get; set; }
+        public int NoOfEmployees { get; set; }
 
         [JsonPropertyName("subsegment")]
         public object Subsegment { get; set; }

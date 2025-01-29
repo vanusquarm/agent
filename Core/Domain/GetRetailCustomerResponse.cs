@@ -104,16 +104,16 @@ namespace Finacle.Core.Domain
         public object TaxIdType { get; set; }
 
         [JsonPropertyName("taxIdentificationNumber")]
-        public object TaxIdentificationNumber { get; set; }
+        public string TaxIdentificationNumber { get; set; }
 
         [JsonPropertyName("taxExemptionCode")]
         public string TaxExemptionCode { get; set; }
 
         [JsonPropertyName("maritalStatus")]
-        public object MaritalStatus { get; set; }
+        public string MaritalStatus { get; set; }
 
         [JsonPropertyName("motherMaidenName")]
-        public object MotherMaidenName { get; set; }
+        public string MotherMaidenName { get; set; }
 
         [JsonPropertyName("kycStatus")]
         public string KycStatus { get; set; }
@@ -133,25 +133,25 @@ namespace Finacle.Core.Domain
         public string Line1 { get; set; }
 
         [JsonPropertyName("line2")]
-        public object Line2 { get; set; }
+        public string Line2 { get; set; }
 
         [JsonPropertyName("line3")]
-        public object Line3 { get; set; }
+        public string Line3 { get; set; }
 
         [JsonPropertyName("houseNumber")]
-        public object HouseNumber { get; set; }
+        public string HouseNumber { get; set; }
 
         [JsonPropertyName("buildingLevel")]
-        public object BuildingLevel { get; set; }
+        public string BuildingLevel { get; set; }
 
         [JsonPropertyName("premiseName")]
-        public object PremiseName { get; set; }
+        public string PremiseName { get; set; }
 
         [JsonPropertyName("streetNumber")]
-        public object StreetNumber { get; set; }
+        public string StreetNumber { get; set; }
 
         [JsonPropertyName("streetName")]
-        public object StreetName { get; set; }
+        public string StreetName { get; set; }
 
         [JsonPropertyName("locality")]
         public object Locality { get; set; }
@@ -199,7 +199,7 @@ namespace Finacle.Core.Domain
         public object HoldmailEndDate { get; set; }
 
         [JsonPropertyName("ownershipType")]
-        public object OwnershipType { get; set; }
+        public string OwnershipType { get; set; }
 
         [JsonPropertyName("LGA")]
         public object LGA { get; set; }
@@ -268,7 +268,7 @@ namespace Finacle.Core.Domain
         public string Occupation { get; set; }
 
         [JsonPropertyName("businessName")]
-        public object BusinessName { get; set; }
+        public string BusinessName { get; set; }
 
         [JsonPropertyName("employmentStartDate")]
         public string EmploymentStartDate { get; set; }
@@ -316,25 +316,25 @@ namespace Finacle.Core.Domain
         public string PrimaryRelationshipManager { get; set; }
 
         [JsonPropertyName("department")]
-        public object Department { get; set; }
+        public string Department { get; set; }
 
         [JsonPropertyName("pcCode")]
-        public object PcCode { get; set; }
+        public string PcCode { get; set; }
 
         [JsonPropertyName("pcName")]
-        public object PcName { get; set; }
+        public string PcName { get; set; }
 
         [JsonPropertyName("pcEmail")]
-        public object PcEmail { get; set; }
+        public string PcEmail { get; set; }
 
         [JsonPropertyName("pcPhNumber")]
-        public object PcPhNumber { get; set; }
+        public string PcPhNumber { get; set; }
 
         [JsonPropertyName("teamName")]
-        public object TeamName { get; set; }
+        public string TeamName { get; set; }
 
         [JsonPropertyName("teamEmail")]
-        public object TeamEmail { get; set; }
+        public string TeamEmail { get; set; }
     }
 
     public class EmailDetail
