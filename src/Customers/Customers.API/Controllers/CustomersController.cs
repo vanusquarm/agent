@@ -90,53 +90,93 @@ namespace Customers.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCustomerAccounts(string customerId)
         {
-            var accounts = await customerClient.GetCustomerAccounts(customerId, "Y");
-            return Ok(accounts);
+            try
+            {
+                var accounts = await customerClient.GetCustomerAccounts(customerId, "Y");
+                return Ok(accounts);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching customer accounts details: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateCustomer(object customerDto, string customerType)
         {
-            if (customerType.ToUpper() == CustomerType.Corporate)
+            try
             {
-                var customer = await customerClient.CreateCorporateCustomer((CreateCorpCustomerRequest) customerDto);
-                return Ok(customer);
+                if (customerType.ToUpper() == CustomerType.Corporate)
+                {
+                    var customer = await customerClient.CreateCorporateCustomer((CreateCorpCustomerRequest)customerDto);
+                    return Ok(customer);
+                }
+                else if (customerType.ToUpper() == CustomerType.Retail)
+                {
+                    var customer = await customerClient.CreateRetailCustomer((CreateRetailCustomerRequest)customerDto);
+                    return Ok(customer);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else if (customerType.ToUpper() == CustomerType.Retail)
+            catch (Exception ex)
             {
-                var customer = await customerClient.CreateRetailCustomer((CreateRetailCustomerRequest) customerDto);
-                return Ok(customer);
-            }
-            else
-            {
-                return NotFound();
+                Console.Error.WriteLine($"Error occurred while creating customer: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }
 
         [HttpGet("{customerId}/accounts")]
         public async Task<IActionResult> GetCustomerAccounts(string customerId, string includeClosedAccounts = "Y")
         {
-            var accounts = await customerClient.GetCustomerAccounts(customerId, includeClosedAccounts);
-            return Ok(accounts);
+            try
+            {
+                var accounts = await customerClient.GetCustomerAccounts(customerId, includeClosedAccounts);
+                return Ok(accounts);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching customer accounts: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
         [HttpGet("{customerId}/account-balances")]
         public async Task<IActionResult> GetCustomerAccountsBalances(string customerId)
         {
-            var accountsBalances = await customerClient.GetCustomerAccountsBalances(customerId);
-            return Ok(accountsBalances);
+            try
+            {
+                var accountsBalances = await customerClient.GetCustomerAccountsBalances(customerId);
+                return Ok(accountsBalances);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching customer account balances: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
         [HttpGet("{customerId}/accounts/{accountId}/transactions")]
         public async Task<IActionResult> GetCustomerAccountTransactions(string customerId, string accountId)
         {
-            var customerExits = await GetCustomer(customerId);
-            if (customerExits == null)
+            try
             {
-                return NotFound();
+                var customerExits = await GetCustomer(customerId);
+                if (customerExits == null)
+                {
+                    return NotFound();
+                }
+                var accountsBalances = await customerClient.GetCustomerAccountTransactions(accountId);
+                return Ok(accountsBalances);
             }
-            var accountsBalances = await customerClient.GetCustomerAccountTransactions(accountId);
-            return Ok(accountsBalances);
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching customer transactions: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
         private bool IsValidPhoneNumber(string phone)

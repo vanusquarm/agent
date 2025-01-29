@@ -14,56 +14,115 @@ namespace Acccounts.API.Controllers
         [HttpGet("{accountId}")]
         public async Task<IActionResult> GetAccountAsync(string accountId)
         {
-            var accountDetails = await accountClient.GetAccountDetails(new { accountId })
-                ?? await accountClient.GetSavingsAccount(accountId)
-                ?? await accountClient.GetCurrentAccount(accountId)
-                ?? await accountClient.GetCorpCurrentAccount(accountId);
+            try
+            {
+                var accountDetails = await accountClient.GetAccountDetails(new { accountId })
+                    ?? await accountClient.GetSavingsAccount(accountId)
+                    ?? await accountClient.GetCurrentAccount(accountId)
+                    ?? await accountClient.GetCorpCurrentAccount(accountId);
 
-            if (accountDetails == null) 
-            { 
-                return NotFound();
+                if (accountDetails == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(accountDetails);
             }
-
-            return Ok(accountDetails);
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching account details: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
+
+        [HttpGet("{accountId}/statements")]
+        public async Task<IActionResult> GetAccountStatementsAsync(
+            [FromRoute] string accountId,
+            [FromQuery] AccountStatementRequest request)
+        {
+            try
+            {
+                // Ensure the route parameter is mapped to the request model
+                //request.AccountId = accountId;
+
+                var accountDetails = await accountClient.GetAccountStatements(request);
+
+                if (accountDetails == null)
+                {
+                    return Ok("No Account Statement found");
+                }
+
+                return Ok(accountDetails);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching account statements: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
 
         [HttpPost("{accountId}/freeze")]
         public async Task<IActionResult> AddAccountRestrictionAsync(FreezeAccountRequest request)
         {
-            var accountDetails = await accountClient.AddAccountRestriction(request);
-
-            if (accountDetails == null)
+            try
             {
-                return Ok("Account Restriction Not Successful");
-            }
+                var accountDetails = await accountClient.AddAccountRestriction(request);
 
-            return Ok(accountDetails);
+                if (accountDetails == null)
+                {
+                    return Ok("Account Restriction Not Successful");
+                }
+
+                return Ok(accountDetails);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while adding account restriction: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
         [HttpPost("{accountId}/unfreeze")]
         public async Task<IActionResult> RemoveAccountRestrictionAsync(UnFreezeAccountRequest request)
         {
-            var accountDetails = await accountClient.RemoveAccountRestriction(request);
-
-            if (accountDetails == null)
+            try
             {
-                return Ok("Account Restriction Removal Not Successful");
-            }
+                var accountDetails = await accountClient.RemoveAccountRestriction(request);
 
-            return Ok(accountDetails);
+                if (accountDetails == null)
+                {
+                    return Ok("Account Restriction Removal Not Successful");
+                }
+
+                return Ok(accountDetails);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while removing account restriction: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
         [HttpGet("{accountId}/customers")]
         public async Task<IActionResult> GetCustomerDetailsByAccountIdAsync(string accountId)
         {
-            var customerDetails = await accountClient.GetCustomerDetailsByAccountIdAsync(new { accountId });
-
-            if (customerDetails == null)
+            try
             {
-                return NotFound();
-            }
+                var customerDetails = await accountClient.GetCustomerDetailsByAccountIdAsync(new { accountId });
 
-            return Ok(customerDetails);
+                if (customerDetails == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(customerDetails);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching customers of the account {accountId}: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
         [HttpGet("{accountId}/balances")]
@@ -113,19 +172,43 @@ namespace Acccounts.API.Controllers
         [HttpPost("current-account")]
         public async Task<IActionResult> CreateCurrentAccount([FromBody] CreateCurrentAcctRequest currentAcct)
         {
-            return Ok(await accountClient.CreateCurrentAccount(currentAcct));
+            try
+            {
+                return Ok(await accountClient.CreateCurrentAccount(currentAcct));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while creating current account: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
         [HttpPost("savings-account")]
         public async Task<IActionResult> CreateSavingsAccount([FromBody] CreateSavingsAcctRequest savingsAcct)
         {
-            return Ok(await accountClient.CreateSavingsAccount(savingsAcct));
+            try
+            {
+                return Ok(await accountClient.CreateSavingsAccount(savingsAcct));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while creating savings account: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
 
         [HttpPost("corporate-current-account")]
         public async Task<IActionResult> CreateCorpCurrentAccount([FromBody] CreateCorpCurrentAcctRequest corpCurrentAcct)
         {
-            return Ok(await accountClient.CreateCorpCurrentAccount(corpCurrentAcct));
+            try
+            {
+                return Ok(await accountClient.CreateCorpCurrentAccount(corpCurrentAcct));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while creating corporate current account: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
     }
 }
