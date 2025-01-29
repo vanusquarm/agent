@@ -92,7 +92,7 @@ namespace Finacle.Core
             return transactions.TransactionDetailsList;
         }
         
-        public async Task<CreateRetailCustomerResponse> CreateRetailCustomerAsync<T>(RetailCustomerRequest request)
+        public async Task<CreateRetailCustomerResponse> CreateRetailCustomerAsync(RetailCustomerRequest request)
         {
             try
             {
