@@ -1,4 +1,5 @@
 ﻿using Customers.API.Entities.DTOs;
+using Microsoft.AspNetCore.Mvc;
 using Refit;
 
 namespace Customers.API.Services
@@ -41,6 +42,9 @@ namespace Customers.API.Services
 
         [Get("/accounts/{accountId}/transactions")]
         Task<object> GetCustomerAccountTransactions(string accountId);
-
+        [Post("/v2/StandingInstructionInquiryDtls/getStandingInstructionInquiryDtls")]
+        Task<GetStandingIstructionsResponse> GetCustomerStandingInstructions(GetStandingInstructionsRequest request);
+        [Post("/v2/standing-instructions/Fixed")]
+        Task<PostCustomerStandingInstructionsResponse> PostCustomerStandingInstructions(PostCustomerStandingInstructionsRequest request);
     }
 }

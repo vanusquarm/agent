@@ -113,6 +113,8 @@ namespace Customers.API.Controllers
             }
         }
 
+
+
         [HttpGet("{customerId}/accounts")]
         public async Task<IActionResult> GetCustomerAccounts(string customerId, string includeClosedAccounts = "Y")
         {
@@ -137,6 +139,38 @@ namespace Customers.API.Controllers
             }
             var accountsBalances = await customerClient.GetCustomerAccountTransactions(accountId);
             return Ok(accountsBalances);
+        }
+
+        [HttpGet("{customerId}/standing-instructions")]
+        public async Task<IActionResult> GetCustomerStandingInstructions(string customerId)
+        {
+            try
+            {
+                GetStandingInstructionsRequest payload = new GetStandingInstructionsRequest();
+                payload.cifId = customerId;
+                var standingOrders = await customerClient.GetCustomerStandingInstructions(payload);
+                return Ok(standingOrders);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
+        }
+
+        [HttpPost("standing-instructions")]
+        public async Task<IActionResult> PostCustomerStandingInstructions([FromBody]PostCustomerStandingInstructionsRequest request)
+        {
+            try
+            {
+                var resp = await customerClient.PostCustomerStandingInstructions(request);
+                return Ok(resp);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
         }
 
         private bool IsValidPhoneNumber(string phone)
