@@ -22,14 +22,26 @@ namespace Finacle.Core
         }
 
         // Get account balances
-        public async Task<List<CustomerAccountBalance>> GetAccountBalancesAsync(string accountId)
+        public async Task<List<CustomerAccountBalance>> GetAccountBalancesAsync(string accountId, string accountType)
         {
-            var response = await _httpClient.GetAsync($"/api/v1/Accounts/{accountId}/balances");
+            try
+            {
+                // Ensure accountType is valid (non-null and non-empty). If invalid, set a default or handle appropriately
+                if (string.IsNullOrEmpty(accountType))
+                {
+                    accountType = null;
+                }
 
-            var content = await response.Content.ReadAsStringAsync();
-            var accountsBalances = JsonSerializer.Deserialize<GetAcctBalancesResponse>(content);
+                var response = await _httpClient.GetAsync($"/api/v1/Accounts/{accountId}/balances");
 
-            return accountsBalances.CustomerAccountBalances;
+                var content = await response.Content.ReadAsStringAsync();
+                var accountsBalances = JsonSerializer.Deserialize<GetAcctBalancesResponse>(content);
+
+                return accountsBalances.CustomerAccountBalances;
+            }
+            catch (Exception ex) { 
+                return new List<CustomerAccountBalance>();
+            }
         }
 
         // Get account transactions
