@@ -9,18 +9,18 @@ namespace Finacle.Core
 {
     public partial class FinacleClient
     {
-        public async Task<CreateIntraBankTransferResponse> CreateIntraBankTransferTransaction(CreateIntraBankTransferRequest request)
+        public async Task<IntraBankTransferResponse> CreateIntraBankTransferTransaction(IntraBankTransferRequest request)
         {
             try
             {
                 var jsonContent = JsonSerializer.Serialize(request);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             
-                HttpResponseMessage response = await _httpClient.PostAsync("/api/v2/transactions/INTRA-BANK-FUND-TRANSFER", content);
+                HttpResponseMessage response = await _httpClient.PostAsync("/api/v1/Transactions/intra-bank-transfer", content);
                 response.EnsureSuccessStatusCode();
             
                 var responseString = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<CreateIntraBankTransferResponse>(responseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return JsonSerializer.Deserialize<IntraBankTransferResponse>(responseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
             catch (HttpRequestException ex)
             {
