@@ -75,6 +75,9 @@ namespace Finacle.Core.Domain
 
         [JsonPropertyName("relatedPartyDetails")]
         public List<RelatedPartyDetail> RelatedPartyDetails { get; set; }
+        
+        [JsonPropertyName("availableBalance")]
+        public double AvailableBalance { get; set; }
     }
 
     //public class RelatedPartyDetail
