@@ -22,6 +22,17 @@ namespace Finacle.Core
             return accountDetails;
         }
 
+        // Get account status
+        public async Task<string> GetAccountStatusAsync(string accountId)
+        {
+            var response = await _httpClient.GetAsync($"/api/v1/Accounts/{accountId}");
+
+            var content = await response.Content.ReadAsStringAsync();
+            var accountDetails = JsonSerializer.Deserialize<Account>(content);
+
+            return accountDetails.AccountStatus;
+        }
+
         // Get account balances
         public async Task<List<CustomerAccountBalance>> GetAccountBalancesAsync(string accountId, string accountType)
         {
@@ -94,6 +105,14 @@ namespace Finacle.Core
             return account.AccountStatus == "Frozen";
         }
 
+        // Check if account exists
+        public async Task<bool> IsAccountExistAsync(string accountId)
+        {
+            var account = await GetAccountAsync(accountId);
+
+            return account.AccountIdentification == accountId;
+        }
+
         // Get customer details by accountId
         public async Task<(AccountDetail, CustomerDetail)> GetAccountCustomersAsync(string accountId)
         {
@@ -125,6 +144,26 @@ namespace Finacle.Core
             var response = await _httpClient.GetAsync($"/api/v1/Accounts/{accountId}/statements{query}");
             response.EnsureSuccessStatusCode();
             return response;
+        }
+
+        // Create Account
+        public async Task<string> CreateCurrentAccountAsync(string customerReference, string productCode, string glSubHeadCode, string accountCurrency, string branchReference, string accountOpeningDate)
+        {
+            var url = "/v1/Accounts/current-account"; // Replace with actual base URL
+
+            // Create the request body as JSON
+            var json = $"{{\n  \"customerReference\": \"{customerReference}\",\n  \"productCode\": \"{productCode}\",\n  \"glSubHeadCode\": \"{glSubHeadCode}\",\n  \"accountCurrency\": \"{accountCurrency}\",\n  \"branchReference\": \"{branchReference}\",\n  \"accountOpeningDate\": \"{accountOpeningDate}\"\n}}";
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Make the POST request
+            var response = await _httpClient.PostAsync(url, content);
+
+            // Ensure the request was successful
+            response.EnsureSuccessStatusCode();
+
+            // Return the response content as a string
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }
