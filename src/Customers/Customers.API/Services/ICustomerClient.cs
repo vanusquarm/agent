@@ -9,8 +9,11 @@ namespace Customers.API.Services
         [Post("/corporate-customers")] 
         Task<CreateCorpCustomerResponse> CreateCorporateCustomer(CreateCorpCustomerRequest createCCRequest);
 
-        [Get("/corporate-customers/{customerId}")] //specify the finacle resource endpoint
+        [Get("/corporate-customers/{customerId}")] 
         Task<GetCorpCustomerResponse> GetCorporateCustomer(string customerId);
+
+        [Get("/corporate-customers/{customerId}/{route}")]
+        Task<dynamic> GetCorporateCustomer(string customerId, string route);
 
         // Retail Customer
         [Post("/retail-customers")] 
@@ -19,9 +22,13 @@ namespace Customers.API.Services
         [Get("/retail-customers/{customerId}")]
         Task<GetRetailCustomerResponse> GetRetailCustomer(string customerId);
 
+        [Get("/retail-customers/{customerId}/{route}")]
+        Task<dynamic> GetRetailCustomer(string customerId, string route);
+
         // All Customers
         [Post("/v2/CustomerDtls/getCustomerDtls")]
         Task<CustomerDetailsResponse> GetCustomerDetailsByPhoneAsync([Body] Dictionary<string, string> request);
+
 
         [Get("/v2/customers/{customerId}/accounts?includeClosedAccounts={includeClosedAccounts}")]
         Task<object> GetCustomerAccounts(string customerId, string includeClosedAccounts);

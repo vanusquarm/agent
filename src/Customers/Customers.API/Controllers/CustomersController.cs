@@ -54,6 +54,39 @@ namespace Customers.API.Controllers
             
         }
 
+        [HttpGet("{customerId}/{route?}")]
+        public async Task<IActionResult> GetCustomerPhones([FromRoute] string customerId, [FromRoute] string? route)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(customerId))
+                {
+                    return BadRequest("Customer ID cannot be null or empty.");
+                }
+
+                if (customerId.StartsWith("C"))
+                {
+                    var customer = await customerClient.GetCorporateCustomer(customerId, route);
+                    return Ok(customer);
+                }
+                else if (customerId.StartsWith("R"))
+                {
+                    var customer = await customerClient.GetRetailCustomer(customerId, route);
+                    return Ok(customer);
+                }
+
+                return BadRequest("Invalid Customer ID format. Must start with 'C' or 'R'.");
+            }
+            catch (Exception ex)
+            {
+                // Structured logging with exception details
+                Console.Error.WriteLine($"Error occurred while fetching customer details: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
+
+
         [HttpGet]
         public async Task<IActionResult> GetCustomerAccounts(string customerId)
         {

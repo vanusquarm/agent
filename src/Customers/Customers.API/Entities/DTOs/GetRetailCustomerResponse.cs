@@ -296,13 +296,13 @@ namespace Customers.API.Entities.DTOs
         public string SchemeCode { get; set; }
 
         [JsonPropertyName("Firstname")]
-        public string Firstname { get; set; }
+        public string FirstName { get; set; }
 
         [JsonPropertyName("MiddleName")]
         public string MiddleName { get; set; }
 
         [JsonPropertyName("Lastname")]
-        public string Lastname { get; set; }
+        public string LastName { get; set; }
 
         [JsonPropertyName("CifStatus")]
         public string CifStatus { get; set; }
@@ -356,9 +356,9 @@ namespace Customers.API.Entities.DTOs
         {
             var response = new GetRetailCustomerResponse();
             response.CustomerIdentifier = CustomerDetails[0].CifId;
-            response.FirstName = CustomerDetails[0].Firstname;
+            response.FirstName = CustomerDetails[0].FirstName;
             response.MiddleName = CustomerDetails[0].MiddleName;
-            response.LastName = CustomerDetails[0].Lastname;
+            response.LastName = CustomerDetails[0].LastName;
             response.PrimaryBranch = CustomerDetails[0].AcctSolId;
             response.RelationshipStartDate = CustomerDetails[0].AcctOpendate;
             response.TierInformation = CustomerDetails[0].Tier;
@@ -368,7 +368,7 @@ namespace Customers.API.Entities.DTOs
             {
                 new
                 {
-                    CustomerDetails[0].Email
+                    Email = CustomerDetails[0].Email
                 }
             };
             response.AddressDetails = new List<AddressDetail>
