@@ -24,6 +24,18 @@ namespace Finacle.Core
             return customer;
         }
 
+        public bool IsCustomer(string phoneNumber)
+        {
+            var response = _httpClient.GetAsync($"/api/v1/Customers/{phoneNumber}").Result;
+
+            response.EnsureSuccessStatusCode(); // Throws exception if response is not 2xx
+
+            var content = response.Content.ReadAsStringAsync().Result;
+            var customer = JsonSerializer.Deserialize<GetRetailCustomerResponse>(content);
+
+            return customer.CustomerIdentifier != null;
+        }
+
         public async Task<string> GetCustomerData(string customerId, string route)
         {
             // Construct the URL
