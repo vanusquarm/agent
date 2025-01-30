@@ -1,6 +1,7 @@
 ﻿using Finacle.Core.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -34,6 +35,19 @@ namespace Finacle.Core
             var customer = JsonSerializer.Deserialize<GetRetailCustomerResponse>(content);
 
             return customer.CustomerIdentifier != null;
+        }
+
+        public bool IsCustomerEmail(string customerId, string email)
+        {
+            var response = _httpClient.GetAsync($"/api/v1/Customers/{customerId}/emails").Result;
+
+            response.EnsureSuccessStatusCode(); // Throws exception if response is not 2xx
+
+            var content = response.Content.ReadAsStringAsync().Result;
+            var emails = JsonSerializer.Deserialize<List<EmailDetail>>(content);
+            
+
+            return emails.Any(e => e.EmailAddress.Equals(email));
         }
 
         public async Task<string> GetCustomerData(string customerId, string route)
