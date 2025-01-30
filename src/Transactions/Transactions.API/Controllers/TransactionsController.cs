@@ -162,4 +162,33 @@ public class TransactionsController : ControllerBase
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetTransactions([FromQuery] string accountId, [FromQuery] string fromDate, [FromQuery] string toDate)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(accountId) || string.IsNullOrEmpty(fromDate) || string.IsNullOrEmpty(toDate))
+                {
+                    return BadRequest("Invalid request data.");
+                }
+
+                var response = await _transactionClient.GetTransactions(new { accountId, fromDate, toDate});
+
+                if (response == null)
+                {
+                    return NotFound("No transactions found.");
+                }
+
+                return Ok(response);
+            }
+            catch (Refit.ApiException apiEx)
+            {
+                return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+            }
+        }
+
 }
