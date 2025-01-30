@@ -113,7 +113,6 @@ public class TransactionsController : ControllerBase
                 {
                     return BadRequest("Invalid request data.");
                 }
-
                 var response = await _transactionClient.PerformIntraBankTransfer(intraBankTransferRequest);
 
                 if (response == null || string.IsNullOrEmpty(response.TransactionReference))
