@@ -20,7 +20,7 @@ namespace Finacle.Core
         public string Currency { get; set; }
 
         [JsonPropertyName("value")]
-        public decimal? Value { get; set; }
+        public double? Value { get; set; }
     }
 
     public class Balance

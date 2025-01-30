@@ -24,7 +24,7 @@ namespace Finacle.Core
         }
 
         // Get account balances
-        public List<CustomerAccountBalance> GetAccountBalances(string accountId, string accountType)
+        public Balance GetAccountBalances(string accountId, string accountType)
         {
             try
             {
@@ -32,6 +32,21 @@ namespace Finacle.Core
                 {
                     accountType = null;
                 }
+                var response = _httpClient.GetAsync($"/api/v1/Accounts/{accountId}/balances?accountType={accountType}").Result;
+                var content = response.Content.ReadAsStringAsync().Result;
+                var Balance = JsonSerializer.Deserialize<Balance>(content);
+                return Balance;
+            }
+            catch (Exception)
+            {
+                return new Balance();
+            }
+        }
+
+        public List<CustomerAccountBalance> GetAccountBalances(string accountId)
+        {
+            try
+            {
                 var response = _httpClient.GetAsync($"/api/v1/Accounts/{accountId}/balances").Result;
                 var content = response.Content.ReadAsStringAsync().Result;
                 var accountsBalances = JsonSerializer.Deserialize<GetAcctBalancesResponse>(content);
@@ -40,6 +55,21 @@ namespace Finacle.Core
             catch (Exception)
             {
                 return new List<CustomerAccountBalance>();
+            }
+        }
+
+        public Amount GetAccountBalance(string accountId)
+        {
+            try
+            {
+                var response = _httpClient.GetAsync($"/api/v1/Accounts/{accountId}/balances?accountType=EFFAVL").Result;
+                var content = response.Content.ReadAsStringAsync().Result;
+                var accountBalance = JsonSerializer.Deserialize<Balance>(content);
+                return accountBalance.Amount;
+            }
+            catch (Exception)
+            {
+                return new Amount();
             }
         }
 
