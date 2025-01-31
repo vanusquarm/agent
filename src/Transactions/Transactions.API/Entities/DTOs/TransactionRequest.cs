@@ -4,9 +4,58 @@ namespace Transactions.API.Entities.DTOs
 {
     public class TransactionRequest
     {
-        public string? fromDate { get; set; }
-        public string? toDate { get; set; }
-        public string? accountId { get; set; }
-        public string? remarks { get; set; }
+        [JsonPropertyName("fromDate")]
+        public required string FromDate { get; set; }
+
+        [JsonPropertyName("toDate")]
+        public required string ToDate { get; set; }
+
+        [JsonPropertyName("accountId")]
+        public required string AccountId { get; set; }
+
+        [JsonPropertyName("remarks")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? Remarks { get; set; }
+
+        [JsonPropertyName("refNo")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? RefNo { get; set; }
+
+        [JsonPropertyName("tranInd")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? TranInd { get; set; }
+
+        [JsonPropertyName("revInd")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? RevInd { get; set; }
+
+        [JsonPropertyName("tranId")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? TranId { get; set; }
+
+        [JsonPropertyName("tranType")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? TranType { get; set; }
+
+        [JsonPropertyName("userTransactionCode")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? UserTransactionCode { get; set; }
+
+        [JsonPropertyName("currency")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? Currency { get; set; }
+
+        [JsonPropertyName("tellerId")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? TellerId { get; set; }
+
+        [JsonPropertyName("tranRefNumber")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? TranRefNumber { get; set; }
+
+        [JsonPropertyName("tranRmks")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? TranRmks { get; set; }
     }
+
 }

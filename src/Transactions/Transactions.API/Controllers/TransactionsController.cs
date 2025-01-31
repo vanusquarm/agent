@@ -18,26 +18,18 @@ public class TransactionsController : ControllerBase
     }
 
         [HttpGet]
-        public async Task<IActionResult> GetTransactions()
+        public async Task<IActionResult> GetTransactions([FromQuery] TransactionRequest request)
         {
-        try
-        {
-            var request = new
+            try
             {
-                fromDate = "2024-11-24",
-                toDate = "2024-12-24",
-                accountId = "201S91",
-                remarks = "ANGO"
-            };
-
-            var transactions = _transactionClient.GetTransactions(request);
-            return Ok(transactions);
+                var transactions = await _transactionClient.GetTransactionDetails(request);
+                return Ok(transactions);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+            }
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
-        }
-    }
 
         [HttpPost("cash-deposit")]
         public async Task<IActionResult> PerformCashDeposit([FromBody] CashDepositRequest cashDepositRequest)
@@ -97,34 +89,34 @@ public class TransactionsController : ControllerBase
             }
         }
         
-        [HttpPost("{transactionReference}/tranDate/{transactionDate}")]
-        public async Task<IActionResult> GetTransactionDetails([FromRoute] string transactionReference, [FromRoute] DateTime transactionDate, [FromQuery] string accountIdentification)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(transactionReference) || string.IsNullOrEmpty(accountIdentification))
-                {
-                    return BadRequest("Invalid request data.");
-                }
+        //[HttpPost("{transactionReference}/tranDate/{transactionDate}")]
+        //public async Task<IActionResult> GetTransactionDetails([FromRoute] string transactionReference, [FromRoute] DateTime transactionDate, [FromQuery] string accountIdentification)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(transactionReference) || string.IsNullOrEmpty(accountIdentification))
+        //        {
+        //            return BadRequest("Invalid request data.");
+        //        }
 
-                var response = await _transactionClient.GetTransactionDetails(transactionReference, transactionDate, accountIdentification);
+        //        var response = await _transactionClient.GetTransactionDetails(transactionReference, transactionDate, accountIdentification);
 
-                if (response == null || response.TransactionDetails == null || !response.TransactionDetails.Any())
-                {
-                    return NotFound("No transaction details found.");
-                }
+        //        if (response == null || response.TransactionDetails == null || !response.TransactionDetails.Any())
+        //        {
+        //            return NotFound("No transaction details found.");
+        //        }
 
-                return Ok(response);
-            }
-            catch (Refit.ApiException apiEx)
-            {
-                return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
-            }
-        }
+        //        return Ok(response);
+        //    }
+        //    catch (Refit.ApiException apiEx)
+        //    {
+        //        return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        //    }
+        //}
         
         [HttpPost("intra-bank-transfer")]
         public async Task<IActionResult> PerformIntraBankTransfer([FromBody] IntraBankTransferRequest intraBankTransferRequest)
