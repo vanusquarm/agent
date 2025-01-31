@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Finacle.Core.Domain
-{
+{ 
     public class GetCustomerAcctsResponse
     {
         [JsonPropertyName("basicAccountDetails")]
@@ -17,7 +17,7 @@ namespace Finacle.Core.Domain
         public int? SetNumber { get; set; }
     }
 
-    public class Account
+    public partial class Account
     {
         [JsonPropertyName("customerReference")]
         public string CustomerReference { get; set; }
@@ -77,7 +77,7 @@ namespace Finacle.Core.Domain
         public List<RelatedPartyDetail> RelatedPartyDetails { get; set; }
         
         [JsonPropertyName("availableBalance")]
-        public double AvailableBalance { get; set; }
+        public double? AvailableBalance { get; set; }
     }
 
     //public class RelatedPartyDetail
@@ -94,6 +94,65 @@ namespace Finacle.Core.Domain
     //    [JsonPropertyName("relatedPartycustomerReference")]
     //    public string RelatedPartycustomerReference { get; set; }
     //}
+
+    // Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
+
+    public partial class Account
+    {
+        [JsonPropertyName("productDescription")]
+        public string ProductDescription { get; set; }
+
+        [JsonPropertyName("branchCode")]
+        public string BranchCode { get; set; }
+
+        [JsonPropertyName("accountOpeningDate")]
+        public string AccountOpeningDate { get; set; }
+
+        [JsonPropertyName("lienAmount")]
+        public string LienAmount { get; set; }
+
+        [JsonPropertyName("accountFreezeStatus")]
+        public string AccountFreezeStatus { get; set; }
+
+        [JsonPropertyName("clearBalanceAmount")]
+        public string ClearBalanceAmount { get; set; }
+
+        [JsonPropertyName("availableBalanceAmount")]
+        public string AvailableBalanceAmount { get; set; }
+
+        [JsonPropertyName("effectiveAvailableBalanceAmount")]
+        public string EffectiveAvailableBalanceAmount { get; set; }
+
+        [JsonPropertyName("modeOfOperation")]
+        public string ModeOfOperation { get; set; }
+
+        [JsonPropertyName("customerShortName")]
+        public string CustomerShortName { get; set; }
+
+        [JsonPropertyName("customerName")]
+        public string CustomerName { get; set; }
+
+        [JsonPropertyName("accountAPY")]
+        public string AccountAPY { get; set; }
+
+        [JsonPropertyName("sourcingDealeridentification")]
+        public string SourcingDealeridentification { get; set; }
+
+        [JsonPropertyName("accountNickname")]
+        public string AccountNickname { get; set; }
+
+        [JsonPropertyName("branchName")]
+        public string BranchName { get; set; }
+
+        [JsonPropertyName("accountMinimumBalanceAmount")]
+        public string AccountMinimumBalanceAmount { get; set; }
+
+        [JsonPropertyName("effectiveRateOfInterest")]
+        public string EffectiveRateOfInterest { get; set; }
+
+        [JsonPropertyName("taxRate")]
+        public string TaxRate { get; set; }
+    }
 
 
 }

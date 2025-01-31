@@ -92,6 +92,46 @@ namespace Finacle.Core
             return accounts.BasicAccountDetails;
         }
 
+        public List<Account> GetCustomerLocalAccounts(string customerId)
+        {
+            var response = _httpClient.GetAsync($"/api/v1/Customers/{customerId}/accounts").Result;
+
+            response.EnsureSuccessStatusCode();
+
+            var content = response.Content.ReadAsStringAsync().Result;
+            var accounts = JsonSerializer.Deserialize<GetCustomerAcctsResponse>(content);
+            var localAccounts = accounts.BasicAccountDetails.Where(a => a.AccountCurrency == "GHS").ToList();
+
+            return localAccounts;
+        }
+
+        public List<Account> GetCustomerForeignAccounts(string customerId)
+        {
+            var response = _httpClient.GetAsync($"/api/v1/Customers/{customerId}/accounts").Result;
+
+            response.EnsureSuccessStatusCode();
+
+            var content = response.Content.ReadAsStringAsync().Result;
+            var accounts = JsonSerializer.Deserialize<GetCustomerAcctsResponse>(content);
+
+            var foreignAccounts = accounts.BasicAccountDetails.Where(a => a.AccountCurrency != "GHS").ToList();
+
+            return foreignAccounts;
+        }
+
+        // Get primary account of a customer
+        public string GetCustomerAccount(string customerId)
+        {
+            var response = _httpClient.GetAsync($"/api/v1/Customers/{customerId}/accounts").Result;
+
+            response.EnsureSuccessStatusCode();
+
+            var content = response.Content.ReadAsStringAsync().Result;
+            var accounts = JsonSerializer.Deserialize<GetCustomerAcctsResponse>(content);
+
+            return accounts.BasicAccountDetails[0].AccountIdentification;
+        }
+
         // Get account balances of a customer
         public List<CustomerAccountBalance> GetCustomerAccountBalances(string customerId)
         {

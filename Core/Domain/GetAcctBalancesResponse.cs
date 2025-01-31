@@ -51,6 +51,7 @@ namespace Finacle.Core
 
         [JsonPropertyName("productType")]
         public string ProductType { get; set; }
+        public string ProductDescription { get; set; }
 
         [JsonPropertyName("IBAN")]
         public string IBAN { get; set; }
