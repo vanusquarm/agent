@@ -24,7 +24,7 @@ namespace Customers.API.Services
         Task<GetRetailCustomerResponse> GetRetailCustomer(string customerId);
 
         [Get("/retail-customers/{customerId}/{route}")]
-        Task<dynamic> GetRetailCustomer(string customerId, string route);
+        Task<GetCustomerAcctsResponse> GetRetailCustomer(string customerId, string route);
 
         // All Customers
         [Post("/v2/CustomerDtls/getCustomerDtls")]

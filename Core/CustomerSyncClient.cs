@@ -92,29 +92,27 @@ namespace Finacle.Core
             return accounts.BasicAccountDetails;
         }
 
+        public List<Account> ListDormantAccounts(string customerId)
+        {
+            var accounts = GetCustomerAccounts(customerId);
+            var localAccounts = accounts.Where(a => a.AccountState == "D").ToList();
+
+            return localAccounts;
+        }
+
         public List<Account> GetCustomerLocalAccounts(string customerId)
         {
-            var response = _httpClient.GetAsync($"/api/v1/Customers/{customerId}/accounts").Result;
-
-            response.EnsureSuccessStatusCode();
-
-            var content = response.Content.ReadAsStringAsync().Result;
-            var accounts = JsonSerializer.Deserialize<GetCustomerAcctsResponse>(content);
-            var localAccounts = accounts.BasicAccountDetails.Where(a => a.AccountCurrency == "GHS").ToList();
+            var accounts = GetCustomerAccounts(customerId);
+            var localAccounts = accounts.Where(a => a.AccountCurrency == "GHS").ToList();
 
             return localAccounts;
         }
 
         public List<Account> GetCustomerForeignAccounts(string customerId)
         {
-            var response = _httpClient.GetAsync($"/api/v1/Customers/{customerId}/accounts").Result;
 
-            response.EnsureSuccessStatusCode();
-
-            var content = response.Content.ReadAsStringAsync().Result;
-            var accounts = JsonSerializer.Deserialize<GetCustomerAcctsResponse>(content);
-
-            var foreignAccounts = accounts.BasicAccountDetails.Where(a => a.AccountCurrency != "GHS").ToList();
+            var accounts = GetCustomerAccounts(customerId);
+            var foreignAccounts = accounts.Where(a => a.AccountCurrency != "GHS").ToList();
 
             return foreignAccounts;
         }

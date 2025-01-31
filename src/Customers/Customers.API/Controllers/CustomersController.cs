@@ -87,20 +87,6 @@ namespace Customers.API.Controllers
 
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetCustomerAccounts(string customerId)
-        {
-            try
-            {
-                var accounts = await customerClient.GetCustomerAccounts(customerId, "Y");
-                return Ok(accounts);
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"Error occurred while fetching customer accounts details: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
-            }
-        }
 
         [HttpPost]
         public async Task<IActionResult> CreateCustomer(object customerDto, string customerType)
@@ -136,6 +122,17 @@ namespace Customers.API.Controllers
         {
             try
             {
+                // Check if the customerId is a phone number
+                if (IsValidPhoneNumber(customerId))
+                {
+                    var request = new Dictionary<string, string>
+                    {
+                        { "PhoneNumber", customerId }
+                    };
+                    var customer = await customerClient.GetCustomerDetailsByPhoneAsync(request);
+                    var retailCustomer = customer?.Transform();
+                    customerId = retailCustomer.CustomerIdentifier;
+                }
                 var accounts = await customerClient.GetCustomerAccounts(customerId, includeClosedAccounts);
                 return Ok(accounts);
             }
