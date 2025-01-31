@@ -7,11 +7,11 @@ using Refit;
 namespace Cheques.API.Controllers
 {
     [ApiController]
-    [Route("api/v2/corporate-current-accounts/")]
+    [Route("api/v1/[controller]")]
     //[Authorize]
     public class ChequesController (IChequesClient chequesClient) : ControllerBase
     {
-        [HttpPost("{accountIdentification}/:issueChequeBook")]
+        [HttpPost("{accountIdentification}/issueChequeBook")]
         public async Task<IActionResult> IssueChequeBook( [FromBody] ChequeBookIssueRequestDto chequeBookIssueRequestDto)
         {
             try
@@ -42,7 +42,7 @@ namespace Cheques.API.Controllers
             }
         }
 
-        [HttpPost("{accountIdentification}/:stopCheque")]
+        [HttpPost("{accountIdentification}/stopCheque")]
         public async Task<IActionResult> StopChequeBookAsync([AliasAs("accountIdentification")]string accountIdentification, [FromBody] StopChequeRequestDto stopCheque)
         {
             try
@@ -58,7 +58,7 @@ namespace Cheques.API.Controllers
             }
         }
 
-        [HttpPost("{accountIdentification}/:revokeStopCheque")]
+        [HttpPost("{accountIdentification}/revokeStopCheque")]
         public async Task<IActionResult> RevokeStopChequeBook([AliasAs("accountIdentification")]string accountIdentification ,[FromBody] RevokeChequeRequestDto revokeCheque)
         {
             try
