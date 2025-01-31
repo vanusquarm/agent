@@ -12,9 +12,8 @@ public interface ITransactionClient
     Task<CashDepositResponse> PerformCashDeposit(CashDepositRequest cashDepositRequest);
     [Post("/v2/transactions/cash-withdrawal")]
     Task<CashWithdrawalResponse> PerformCashWithdrawal(CashWithdrawalRequest cashWithdrawalRequest);
-    //[Post("/v2/transactions/{transactionReference}/tranDate/{transactionDate}")]
-    //Task<TransactionDetailsResponse> GetTransactionDetails(string customerReference, DateTime transactionDate, [Query] string accountIdentification);
     [Post("/v2/transactions/INTRA-BANK-FUND-TRANSFER")]
     Task<IntraBankTransferResponse> PerformIntraBankTransfer([FromBody] IntraBankTransferRequest intraBankTransferRequest);
-
+    [Post("/v2/eodStatusDtls/geteodStatusDtls")]
+    Task<EodStatusResponse> GetEodStatusDetails(EodStatusRequest request);
 }
