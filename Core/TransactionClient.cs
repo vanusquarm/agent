@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -74,5 +75,53 @@ namespace Finacle.Core
                 throw;
             }
         }
+
+        public async Task<TransactionResponse> GetTransactionsAsync(
+            string fromDate, string toDate, string accountId, string remarks = null, string refNo = null,
+            string tranInd = null, string revInd = null, string tranId = null, string tranType = null,
+            string userTransactionCode = null, string currency = null, string tellerId = null,
+            string tranRefNumber = null, string tranRmks = null)
+        {
+            var queryParams = new Dictionary<string, string>
+            {
+                { "FromDate", fromDate },
+                { "ToDate", toDate },
+                { "AccountId", accountId }
+            };
+
+            if (!string.IsNullOrEmpty(remarks)) queryParams.Add("Remarks", remarks);
+            if (!string.IsNullOrEmpty(refNo)) queryParams.Add("RefNo", refNo);
+            if (!string.IsNullOrEmpty(tranInd)) queryParams.Add("TranInd", tranInd);
+            if (!string.IsNullOrEmpty(revInd)) queryParams.Add("RevInd", revInd);
+            if (!string.IsNullOrEmpty(tranId)) queryParams.Add("TranId", tranId);
+            if (!string.IsNullOrEmpty(tranType)) queryParams.Add("TranType", tranType);
+            if (!string.IsNullOrEmpty(userTransactionCode)) queryParams.Add("UserTransactionCode", userTransactionCode);
+            if (!string.IsNullOrEmpty(currency)) queryParams.Add("Currency", currency);
+            if (!string.IsNullOrEmpty(tellerId)) queryParams.Add("TellerId", tellerId);
+            if (!string.IsNullOrEmpty(tranRefNumber)) queryParams.Add("TranRefNumber", tranRefNumber);
+            if (!string.IsNullOrEmpty(tranRmks)) queryParams.Add("TranRmks", tranRmks);
+
+            try
+            {
+                var queryString = new FormUrlEncodedContent(queryParams).ReadAsStringAsync().Result;
+                var requestUrl = $"/api/v1/Transactions?{queryString}";
+
+                var response = await _httpClient.GetAsync(requestUrl);
+                response.EnsureSuccessStatusCode();
+
+                var content = await response.Content.ReadAsStringAsync();
+                var transactions = JsonSerializer.Deserialize<TransactionResponse>(content);
+                return transactions;
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new Exception($"HTTP Request error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An unexpected error occurred: {ex.Message}");
+            }
+        }
+
     }
 }
