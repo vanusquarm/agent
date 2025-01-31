@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
 
@@ -8,15 +9,36 @@ namespace Transactions.API.Controllers;
 [Route("api/v1/[controller]")]
 public class TransactionsController : ControllerBase
 {
-  
+
     private readonly ITransactionClient _transactionClient;
 
-        public TransactionsController(ITransactionClient transactionClient)
+    public TransactionsController(ITransactionClient transactionClient)
+    {
+        _transactionClient = transactionClient;
+    }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTransactions()
         {
-            _transactionClient = transactionClient;
+        try
+        {
+            var request = new
+            {
+                fromDate = "2024-11-24",
+                toDate = "2024-12-24",
+                accountId = "201S91",
+                remarks = "ANGO"
+            };
+
+            var transactions = _transactionClient.GetTransactions(request);
+            return Ok(transactions);
         }
-        
-        
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
+    }
+
         [HttpPost("cash-deposit")]
         public async Task<IActionResult> PerformCashDeposit([FromBody] CashDepositRequest cashDepositRequest)
         {

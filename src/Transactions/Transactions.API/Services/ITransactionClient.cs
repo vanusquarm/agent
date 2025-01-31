@@ -16,4 +16,7 @@ public interface ITransactionClient
     [Post("/v2/transactions/INTRA-BANK-FUND-TRANSFER")]
     Task<IntraBankTransferResponse> PerformIntraBankTransfer([FromBody] IntraBankTransferRequest intraBankTransferRequest);
 
+    [Post("/v2/transactiondetails/gettransactiondetails")]
+    Task<object> GetTransactions(object request);
+
 }
