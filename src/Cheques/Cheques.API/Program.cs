@@ -1,8 +1,10 @@
-// using Finacle.Infrastructure;
+using Cheques.API.Services;
+using Finacle.Infrastructure.Auth.BasicJwt;
 using Refit;
-using Todo.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+
 
 // Add services to the container.
 // builder.AddInfrastructure(enableSwagger: enableSwagger);
@@ -10,11 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddRefitClient<ITodoClient>()
-    .ConfigureHttpClient(c =>
-    {
-        c.BaseAddress = new Uri(builder.Configuration["BaseUrl"]); // Replace with your API base URL
-    });
+builder.Services.AddJwtMiddleware<IChequesClient>(configuration);
+
 
 var app = builder.Build();
 // app.UseInfrastructure(builder.Environment, enableSwagger: enableSwagger);
