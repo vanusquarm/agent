@@ -14,9 +14,11 @@ namespace Acccounts.API.Entities.DTOs
         public required string ToDate { get; set; }
 
         [JsonPropertyName("setNumber")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public int? SetNumber { get; set; }
 
         [JsonPropertyName("maximumRecords")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public int? MaximumRecords { get; set; }
     }
 

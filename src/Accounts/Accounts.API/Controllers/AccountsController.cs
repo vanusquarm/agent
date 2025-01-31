@@ -43,7 +43,7 @@ namespace Acccounts.API.Controllers
             try
             {
                 // Ensure the route parameter is mapped to the request model
-                //request.AccountId = accountId;
+                request.AccountId = accountId;
 
                 var accountDetails = await accountClient.GetAccountStatements(request);
 
