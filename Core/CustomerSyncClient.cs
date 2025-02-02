@@ -25,6 +25,26 @@ namespace Finacle.Core
             return customer;
         }
 
+        // Get customer relationship manager
+        public RelationshipManagerDetail GetCustomerRM(string customerId, string email)
+        {
+            // if accountId is provided, get the customer reference
+            if (!(customerId.StartsWith("C") || customerId.StartsWith("R")))
+            {
+                customerId = GetAccountCustomers(customerId).customerDetail.CustomerReference;
+            }
+            var response = _httpClient.GetAsync($"/api/v1/Customers/{customerId}/RelationshipmanagerInfos").Result;
+
+            response.EnsureSuccessStatusCode(); // Throws exception if response is not 2xx
+
+            var content = response.Content.ReadAsStringAsync().Result;
+            var rms = JsonSerializer.Deserialize<List<RelationshipManagerDetail>>(content);
+
+            var primaryRM = rms.Find(e => e.PrimaryRelationshipManager == "Y");
+
+            return primaryRM;
+        }
+
         public bool IsCustomer(string phoneNumber)
         {
             var response = _httpClient.GetAsync($"/api/v1/Customers/{phoneNumber}").Result;

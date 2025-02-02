@@ -55,7 +55,7 @@ namespace Customers.API.Controllers
         }
 
         [HttpGet("{customerId}/{route?}")]
-        public async Task<IActionResult> GetCustomerPhones([FromRoute] string customerId, [FromRoute] string? route)
+        public async Task<IActionResult> GetCustomerProps([FromRoute] string customerId, [FromRoute] string? route)
         {
             try
             {
