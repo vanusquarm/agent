@@ -11,13 +11,13 @@ namespace Finacle.Core
     {
 
         // GET /api/v1/Branch/branches-details
-        public async Task<List<BranchDetails>> ListBranchesAsync()
+        public async Task<BranchDetailsResponseDto> ListBranchesAsync()
         {
             var response = await _httpClient.GetAsync("/api/v1/Branch/branches-details");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var branches = JsonSerializer.Deserialize<List<BranchDetails>>(content);
+            var branches = JsonSerializer.Deserialize<BranchDetailsResponseDto>(content);
 
             return branches;
         }
