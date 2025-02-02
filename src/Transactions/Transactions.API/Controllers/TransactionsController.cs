@@ -31,6 +31,20 @@ public class TransactionsController : ControllerBase
         }
     }
 
+    [HttpPost("search")]
+    public async Task<IActionResult> SearchTransactions([FromBody] TransactionRequest request)
+    {
+        try
+        {
+            var transactions = await _transactionClient.GetTransactionDetails(request);
+            return Ok(transactions);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
+    }
+
     [HttpPost("cash-deposit")]
     public async Task<IActionResult> PerformCashDeposit([FromBody] CashDepositRequest cashDepositRequest)
     {
