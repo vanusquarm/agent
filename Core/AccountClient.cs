@@ -138,12 +138,14 @@ namespace Finacle.Core
 
         // Get account statements
 
-        public async Task<HttpResponseMessage> GetAccountStatementsAsync(string accountId, string fromDate, string toDate, int setNumber = 1, int maximumRecords = 10)
+        public async Task<AcctStatementResponse> GetAccountStatementsAsync(string accountId, string fromDate, string toDate, int setNumber = 1, int maximumRecords = 10)
         {
             var query = $"?AccountId={accountId}&FromDate={fromDate}&ToDate={toDate}&SetNumber={setNumber}&MaximumRecords={maximumRecords}";
             var response = await _httpClient.GetAsync($"/api/v1/Accounts/{accountId}/statements{query}");
             response.EnsureSuccessStatusCode();
-            return response;
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<AcctStatementResponse>(content);
         }
 
         // Create Account

@@ -26,7 +26,7 @@ namespace Finacle.Core
         }
 
         // Get customer relationship manager
-        public RelationshipManagerDetail GetCustomerRM(string customerId, string email)
+        public RelationshipManagerDetail GetCustomerRM(string customerId)
         {
             // if accountId is provided, get the customer reference
             if (!(customerId.StartsWith("C") || customerId.StartsWith("R")))
