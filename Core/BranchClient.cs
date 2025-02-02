@@ -10,10 +10,10 @@ namespace Finacle.Core
     public partial class FinacleClient
     {
 
-        // GET /api/v1/Branch/branches-details
+        // GET /api/v1/Branches
         public async Task<BranchDetailsResponseDto> ListBranchesAsync()
         {
-            var response = await _httpClient.GetAsync("/api/v1/Branch/branches-details");
+            var response = await _httpClient.GetAsync("/api/v1/Branches");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -25,8 +25,8 @@ namespace Finacle.Core
         // GET /api/v1/Branch/branches
         public async Task<BranchDetails> GetBranchDetailsAsync(string branchCode = null, string bankCode = null)
         {
-            var query = $"?branchCode={branchCode}&bankCode={bankCode}";
-            var response = await _httpClient.GetAsync($"/api/v1/Branch/branches{query}");
+            var query = $"?bankCode={bankCode}";
+            var response = await _httpClient.GetAsync($"/api/v1/Branches/{branchCode}");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();

@@ -5,16 +5,16 @@ namespace Todo.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class BranchController : ControllerBase
+public class BranchesController : ControllerBase
 {
     private readonly IBranchesClient _branchesClient;
 
-    public BranchController(IBranchesClient branchesClient)
+    public BranchesController(IBranchesClient branchesClient)
     {
         _branchesClient = branchesClient;
     }
     
-    [HttpGet("branches-details")]
+    [HttpGet]
     public async Task<IActionResult> GetBranchDetailsAsync()
     {
         try
@@ -47,8 +47,8 @@ public class BranchController : ControllerBase
     }
     
     
-    [HttpGet("branches")]
-    public async Task<IActionResult> GetBranchDetailsByCodeAsync([FromQuery] string branchCode, [FromQuery] string bankCode)
+    [HttpGet("{branchCode}")]
+    public async Task<IActionResult> GetBranchDetailsByCodeAsync([FromRoute] string branchCode, [FromQuery] string bankCode)
     {
         try
         {
