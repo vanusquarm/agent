@@ -210,5 +210,19 @@ namespace Acccounts.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }
+
+        [HttpGet("{TerminalId}/atm-office-account")]
+        public async Task<IActionResult> GetTerminalOfficeAcct([FromRoute] string TerminalId)
+        {
+            try
+            {
+                return Ok(await accountClient.GetTerminalOfficeAcct(new TerminalOfficeAcctRequest { TerminalId=TerminalId}));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while qyerying atm office account: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
     }
 }

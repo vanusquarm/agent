@@ -52,5 +52,9 @@ namespace Acccounts.API.Services
         // Account Statements
         [Post("/v2/acctstmnt/statementDetails")]
         Task<object> GetAccountStatements(AccountStatementRequest request);
+
+        [Post("/v2/TerminalOfficeAcct/getTerminalOfficeAcct")]
+        Task<object> GetTerminalOfficeAcct(TerminalOfficeAcctRequest request);
+
     }
 }

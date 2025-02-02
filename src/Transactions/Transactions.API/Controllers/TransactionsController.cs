@@ -19,6 +19,7 @@ public class TransactionsController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetTransactions([FromQuery] TransactionRequest request)
+
     {
         try
         {
@@ -73,6 +74,7 @@ public class TransactionsController : ControllerBase
             return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
         }
     }
+    
         
     [HttpPost("cash-withdrawal")]
     public async Task<IActionResult> PerformCashWithdrawal([FromBody] CashWithdrawalRequest cashWithdrawalRequest)
