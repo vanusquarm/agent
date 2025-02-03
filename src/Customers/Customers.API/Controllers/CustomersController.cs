@@ -2,6 +2,7 @@ using Customers.API.Entities;
 using Customers.API.Entities.DTOs;
 using Customers.API.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -57,6 +58,14 @@ namespace Customers.API.Controllers
         [HttpGet("{customerId}/{route?}")]
         public async Task<IActionResult> GetCustomerProps([FromRoute] string customerId, [FromRoute] string? route)
         {
+            /* <summary>This is a generic endpoint to fetch specific details (properties) for a customer</summary>
+             * <param name="customerId">The cif or customer reference</param>
+             * <param name="route">
+             * phones, emails, addresses, products, RelationshipmanagerInfos, documents, related - parties, communication-preferences,
+             * product-preferences, education, employment, risk-rating, tax-details, notes, suspend, 
+             * </param>
+             */
+
             try
             {
                 if (string.IsNullOrWhiteSpace(customerId))
