@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
+using EodStatusRequest = Transactions.API.Entities.DTOs.EodStatusRequest;
+using TransactionRequest = Transactions.API.Entities.DTOs.TransactionRequest;
 
 namespace Transactions.API.Controllers;
 
@@ -106,15 +107,18 @@ public class TransactionsController : ControllerBase
     }
         
     [HttpPost("intra-bank-transfer")]
-    public async Task<IActionResult> PerformIntraBankTransfer([FromBody] IntraBankTransferRequest intraBankTransferRequest)
+    public async Task<IActionResult> PerformIntraBankTransfer([FromBody] AccountTransferRequest accountTransferRequest)
     {
         try
         {
-            if (intraBankTransferRequest == null)
+            if (accountTransferRequest == null)
             {
                 return BadRequest("Invalid request data.");
             }
-            var response = await _transactionClient.PerformIntraBankTransfer(intraBankTransferRequest);
+            
+            var request = IntraBankTransferRequestFactory.Create(accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount, accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId);
+
+            var response = await _transactionClient.PerformIntraBankTransfer(request);
 
             if (response == null || string.IsNullOrEmpty(response.TransactionReference))
             {
