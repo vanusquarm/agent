@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Transactions.API.Entities.DTOs;
+using IntraBankTransferRequest = Finacle.Core.Domain.IntraBankTransferRequest;
 
 namespace Transactions.API.Services;
 using Refit;

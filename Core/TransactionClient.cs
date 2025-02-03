@@ -26,8 +26,8 @@ namespace Finacle.Core
                 {
                     throw new ArgumentException("Invalid SourceAccount || DestinationAccount", nameof(transferRequest));
                 }
-                var request = IntraBankTransferRequestFactory.Create(transferRequest.SourceAccountId, transferRequest.DestinationAccountId, transferRequest.Amount, transferRequest.Remarks, transferRequest.ChannelReference, transferRequest.ChannelId);
-                var jsonContent = JsonSerializer.Serialize(request);
+                // var request = IntraBankTransferRequestFactory.Create(transferRequest.SourceAccountId, transferRequest.DestinationAccountId, transferRequest.Amount, transferRequest.Remarks, transferRequest.ChannelReference, transferRequest.ChannelId);
+                var jsonContent = JsonSerializer.Serialize(transferRequest);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 
                 HttpResponseMessage response = await _httpClient.PostAsync("/api/v1/Transactions/intra-bank-transfer", content);
