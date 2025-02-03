@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using Finacle.Core.Common;
-using Finacle.Core.Domain;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
 using EodStatusRequest = Transactions.API.Entities.DTOs.EodStatusRequest;

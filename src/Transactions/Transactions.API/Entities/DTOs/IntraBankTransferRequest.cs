@@ -1,43 +1,100 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace Transactions.API.Entities.DTOs;
 
 
+
 public class IntraBankTransferRequest
-{
-    public string TransactionType { get; set; }
-    public string TransactionSubType { get; set; }
-    public string ChannelIdentification { get; set; }
-    public string EntererId { get; set; }
-    public List<IntraBankTransferTransactionDetail> TransferTransactionDetail { get; set; }
-}
+    {
+        [JsonPropertyName("transactionType")]
+        public string TransactionType { get; set; }
+ 
+        [JsonPropertyName("transactionSubType")]
+        public string TransactionSubType { get; set; }
+ 
+        [JsonPropertyName("channelIdentification")]
+        public string ChannelIdentification { get; set; }
+ 
+        [JsonPropertyName("transferTransactionDetail")]
+        public List<IntraBankTransferTransactionDetail> TransferTransactionDetail { get; set; }
+ 
+        [JsonPropertyName("entererId")]
+        public string EntererId { get; set; }
+    }
+ 
+    public class IntraBankTransferTransactionDetail
+    {
+        [JsonPropertyName("serialNumber")]
+        public string SerialNumber { get; set; }
+ 
+        [JsonPropertyName("partTransactionType")]
+        public string PartTransactionType { get; set; }
+ 
+        [JsonPropertyName("accountIdentification")]
+        public string AccountIdentification { get; set; }
+ 
+        [JsonPropertyName("transactionAmount")]
+        public decimal TransactionAmount { get; set; }
+ 
+        [JsonPropertyName("transactionCurrency")]
+        public string TransactionCurrency { get; set; }
+ 
+        [JsonPropertyName("transactionValueDate")]
+        [JsonConverter(typeof(DateFormatConverter))]
+        public DateTime TransactionValueDate { get; set; }
+ 
+        [JsonPropertyName("transactionParticulars")]
+        public string TransactionParticulars { get; set; }
+ 
+        [JsonPropertyName("rate")]
+        public decimal Rate { get; set; }
+ 
+        [JsonPropertyName("partTransactionRemarks")]
+        public string PartTransactionRemarks { get; set; }
+ 
+        [JsonPropertyName("referenceNumber")]
+        public string ReferenceNumber { get; set; }
+ 
+        [JsonPropertyName("miscellaneousDetailsType")]
+        public TransferMiscellaneousDetailsType MiscellaneousDetailsType { get; set; }
+ 
+        [JsonPropertyName("partTransactionRemarks2")]
+        public string PartTransactionRemarks2 { get; set; }
+ 
+        [JsonPropertyName("lienDetailsList")]
+        public List<LienDetails> LienDetailsList { get; set; }
+    }
+ 
+    public class TransferMiscellaneousDetailsType
+    {
+        [JsonPropertyName("documentnumber")]
+        public string DocumentNumber { get; set; }
+ 
+        [JsonPropertyName("freetxt2")]
+        public string Freetxt2 { get; set; }
+ 
+        [JsonPropertyName("freetxt3")]
+        public string Freetxt3 { get; set; }
+ 
+        [JsonPropertyName("freetxt4")]
+        public string Freetxt4 { get; set; }
+    }
+ 
+    public class LienDetails
+    {
+        // Add any properties for lien details here
+    }
+    
+    public class DateFormatConverter : JsonConverter<DateTime>
+    {
+        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return DateTime.ParseExact(reader.GetString(), "yyyy-MM-dd", null);
+        }
 
-public class IntraBankTransferTransactionDetail
-{
-    public string SerialNumber { get; set; }
-    public string PartTransactionType { get; set; }
-    public string AccountIdentification { get; set; }
-    public decimal TransactionAmount { get; set; }
-    public string TransactionCurrency { get; set; }
-    public string TransactionValueDate { get; set; }
-    public string TransactionParticulars { get; set; }
-    public decimal Rate { get; set; }
-    public string PartTransactionRemarks { get; set; }
-    public string ReferenceNumber { get; set; }
-    // public IntraBankMiscellaneousDetailsType MiscellaneousDetailsType { get; set; }
-    public string PartTransactionRemarks2 { get; set; }
-    public List<LienDetails> LienDetailsList { get; set; } = new();
-}
-
-public class IntraBankMiscellaneousDetailsType
-{
-    public string DocumentNumber { get; set; }
-    public string FreeTxt2 { get; set; }
-    public string FreeTxt3 { get; set; }
-    public string FreeTxt4 { get; set; }
-}
-
-public class LienDetails
-{
-    public string ModuleType { get; set; }
-    public string LienIdentification { get; set; }
-    public decimal LienReleaseAmount { get; set; }
-}
+        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString("yyyy-MM-dd"));
+        }
+    }
