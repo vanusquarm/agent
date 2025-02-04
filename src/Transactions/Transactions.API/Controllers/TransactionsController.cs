@@ -106,7 +106,7 @@ public class TransactionsController : ControllerBase
         }
     }
         
-    [HttpPost("intra-bank-transfer")]
+    [HttpPost("transfer")]
     public async Task<IActionResult> PerformIntraBankTransfer([FromBody] AccountTransferRequest accountTransferRequest)
     {
         try

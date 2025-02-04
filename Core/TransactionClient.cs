@@ -30,7 +30,7 @@ namespace Finacle.Core
                 var jsonContent = JsonSerializer.Serialize(transferRequest);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 
-                HttpResponseMessage response = await _httpClient.PostAsync("/api/v1/Transactions/intra-bank-transfer", content);
+                HttpResponseMessage response = await _httpClient.PostAsync("/api/v1/Transactions/transfer", content);
                 response.EnsureSuccessStatusCode();
                 
                 var responseString = await response.Content.ReadAsStringAsync();
