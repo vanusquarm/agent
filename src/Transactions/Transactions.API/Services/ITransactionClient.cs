@@ -13,7 +13,7 @@ public interface ITransactionClient
     [Post("/v2/transactions/cash-withdrawal")]
     Task<CashWithdrawalResponse> PerformCashWithdrawal(CashWithdrawalRequest cashWithdrawalRequest);
     [Post("/v2/transactions/INTRA-BANK-FUND-TRANSFER")]
-    Task<IntraBankTransferResponse> PerformIntraBankTransfer([FromBody] IntraBankTransferRequest intraBankTransferRequest);
+    Task<IntraBankTransferResponse> PerformIntraBankTransfer([Body] IntraBankTransferRequest intraBankTransferRequest);
     [Post("/v2/eodStatusDtls/geteodStatusDtls")]
     Task<EodStatusResponse> GetEodStatusDetails(EodStatusRequest request);
 }

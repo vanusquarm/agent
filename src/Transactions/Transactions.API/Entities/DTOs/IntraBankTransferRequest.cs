@@ -57,6 +57,7 @@ public class IntraBankTransferRequest
         public string ReferenceNumber { get; set; }
  
         [JsonPropertyName("miscellaneousDetailsType")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public TransferMiscellaneousDetailsType MiscellaneousDetailsType { get; set; }
  
         [JsonPropertyName("partTransactionRemarks2")]
