@@ -2,7 +2,6 @@ using Customers.API.Entities;
 using Customers.API.Entities.DTOs;
 using Customers.API.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -32,11 +31,11 @@ namespace Customers.API.Controllers
                     var filteredProperty = filter == null ? customer : customer.GetType().GetProperty(filter)?.GetValue(customer);
                     return Ok(filteredProperty);
                 }
-                else if (IsValidPhoneNumber(customerId))
+                else if (IsValidPhoneNumber(customerId, out string localNumber))
                 {
                     var request = new Dictionary<string, string>
                     {
-                        { "PhoneNumber", customerId }
+                        { "PhoneNumber", localNumber }
                     };
                     var customer = await customerClient.GetCustomerDetailsByPhoneAsync(request);
                     var retailCustomer = customer?.Transform();
@@ -132,11 +131,11 @@ namespace Customers.API.Controllers
             try
             {
                 // Check if the customerId is a phone number
-                if (IsValidPhoneNumber(customerId))
+                if (IsValidPhoneNumber(customerId, out string localNumber))
                 {
                     var request = new Dictionary<string, string>
                     {
-                        { "PhoneNumber", customerId }
+                        { "PhoneNumber", localNumber }
                     };
                     var customer = await customerClient.GetCustomerDetailsByPhoneAsync(request);
                     var retailCustomer = customer?.Transform();
@@ -219,15 +218,65 @@ namespace Customers.API.Controllers
             }
         }
 
-        private bool IsValidPhoneNumber(string phone)
+        [HttpGet("{customerId}/loan")]
+        public async Task<IActionResult> GetLoanDetails(string customerId)
         {
+            try
+            {
+                var request = new Dictionary<string, string>
+                    {
+                        { "customerId", customerId }
+                    };
+                var resp = await customerClient.GetCustomerLoan(request);
+                return Ok(resp);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
+        }
 
-            // Remove all non-digit characters (spaces, dashes, parentheses) for general length checking
-            string cleanPhoneNumber = Regex.Replace(phone, @"[^\d]", "");
+        private bool IsValidPhoneNumber(string phone, out string localNumber)
+        {
+            localNumber = null;
 
-            // Ensure that the phone number has the correct number of digits
-            return ((cleanPhoneNumber.Length == 10 && phone.StartsWith("0")) || (cleanPhoneNumber.Length < 15 && phone.StartsWith("+") && cleanPhoneNumber.Length >= 11));
+            try
+            {
+                if (string.IsNullOrWhiteSpace(phone))
+                    return false;
 
+                // Remove all non-digit characters
+                string cleanPhoneNumber = Regex.Replace(phone, @"[^\d]", "");
+
+                // Ensure it is numeric
+                if (!long.TryParse(cleanPhoneNumber, out _))
+                    return false;
+
+                // Ghana local number format (Example: +233XXXXXXXXX -> 0XXXXXXXXX)
+                if (cleanPhoneNumber.StartsWith("233") && cleanPhoneNumber.Length == 12)
+                {
+                    localNumber = "0" + cleanPhoneNumber.Substring(3);
+                    return true;
+                }
+
+                // Already in local format (e.g., 024XXXXXXX)
+                if (cleanPhoneNumber.Length == 10 && cleanPhoneNumber.StartsWith("0"))
+                {
+                    localNumber = cleanPhoneNumber;
+                    return true;
+                }
+
+                return false; // Invalid format
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        private string Clean(string input)
+        {
+            return Regex.Replace(input, "[^a-zA-Z0-9 ]", "");
         }
     }
 }

@@ -175,7 +175,20 @@ namespace Finacle.Core
 
             return transactions.TransactionDetailsList;
         }
-        
+
+        // Make loan inquiry of a customer
+        public LoanInquiryResponse GetCustomerLoan(string customerId, string accountId)
+        {
+            var response = _httpClient.GetAsync($"/api/v1/Customers/{customerId}/loan").Result;
+
+            response.EnsureSuccessStatusCode();
+
+            var content = response.Content.ReadAsStringAsync().Result;
+            var loan = JsonSerializer.Deserialize<LoanInquiryResponse>(content);
+
+            return loan;
+        }
+
         public CreateRetailCustomerResponse CreateRetailCustomer(RetailCustomerRequest request)
         {
             try
