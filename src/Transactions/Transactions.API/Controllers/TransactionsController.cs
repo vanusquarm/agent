@@ -115,8 +115,9 @@ public class TransactionsController : ControllerBase
             {
                 return BadRequest("Invalid request data.");
             }
-            
-            var request = IntraBankTransferRequestFactory.Create(accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount, accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId);
+
+            var request = IntraBankTransferRequestFactory.Create(accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
+                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.DocNum);
 
             var response = await _transactionClient.PerformIntraBankTransfer(request);
 
