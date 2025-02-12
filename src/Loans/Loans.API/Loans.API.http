@@ -1,0 +1,6 @@
+@Loan.API_HostAddress = http://localhost:5049
+
+GET {{Loan.API_HostAddress}}/api/v1/loans
+Accept: application/json
+
+###

@@ -1,6 +1,6 @@
-namespace Todo.API.Entities.Models
+namespace Loans.API.Entities.Models
 {
-    public class TodoItem
+    public class Loans
     {
         public DateOnly Date { get; set; }
 
