@@ -14,25 +14,49 @@ namespace Acccounts.API.Controllers
         [HttpGet("{accountId}")]
         public async Task<IActionResult> GetAccountAsync(string accountId)
         {
+            var accountDetails=new object();
             try
             {
-                var accountDetails = await accountClient.GetAccountDetails(new { accountId })
-                    ?? await accountClient.GetSavingsAccount(accountId)
-                    ?? await accountClient.GetCurrentAccount(accountId)
-                    ?? await accountClient.GetCorpCurrentAccount(accountId);
+                accountDetails = await accountClient.GetAccountDetails(new { accountId });
 
-                if (accountDetails == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(accountDetails);
+               
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error occurred while fetching account details: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                /
+
+                try
+                {
+                    accountDetails = await accountClient.GetSavingsAccount(accountId);
+                }
+                catch (Exception exi)
+                {
+                    try
+                    {
+                        accountDetails = await accountClient.GetCurrentAccount(accountId);
+                    }
+                    catch (Exception exii)
+                    {
+                        try
+                        {
+                          accountDetails=await accountClient.GetCorpCurrentAccount(accountId);
+                        }
+                        catch(Exception exiii) {
+                          Console.Error.WriteLine($"Error occurred while fetching account details: {ex.Message}");
+                            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                        }
+                    }
+
+                }
+                   
             }
+
+            if (accountDetails != null) {
+                return Ok(accountDetails);
+            }
+
+            return NotFound();
+
         }
 
         [HttpGet("{accountId}/statements")]
