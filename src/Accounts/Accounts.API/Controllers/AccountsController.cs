@@ -3,6 +3,7 @@ using Acccounts.API.Entities.DTOs;
 using Acccounts.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace Acccounts.API.Controllers
 {
@@ -223,6 +224,11 @@ namespace Acccounts.API.Controllers
                 Console.Error.WriteLine($"Error occurred while qyerying atm office account: {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
+        }
+
+        private string Clean(string input)
+        {
+            return Regex.Replace(input, "[^a-zA-Z0-9 ]", "");
         }
     }
 }

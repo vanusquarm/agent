@@ -7,7 +7,7 @@ namespace Finacle.Core.Common
 {
     public class IntraBankTransferRequestFactory
     {
-         public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber,string channel)
+         public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber,string channel, string docNum = null)
          {
              DateTime transactionDate = DateTime.ParseExact("2024-12-24", "yyyy-MM-dd", CultureInfo.InvariantCulture);
             return new IntraBankTransferRequest
@@ -32,13 +32,13 @@ namespace Finacle.Core.Common
                         ReferenceNumber = referenceNumber,
                         PartTransactionRemarks2 = partTransactionRemarks,
                         LienDetailsList = new List<LienDetails>(),
-                        // MiscellaneousDetailsType = new MiscellaneousDetailsType
-                        // {
-                        //     DocumentNumber = "DOCNO",
-                        //     Freetxt2 = "000013241218110101000037132501",
-                        //     Freetxt3 = "BPS004375435825138052",
-                        //     Freetxt4 = ""
-                        // }
+                        MiscellaneousDetailsType = new MiscellaneousDetailsType
+                        {
+                            DocumentNumber = docNum,
+                            //Freetxt2 = "000013241218110101000037132501",
+                            //Freetxt3 = "BPS004375435825138052",
+                            //Freetxt4 = ""
+                        }
                     },
                     new IntraBankTransferTransactionDetail
                     {
@@ -54,13 +54,13 @@ namespace Finacle.Core.Common
                         ReferenceNumber = referenceNumber,
                         PartTransactionRemarks2 = partTransactionRemarks,
                         LienDetailsList = new List<LienDetails>(),
-                        // MiscellaneousDetailsType = new MiscellaneousDetailsType
-                        // {
-                        //     DocumentNumber = "DOCNO",
-                        //     Freetxt2 = "000013241218110101000037132501",
-                        //     Freetxt3 = "BPS004375435825138052",
-                        //     Freetxt4 = ""
-                        // }
+                        MiscellaneousDetailsType = new MiscellaneousDetailsType
+                        {
+                            DocumentNumber = docNum,
+                            //Freetxt2 = "000013241218110101000037132501",
+                            //Freetxt3 = "BPS004375435825138052",
+                            //Freetxt4 = ""
+                        }
                     }
                 }
             };

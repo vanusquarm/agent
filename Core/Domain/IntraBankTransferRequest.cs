@@ -69,15 +69,19 @@ public class IntraBankTransferRequest
     public class MiscellaneousDetailsType
     {
         [JsonPropertyName("documentnumber")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string DocumentNumber { get; set; }
  
         [JsonPropertyName("freetxt2")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string Freetxt2 { get; set; }
  
         [JsonPropertyName("freetxt3")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string Freetxt3 { get; set; }
  
         [JsonPropertyName("freetxt4")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string Freetxt4 { get; set; }
     }
  
