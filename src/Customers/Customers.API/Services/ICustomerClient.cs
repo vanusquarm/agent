@@ -50,5 +50,12 @@ namespace Customers.API.Services
         // Loan Account Inquiry
         [Get("/v2/LoanAccountInquiryDtls/getLoanAccountInquiryDtls")]
         Task<object> GetCustomerLoan([Body] Dictionary<string, string> request);
+
+        // Teller Transactions
+        [Post("/v2/TellerTranDtls/getTellerTranDtls")]
+        Task<object> GetTellerTransactionDetails(object request);
+
+        [Post("/v2/tellerAccountDtls/gettellerAccountDtls")]
+        Task<object> GetTellerAccountDetails(object request);
     }
 }
