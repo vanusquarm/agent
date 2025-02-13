@@ -34,7 +34,7 @@ namespace Finacle.Core
                 response.EnsureSuccessStatusCode();
                 
                 var responseString = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<IntraBankTransferResponse>(responseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return JsonSerializer.Deserialize<IntraBankTransferResponse>(responseString);
             }
             catch (HttpRequestException ex)
             {
@@ -46,6 +46,20 @@ namespace Finacle.Core
                 Console.WriteLine($"Unexpected error: {ex.Message}");
                 throw;
             }
+        }
+
+        public async Task<IntraBankTransferResponse> TransferFundsAsync(string sourceAccount, string destAccount, double amount, string channelReference, string remarks, string channelId = null)
+        {
+            var transferRequest = new AccountTransferRequest
+            {
+                SourceAccountId = sourceAccount,
+                DestinationAccountId = destAccount,
+                Amount = (decimal)amount,
+                Remarks = remarks,
+                ChannelReference = channelReference,
+                ChannelId = AccountTransferRequest.MapService(channelId) ?? "GTBGH100"
+            };
+            return await TransferFunds(transferRequest);
         }
 
         public async Task<EodStatusResponse> FetchEodStatus(EodStatusRequest request)

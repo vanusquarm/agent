@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputPath>bin\Release</OutputPath>
-    <Version>1.0.43</Version>
+    <Version>1.0.44</Version>
     <Authors>Andrew Sam</Authors>
     <Company>GTBank</Company>
     <Description>Finacle client libraries for Finacle Banking Integrations</Description>
