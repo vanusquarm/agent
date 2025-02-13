@@ -3,10 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputPath>bin\Release</OutputPath>
-    <Version>1.0.44</Version>
+    <Version>1.0.46</Version>
     <Authors>Andrew Sam</Authors>
-    <Company>GTBank</Company>
-    <Description>Finacle client libraries for Finacle Banking Integrations</Description>
+    <Company>GTBank Ghana</Company>
+    <Description>
+      Finacle client library for Finacle Banking Integrations.
+      Contains Transaction, Customer, Account, and other Finacle API clients.
+    </Description>
     <PackageTags>your;tags;here</PackageTags>
     <RepositoryUrl>https://devops.gtbghana.com/DevOps/APIs/Finacle%20Integrations</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

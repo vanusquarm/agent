@@ -24,7 +24,6 @@ namespace Acccounts.API.Controllers
             }
             catch (Exception ex)
             {
-                /
 
                 try
                 {

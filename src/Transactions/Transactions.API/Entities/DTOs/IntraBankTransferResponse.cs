@@ -1,8 +1,15 @@
+using System.Text.Json.Serialization;
+
 namespace Transactions.API.Entities.DTOs;
 
 public class IntraBankTransferResponse
 {
-    public DateTime TransactionDate { get; set; }
-    public string TransactionReference { get; set; }
-    public string TranStatus { get; set; }
+    [JsonPropertyName("transactionDate")]
+    public required string TransactionDate { get; set; }
+
+    [JsonPropertyName("transactionReference")]
+    public required string TransactionReference { get; set; }
+
+    [JsonPropertyName("tranStatus")]
+    public required string TranStatus { get; set; }
 }
