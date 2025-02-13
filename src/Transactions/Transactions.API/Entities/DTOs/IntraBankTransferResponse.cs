@@ -4,4 +4,5 @@ public class IntraBankTransferResponse
 {
     public DateTime TransactionDate { get; set; }
     public string TransactionReference { get; set; }
+    public string TranStatus { get; set; }
 }

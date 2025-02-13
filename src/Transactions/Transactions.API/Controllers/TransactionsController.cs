@@ -119,7 +119,7 @@ public class TransactionsController : ControllerBase
             var request = IntraBankTransferRequestFactory.Create(accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
                     accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.DocNum);
 
-            var response = await _transactionClient.PerformIntraBankTransfer(request);
+            var response = await _transactionClient.PerformIntraBankTransfer(accountTransferRequest.ChannelReference, request);
 
             if (response == null || string.IsNullOrEmpty(response.TransactionReference))
             {
