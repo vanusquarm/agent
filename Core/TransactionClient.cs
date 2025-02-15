@@ -4,63 +4,54 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Finacle.Core.Common;
 using Finacle.Core.Domain;
 
 namespace Finacle.Core
 {
     public partial class FinacleClient
     {
-        public async Task<IntraBankTransferResponse> TransferFunds(AccountTransferRequest transferRequest)
+        public async Task<IntraBankTransferResponse> TransferFundsAsync(IntraBankTransferRequest transferRequest)
         {
-            try
+            if (transferRequest == null)
+                throw new ArgumentNullException(nameof(transferRequest));
+            if (transferRequest.Amount <= 0)
             {
-                
-                if (transferRequest.Amount <= 0)
-                {
-                    throw new ArgumentException("Transaction amount must be greater than zero.", nameof(transferRequest.Amount));
-                }
+                throw new ArgumentException("Transaction amount must be greater than zero.", nameof(transferRequest.Amount));
+            }
 
-                if (string.IsNullOrWhiteSpace(transferRequest.SourceAccountId) ||
-                    string.IsNullOrWhiteSpace(transferRequest.DestinationAccountId))
-                {
-                    throw new ArgumentException("Invalid SourceAccount || DestinationAccount", nameof(transferRequest));
-                }
- 
-                var jsonContent = JsonSerializer.Serialize(transferRequest);
-                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-                
-                HttpResponseMessage response = await _httpClient.PostAsync("/api/v1/Transactions/transfer", content);
-                response.EnsureSuccessStatusCode();
-                
-                var responseString = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<IntraBankTransferResponse>(responseString);
-            }
-            catch (HttpRequestException ex)
+            if (string.IsNullOrWhiteSpace(transferRequest.SourceAccountId) ||
+                string.IsNullOrWhiteSpace(transferRequest.DestinationAccountId))
             {
-                Console.WriteLine($"Request error: {ex.Message}");
-                throw;
+                throw new ArgumentException("Invalid SourceAccount || DestinationAccount", nameof(transferRequest));
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Unexpected error: {ex.Message}");
-                throw;
-            }
+
+            var requestUri = "api/v1/Transactions/transfer";
+            var jsonContent = new StringContent(JsonSerializer.Serialize(transferRequest), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(requestUri, jsonContent);
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<IntraBankTransferResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public async Task<IntraBankTransferResponse> TransferFundsAsync(string sourceAccount, string destAccount, double amount, string channelReference, string remarks, string channelId = null)
+
+        public async Task<IntraBankTransferResponse> TransferFundsAsync(string sourceAccount, string destAccount, double amount, string channelReference, string remarks, string channelId)
         {
-            var transferRequest = new AccountTransferRequest
+            // Creating a transfer request object
+            var transferRequest = new IntraBankTransferRequest
             {
                 SourceAccountId = sourceAccount,
                 DestinationAccountId = destAccount,
                 Amount = (decimal)amount,
                 Remarks = remarks,
                 ChannelReference = channelReference,
-                ChannelId = channelId
+                ChannelId = channelId,
+                DocNum = null
             };
-            return await TransferFunds(transferRequest);
+            return await TransferFundsAsync(transferRequest);
         }
+
 
         public async Task<EodStatusResponse> FetchEodStatus(EodStatusRequest request)
         {

@@ -5,103 +5,14 @@ using System.Text.Json.Serialization;
 
 namespace Finacle.Core.Domain
 {
-public class IntraBankTransferRequest
+    public class IntraBankTransferRequest
     {
-        [JsonPropertyName("transactionType")]
-        public string TransactionType { get; set; }
- 
-        [JsonPropertyName("transactionSubType")]
-        public string TransactionSubType { get; set; }
- 
-        [JsonPropertyName("channelIdentification")]
-        public string ChannelIdentification { get; set; }
- 
-        [JsonPropertyName("transferTransactionDetail")]
-        public List<IntraBankTransferTransactionDetail> TransferTransactionDetail { get; set; }
- 
-        [JsonPropertyName("entererId")]
-        public string EntererId { get; set; }
-    }
- 
-    public class IntraBankTransferTransactionDetail
-    {
-        [JsonPropertyName("serialNumber")]
-        public string SerialNumber { get; set; }
- 
-        [JsonPropertyName("partTransactionType")]
-        public string PartTransactionType { get; set; }
- 
-        [JsonPropertyName("accountIdentification")]
-        public string AccountIdentification { get; set; }
- 
-        [JsonPropertyName("transactionAmount")]
-        public decimal TransactionAmount { get; set; }
- 
-        [JsonPropertyName("transactionCurrency")]
-        public string TransactionCurrency { get; set; }
- 
-        [JsonPropertyName("transactionValueDate")]
-        [JsonConverter(typeof(DateFormatConverter))]
-        public DateTime TransactionValueDate { get; set; }
- 
-        [JsonPropertyName("transactionParticulars")]
-        public string TransactionParticulars { get; set; }
- 
-        [JsonPropertyName("rate")]
-        public decimal Rate { get; set; }
- 
-        [JsonPropertyName("partTransactionRemarks")]
-        public string PartTransactionRemarks { get; set; }
- 
-        [JsonPropertyName("referenceNumber")]
-        public string ReferenceNumber { get; set; }
- 
-        [JsonPropertyName("miscellaneousDetailsType")]
-        public MiscellaneousDetailsType MiscellaneousDetailsType { get; set; }
- 
-        [JsonPropertyName("partTransactionRemarks2")]
-        public string PartTransactionRemarks2 { get; set; }
- 
-        [JsonPropertyName("lienDetailsList")]
-        public List<LienDetails> LienDetailsList { get; set; }
-    }
- 
-    public class MiscellaneousDetailsType
-    {
-        [JsonPropertyName("documentnumber")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string DocumentNumber { get; set; }
- 
-        [JsonPropertyName("freetxt2")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string Freetxt2 { get; set; }
- 
-        [JsonPropertyName("freetxt3")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string Freetxt3 { get; set; }
- 
-        [JsonPropertyName("freetxt4")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string Freetxt4 { get; set; }
-    }
- 
-    public class LienDetails
-    {
-        // Add any properties for lien details here
-    }
-    
-    public class DateFormatConverter : JsonConverter<DateTime>
-    {
-        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            return DateTime.ParseExact(reader.GetString(), "yyyy-MM-dd", null);
-        }
-
-        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
-        {
-            writer.WriteStringValue(value.ToString("yyyy-MM-dd"));
-        }
+        public string SourceAccountId { get; set; }
+        public string DestinationAccountId { get; set; }
+        public decimal Amount { get; set; }
+        public string Remarks { get; set; }
+        public string ChannelReference { get; set; }
+        public string ChannelId { get; set; }
+        public string DocNum { get; set; }
     }
 }
-
-

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Finacle.Core.Domain
 {
@@ -10,5 +11,6 @@ namespace Finacle.Core.Domain
         public string Remarks { get; set; }
         public string ChannelReference { get; set; }
         public string ChannelId { get; set; }
+        public string DocNum { get; set; }
     }
 }
