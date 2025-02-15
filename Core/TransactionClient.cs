@@ -57,7 +57,7 @@ namespace Finacle.Core
                 Amount = (decimal)amount,
                 Remarks = remarks,
                 ChannelReference = channelReference,
-                ChannelId = AccountTransferRequest.MapService(channelId) ?? "GTBGH100"
+                ChannelId = channelId
             };
             return await TransferFunds(transferRequest);
         }

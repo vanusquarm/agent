@@ -12,7 +12,7 @@ public class IntraBankTransferRequestFactory
                 TransactionType = IntraBankTransferConstants.TransactionType,
                 TransactionSubType = IntraBankTransferConstants.TransactionSubType,
                 ChannelIdentification = IntraBankTransferConstants.ChannelIdentification,
-                EntererId = channel,
+                EntererId = MapService(channel),
                 TransferTransactionDetail = new List<IntraBankTransferTransactionDetail>
                 {
                     new IntraBankTransferTransactionDetail
@@ -62,6 +62,21 @@ public class IntraBankTransferRequestFactory
                 }
             };
         }
+
+    public static string MapService(string key)
+    {
+        // List of services and their corresponding channel IDs
+        Dictionary<string, string> serviceMap = new Dictionary<string, string>
+        {
+            { "GAPS", "GTBGH1" },
+            { "737", "GTBGH2" },
+            { "GTWORLD", "GTBGH3" },
+            { "MYGHPAY", "GTBGH4" },
+            { "GTCOLLECT", "GTBGH5" },
+            { "IPAY", "GTBGH6" }
+        };
+        return serviceMap.TryGetValue(key.ToUpper(), out string value) ? value : "GTBGH100";
+    }
 }
 
 public static class StringExtensions
