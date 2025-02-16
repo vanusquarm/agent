@@ -32,9 +32,10 @@ public interface ITransactionClient
     [Headers(
         "delivery_channel: API",
         "duptranchkreqd: Y",
-        "requesttype: SRV",
-        "requestreference: 00080280778578878882479904"
+        "requesttype: SRV"
     )]
     [Post("/v2/transactions/INTRA-BANK-FUND-TRANSFER")]
-    Task<IntraBankTransferResponse> PerformIntraBankTransfer([Body] IntraBankTransferRequest intraBankTransferRequest);
+    Task<IntraBankTransferResponse> PerformIntraBankTransfer(
+        [Header("requestreference")] string requestReference,
+        [Body] IntraBankTransferRequest intraBankTransferRequest);
 }

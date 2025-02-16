@@ -237,6 +237,45 @@ namespace Customers.API.Controllers
             }
         }
 
+        [HttpGet("{customerId}/teller-transactions")]
+        public async Task<IActionResult> GetTellerTransactions(string customerId, string? date)
+        {
+            try
+            {   
+                var request = new Dictionary<string, string>
+                    {
+                        { "tellerId", customerId },
+                        { "tranDate", date ?? DateTime.UtcNow.ToString("yyyy-MM-dd") } 
+                    };
+                var resp = await customerClient.GetTellerTransactionDetails(request);
+                return Ok(resp);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
+        }
+
+        [HttpGet("{customerId}/teller-accounts")]
+        public async Task<IActionResult> GetTellerAccounts(string customerId)
+        {
+            try
+            {
+                var request = new Dictionary<string, string>
+                    {
+                        { "userId", customerId }
+                    };
+                var resp = await customerClient.GetTellerAccountDetails(request);
+                return Ok(resp);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
+        }
+
         private bool IsValidPhoneNumber(string phone, out string localNumber)
         {
             localNumber = null;

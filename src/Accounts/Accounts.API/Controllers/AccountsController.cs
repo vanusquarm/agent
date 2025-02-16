@@ -3,6 +3,7 @@ using Acccounts.API.Entities.DTOs;
 using Acccounts.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace Acccounts.API.Controllers
 {
@@ -14,16 +15,15 @@ namespace Acccounts.API.Controllers
         [HttpGet("{accountId}")]
         public async Task<IActionResult> GetAccountAsync(string accountId)
         {
-            var accountDetails=new object();
+            var accountDetails = new object();
             try
             {
                 accountDetails = await accountClient.GetAccountDetails(new { accountId });
 
-               
+
             }
             catch (Exception ex)
             {
-                /
 
                 try
                 {
@@ -39,19 +39,21 @@ namespace Acccounts.API.Controllers
                     {
                         try
                         {
-                          accountDetails=await accountClient.GetCorpCurrentAccount(accountId);
+                            accountDetails = await accountClient.GetCorpCurrentAccount(accountId);
                         }
-                        catch(Exception exiii) {
-                          Console.Error.WriteLine($"Error occurred while fetching account details: {ex.Message}");
+                        catch (Exception exiii)
+                        {
+                            Console.Error.WriteLine($"Error occurred while fetching account details: {ex.Message}");
                             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
                         }
                     }
 
                 }
-                   
+
             }
 
-            if (accountDetails != null) {
+            if (accountDetails != null)
+            {
                 return Ok(accountDetails);
             }
 
@@ -159,14 +161,14 @@ namespace Acccounts.API.Controllers
                 {
                     accountType = null;
                 }
-                else 
+                else
                 {
                     if (!Enum.IsDefined(typeof(AccountType), accountType))
                     {
                         return BadRequest($"Invalid account type: {accountType}. Please provide a valid account type.");
                     }
                 }
-               
+
                 var balances = await accountClient.GetAccountBalance(accountId);
                 // Check if the balances object is null or does not contain any balances
                 if (balances == null || balances.Balances == null || !balances.Balances.Any())
@@ -240,13 +242,18 @@ namespace Acccounts.API.Controllers
         {
             try
             {
-                return Ok(await accountClient.GetTerminalOfficeAcct(new TerminalOfficeAcctRequest { TerminalId=TerminalId}));
+                return Ok(await accountClient.GetTerminalOfficeAcct(new TerminalOfficeAcctRequest { TerminalId = TerminalId }));
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"Error occurred while qyerying atm office account: {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
+        }
+
+        private string Clean(string input)
+        {
+            return Regex.Replace(input, "[^a-zA-Z0-9 ]", "");
         }
     }
 }
