@@ -32,7 +32,7 @@ namespace Customers.API.Services
 
 
         [Get("/v2/customers/{customerId}/accounts?includeClosedAccounts={includeClosedAccounts}")]
-        Task<object> GetCustomerAccounts(string customerId, string includeClosedAccounts);
+        Task<GetCustomerAcctsResponse> GetCustomerAccounts(string customerId, string includeClosedAccounts);
 
         [Get("/customers/{customerId}/accounts?includeClosedAccounts={includeClosedAccounts}")]
         Task<object> GetCustomerAccountsStatements(string customerId, string includeClosedAccounts);

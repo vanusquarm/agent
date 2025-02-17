@@ -14,7 +14,7 @@ namespace Customers.API.Entities.DTOs
         public string? IsLastSet { get; set; }
 
         [JsonPropertyName("setNumber")]
-        public int? SetNumber { get; set; }
+        public int SetNumber { get; set; }
     }
 
     public partial class Account
@@ -38,7 +38,7 @@ namespace Customers.API.Entities.DTOs
         public string? ProductCode { get; set; }
 
         [JsonPropertyName("effectiveAvailableBalance")]
-        public int? EffectiveAvailableBalance { get; set; }
+        public double EffectiveAvailableBalance { get; set; }
 
         [JsonPropertyName("accountNickName")]
         public string? AccountNickName { get; set; }
@@ -53,7 +53,7 @@ namespace Customers.API.Entities.DTOs
         public string? AccountState { get; set; }
 
         [JsonPropertyName("lastUpdatedTime")]
-        public DateTime? LastUpdatedTime { get; set; }
+        public DateTime LastUpdatedTime { get; set; }
 
         [JsonPropertyName("branchIdentifier")]
         public string? BranchIdentifier { get; set; }
@@ -75,9 +75,6 @@ namespace Customers.API.Entities.DTOs
 
         [JsonPropertyName("relatedPartyDetails")]
         public List<RelatedPartyDetail>? RelatedPartyDetails { get; set; }
-        
-        //[JsonPropertyName("availableBalance")]
-        //public double AvailableBalance { get; set; }
     }
 
     public class RelatedPartyDetail
@@ -94,8 +91,6 @@ namespace Customers.API.Entities.DTOs
         [JsonPropertyName("relatedPartycustomerReference")]
         public string? RelatedPartycustomerReference { get; set; }
     }
-
-    // Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
 
     public partial class Account
     {
@@ -138,9 +133,6 @@ namespace Customers.API.Entities.DTOs
         [JsonPropertyName("sourcingDealeridentification")]
         public string? SourcingDealeridentification { get; set; }
 
-        [JsonPropertyName("accountNickname")]
-        public string? AccountNickname { get; set; }
-
         [JsonPropertyName("branchName")]
         public string? BranchName { get; set; }
 
@@ -153,6 +145,5 @@ namespace Customers.API.Entities.DTOs
         [JsonPropertyName("taxRate")]
         public string? TaxRate { get; set; }
     }
-
 
 }

@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Finacle.Core.Domain
-{ 
+{
     public class GetCustomerAcctsResponse
     {
         [JsonPropertyName("basicAccountDetails")]
@@ -14,7 +14,7 @@ namespace Finacle.Core.Domain
         public string IsLastSet { get; set; }
 
         [JsonPropertyName("setNumber")]
-        public int? SetNumber { get; set; }
+        public int SetNumber { get; set; }
     }
 
     public partial class Account
@@ -38,7 +38,7 @@ namespace Finacle.Core.Domain
         public string ProductCode { get; set; }
 
         [JsonPropertyName("effectiveAvailableBalance")]
-        public int? EffectiveAvailableBalance { get; set; }
+        public double EffectiveAvailableBalance { get; set; }
 
         [JsonPropertyName("accountNickName")]
         public string AccountNickName { get; set; }
@@ -53,7 +53,7 @@ namespace Finacle.Core.Domain
         public string AccountState { get; set; }
 
         [JsonPropertyName("lastUpdatedTime")]
-        public DateTime? LastUpdatedTime { get; set; }
+        public DateTime LastUpdatedTime { get; set; }
 
         [JsonPropertyName("branchIdentifier")]
         public string BranchIdentifier { get; set; }
@@ -75,27 +75,7 @@ namespace Finacle.Core.Domain
 
         [JsonPropertyName("relatedPartyDetails")]
         public List<RelatedPartyDetail> RelatedPartyDetails { get; set; }
-        
-        [JsonPropertyName("availableBalance")]
-        public double? AvailableBalance { get; set; }
     }
-
-    //public class RelatedPartyDetail
-    //{
-    //    [JsonPropertyName("relationType")]
-    //    public string RelationType { get; set; }
-
-    //    [JsonPropertyName("relationCode")]
-    //    public string RelationCode { get; set; }
-
-    //    [JsonPropertyName("designationCode")]
-    //    public string DesignationCode { get; set; }
-
-    //    [JsonPropertyName("relatedPartycustomerReference")]
-    //    public string RelatedPartycustomerReference { get; set; }
-    //}
-
-    // Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
 
     public partial class Account
     {
@@ -138,9 +118,6 @@ namespace Finacle.Core.Domain
         [JsonPropertyName("sourcingDealeridentification")]
         public string SourcingDealeridentification { get; set; }
 
-        [JsonPropertyName("accountNickname")]
-        public string AccountNickname { get; set; }
-
         [JsonPropertyName("branchName")]
         public string BranchName { get; set; }
 
@@ -151,7 +128,7 @@ namespace Finacle.Core.Domain
         public string EffectiveRateOfInterest { get; set; }
 
         [JsonPropertyName("taxRate")]
-        public string TaxRate { get; set; }
+        public string TaxRate { get; set; } 
     }
 
 
