@@ -15,7 +15,7 @@ namespace Acccounts.API.Controllers
         [HttpGet("{accountId}")]
         public async Task<IActionResult> GetAccountAsync(string accountId)
         {
-            var accountDetails=new object();
+            var accountDetails = new object();
             try
             {
                 accountDetails = await accountClient.GetAccountDetails(new { accountId });
@@ -38,19 +38,21 @@ namespace Acccounts.API.Controllers
                     {
                         try
                         {
-                          accountDetails=await accountClient.GetCorpCurrentAccount(accountId);
+                            accountDetails = await accountClient.GetCorpCurrentAccount(accountId);
                         }
-                        catch(Exception exiii) {
-                          Console.Error.WriteLine($"Error occurred while fetching account details: {ex.Message}");
+                        catch (Exception exiii)
+                        {
+                            Console.Error.WriteLine($"Error occurred while fetching account details: {ex.Message}");
                             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
                         }
                     }
 
                 }
-                   
+
             }
 
-            if (accountDetails != null) {
+            if (accountDetails != null)
+            {
                 return Ok(accountDetails);
             }
 
@@ -158,7 +160,7 @@ namespace Acccounts.API.Controllers
                 {
                     accountType = null;
                 }
-                else 
+                else
                 {
                     if (!Enum.IsDefined(typeof(AccountType), accountType))
                     {
@@ -166,7 +168,7 @@ namespace Acccounts.API.Controllers
                     }
                 }
                
-                var balances = await accountClient.GetAccountBalances(accountId);
+                var balances = await accountClient.GetAccountBalance(accountId);
                 // Check if the balances object is null or does not contain any balances
                 if (balances == null || balances.Balances == null || !balances.Balances.Any())
                 {
@@ -272,7 +274,7 @@ namespace Acccounts.API.Controllers
         {
             try
             {
-                return Ok(await accountClient.GetTerminalOfficeAcct(new TerminalOfficeAcctRequest { TerminalId=TerminalId}));
+                return Ok(await accountClient.GetTerminalOfficeAcct(new TerminalOfficeAcctRequest { TerminalId = TerminalId }));
             }
             catch (Exception ex)
             {

@@ -11,7 +11,7 @@ public class IntraBankTransferRequestFactory
             {
                 TransactionType = IntraBankTransferConstants.TransactionType,
                 TransactionSubType = IntraBankTransferConstants.TransactionSubType,
-                ChannelIdentification = channel.Substring(4).ToUpper() ?? IntraBankTransferConstants.ChannelIdentification,
+                ChannelIdentification = channel.Length>=4 ? channel.Substring(0,4).ToUpper() : IntraBankTransferConstants.ChannelIdentification,
                 EntererId = MapService(channel),
                 TransferTransactionDetail = new List<IntraBankTransferTransactionDetail>
                 {
