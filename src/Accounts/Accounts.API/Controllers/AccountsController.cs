@@ -19,7 +19,6 @@ namespace Acccounts.API.Controllers
             try
             {
                 accountDetails = await accountClient.GetAccountDetails(new { accountId });
-
                
             }
             catch (Exception ex)
@@ -150,7 +149,7 @@ namespace Acccounts.API.Controllers
         }
 
         [HttpGet("{accountId}/balances")]
-        public async Task<IActionResult> GetAccountBalance([FromRoute] string accountId, [FromQuery] string? accountType)
+        public async Task<IActionResult> GetAccountBalances([FromRoute] string accountId, [FromQuery] string? accountType)
         {
             try
             {
@@ -167,7 +166,7 @@ namespace Acccounts.API.Controllers
                     }
                 }
                
-                var balances = await accountClient.GetAccountBalance(accountId);
+                var balances = await accountClient.GetAccountBalances(accountId);
                 // Check if the balances object is null or does not contain any balances
                 if (balances == null || balances.Balances == null || !balances.Balances.Any())
                 {
@@ -186,6 +185,39 @@ namespace Acccounts.API.Controllers
 
                 // If no balance matches the accountType, return all balances
                 return Ok(balances);
+            }
+            catch (Exception ex)
+            {
+                return NoContent();
+            }
+        }
+
+        [HttpGet("{accountId}/balance")]
+        public async Task<IActionResult> GetAccountBalance([FromRoute] string accountId, [FromQuery] string? date = null)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(accountId))
+                {
+                    return BadRequest("Account number is required.");
+                }
+
+                date ??= DateTime.UtcNow.ToString("yyyy-MM-dd");
+
+                var request = new 
+                {
+                    accountNumber = accountId,
+                    date 
+                };
+
+                var balance = await accountClient.GetAccountBalance(request);
+
+                if (balance == null)
+                {
+                    return NotFound($"No balance found on {date} for the specified account");
+                }
+
+                return Ok(balance);
             }
             catch (Exception ex)
             {

@@ -7,8 +7,12 @@ namespace Acccounts.API.Services
     {
         // Get Account Balance - Example of a Savings Account is 1205001000000471
         [Get("/v2/accounts/{accountId}/balances")] 
-        Task<AccountBalanceDto> GetAccountBalance(string accountId);
+        Task<AccountBalanceDto> GetAccountBalances(string accountId);
 
+        [Post("/v2/accountsBalanceDtls/getaccountsBalanceDtls")]
+        Task<object> GetAccountBalance([Body] object account);
+
+        // Get Account Transactions
         [Get("/v2/accounts/{accountId}/transactions")]
         Task<List<TransactionDetailsDto>> GetAccountTrasactions(string accountId);
 
@@ -56,5 +60,8 @@ namespace Acccounts.API.Services
         [Post("/v2/TerminalOfficeAcct/getTerminalOfficeAcct")]
         Task<object> GetTerminalOfficeAcct(TerminalOfficeAcctRequest request);
 
+        // Unsecured Loan Account
+        [Post("/v2/unsecured-loan-accounts")]
+        Task<object> CreateUnsecuredLoanAcct(object request);
     }
 }
