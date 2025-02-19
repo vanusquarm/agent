@@ -9,4 +9,5 @@ public class AccountTransferRequest
     public string ChannelReference { get; set; }
     public string ChannelId { get; set; }
     public string? DocNum { get; set; }
+    public string? UserPartTransactionCode { get; set; }
 }

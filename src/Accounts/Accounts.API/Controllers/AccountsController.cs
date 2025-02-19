@@ -168,7 +168,7 @@ namespace Acccounts.API.Controllers
                     }
                 }
                
-                var balances = await accountClient.GetAccountBalance(accountId);
+                var balances = await accountClient.GetAccountBalances(accountId);
                 // Check if the balances object is null or does not contain any balances
                 if (balances == null || balances.Balances == null || !balances.Balances.Any())
                 {

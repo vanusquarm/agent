@@ -23,6 +23,12 @@ namespace Finacle.Core
             return GetAccount(accountId).AccountStatus;
         }
 
+        // Get account status
+        public int isAccountActive(string accountId)
+        {
+            return GetAccountStatus(accountId) == "O" ? 1 : 0;
+        }
+
         // Get account balances
         public Balance GetAccountBalances(string accountId, string accountType)
         {
@@ -130,7 +136,7 @@ namespace Finacle.Core
         public bool IsStaff(string accountId)
         {
             var (_, customerDetail) = GetAccountCustomers(accountId);
-            return customerDetail.OcuupationCode == "2014";
+            return customerDetail.OcuupationCode == "2104";
         }
 
         public CustomerDetail GetCustomerByAccountId(string accountId)
