@@ -42,6 +42,21 @@ namespace Cheques.API.Controllers
             }
         }
 
+        [HttpGet("{accountIdentification}/status")]
+        public async Task<IActionResult> ValidateCheque(ChequeConfirmationRequest request)
+        {
+            try
+            {
+                var responseDto = await chequesClient.ConfirmChequeAsync(request);
+                return Ok(responseDto);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching customer transactions: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
         [HttpPost("{accountIdentification}/stopCheque")]
         public async Task<IActionResult> StopChequeBookAsync([AliasAs("accountIdentification")]string accountIdentification, [FromBody] StopChequeRequestDto stopCheque)
         {

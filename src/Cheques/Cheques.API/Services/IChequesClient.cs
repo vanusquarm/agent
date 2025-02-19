@@ -21,5 +21,8 @@ namespace Cheques.API.Services
         [Post("/v2/corporate-current-accounts/{accountIdentification}/:revokeStopCheque")]
         Task<RevokeChequeResponseDto> RevokeStopChequeBookAsync([AliasAs("accountIdentification")] string accountIdentification, RevokeChequeRequestDto requestDto);
 
+        [Post("/v2/chqconfirmation/getchqconfirmation")]
+        Task<dynamic> ConfirmChequeAsync([Body] ChequeConfirmationRequest requestDto);
+
     }
 }
