@@ -135,7 +135,7 @@ namespace Customers.API.Controllers
                 {
                     var request = new Dictionary<string, string>
                     {
-                        { "PhoneNumber", localNumber }
+                        { "PhoneNumber", $"'{ localNumber }'" }
                     };
                     var customer = await customerClient.GetCustomerDetailsByPhoneAsync(request);
                     var retailCustomer = customer?.Transform();
