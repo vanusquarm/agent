@@ -6,8 +6,12 @@ public class IntraBankTransferRequestFactory
 {
         public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber,string channel, string? docNum)
         {
-            DateTime transactionDate = DateTime.ParseExact("2024-12-24", "yyyy-MM-dd", CultureInfo.InvariantCulture);
-        return new IntraBankTransferRequest
+            DateTime transactionDate = DateTime.ParseExact(
+                DateTime.Now.ToString("yyyy-MM-dd"),
+                "yyyy-MM-dd",
+                CultureInfo.InvariantCulture
+            );
+            return new IntraBankTransferRequest
                 {
                     TransactionType = IntraBankTransferConstants.TransactionType,
                     TransactionSubType = IntraBankTransferConstants.TransactionSubType,
