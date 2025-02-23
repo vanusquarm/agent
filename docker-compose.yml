@@ -1,6 +1,86 @@
-﻿services:
-  authsystem:
-    image: authsystem
+﻿version: '3.8'
+
+# services:
+#   authsystem:
+#     image: authsystem
+#     build:
+#       context: .
+#       dockerfile: AuthSystem/Dockerfile
+
+services:
+  accounts.api:
+    image: ${DOCKER_REGISTRY-}accountsapi:${TAG:-latest}
     build:
       context: .
-      dockerfile: AuthSystem/Dockerfile
+      dockerfile: src/Accounts/Accounts.API/Dockerfile
+
+  authsystem.api:
+    image: ${DOCKER_REGISTRY-}authsystemapi:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/Authsystem/Dockerfile
+
+  # batches.api:
+  #   image: ${DOCKER_REGISTRY-}batchesapi:${TAG:-latest}
+  #   build:
+  #     context: .
+  #     dockerfile: src/Batches/Batches.API/Dockerfile
+  
+  # branches.api:
+  #   image: ${DOCKER_REGISTRY-}branchesapi:${TAG:-latest}
+  #   build:
+  #     context: .
+  #     dockerfile: src/Branches/Branches.API/Dockerfile
+
+  cheques.api:
+    image: ${DOCKER_REGISTRY-}chequesapi:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/Cheques/Cheques.API/Dockerfile
+
+  # countries.api:
+  #   image: ${DOCKER_REGISTRY-}countriesapi:${TAG:-latest}
+  #   build:
+  #     context: .
+  #     dockerfile: src/Countries/Countries.API/Dockerfile
+
+  customers.api:
+    image: ${DOCKER_REGISTRY-}customersapi:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/Customers/Customers.API/Dockerfile
+
+  gateways.api:
+    image: ${DOCKER_REGISTRY-}gatewaysapi:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/Gatways/YarpGateway/Dockerfile
+
+  # infrastructure:
+  #   image: ${DOCKER_REGISTRY-}infrastructure:${TAG:-latest}
+  #   build:
+  #     context: .
+  #     dockerfile: src/Infrastructure/Dockerfile
+
+  payments.api:
+    image: ${DOCKER_REGISTRY-}paymentsapi:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/Payments/Payments.API/Dockerfile
+
+  # regions.api:
+  #   image: ${DOCKER_REGISTRY-}regionsapi:${TAG:-latest}
+  #   build:
+  #     context: .
+  #     dockerfile: src/Regions/Regions.API/Dockerfile
+
+
+  transactions.api:
+    image: ${DOCKER_REGISTRY-}transactionsapi:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/Transations/Transations.API/Dockerfile
+
+
+
+

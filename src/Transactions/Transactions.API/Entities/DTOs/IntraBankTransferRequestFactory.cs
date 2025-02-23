@@ -67,6 +67,21 @@ public class IntraBankTransferRequestFactory
             };
         }
 
+    private static (string?, string?, string?, string?, string?) SplitTransactionRemarks(string partTransactionRemarks)
+    {
+        // Ensure the string is not null or empty
+        if (string.IsNullOrEmpty(partTransactionRemarks))
+            return (null, null, null, null, null);
+
+        // Split into chunks of up to 50 characters each
+        string part1 = partTransactionRemarks.Length > 0 ? partTransactionRemarks.Substring(0, Math.Min(50, partTransactionRemarks.Length)) : null;
+        string part2 = partTransactionRemarks.Length > 50 ? partTransactionRemarks.Substring(50, Math.Min(50, partTransactionRemarks.Length - 50)) : null;
+        string part3 = partTransactionRemarks.Length > 100 ? partTransactionRemarks.Substring(100, Math.Min(50, partTransactionRemarks.Length - 100)) : null;
+        string part4 = partTransactionRemarks.Length > 150 ? partTransactionRemarks.Substring(150, Math.Min(50, partTransactionRemarks.Length - 150)) : null;
+        string part5 = partTransactionRemarks.Length > 200 ? partTransactionRemarks.Substring(200, Math.Min(50, partTransactionRemarks.Length - 200)) : null;
+
+        return (part1, part2, part3, part4, part5);
+    }
     public static string MapService(string key)
     {
         // List of services and their corresponding channel IDs
@@ -77,10 +92,7 @@ public class IntraBankTransferRequestFactory
             { "GTWORLD", "GTBGH3" },
             { "MYGHPAY", "GTBGH4" },
             { "GTCOLLECT", "GTBGH5" },
-            { "IPAY", "GTBGH6" },
-            { "EWALLET", "GTBGH7" },
-            { "AIRTELTIGO", "GTBGH8" },
-            { "VODAFONE", "GTBGH9" }
+            { "IPAY", "GTBGH6" }
         };
         return serviceMap.TryGetValue(key.ToUpper(), out string value) ? value : "GTBGH100";
     }
