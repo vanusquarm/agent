@@ -1,3 +1,5 @@
+using System;
+
 namespace Loans.API.Entities.Models
 {
     public class Loans
