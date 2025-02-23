@@ -5,7 +5,7 @@ namespace Acccounts.API.Entities.DTOs
     public class AccountStatementRequest
     {
         [JsonPropertyName("accountId")]
-        public string AccountId { get; set; }
+        public string? AccountId { get; set; }
 
         [JsonPropertyName("fromDate")]
         public required string FromDate { get; set; }

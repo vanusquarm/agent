@@ -136,7 +136,7 @@ namespace Finacle.Core
         public bool IsStaff(string accountId)
         {
             var (_, customerDetail) = GetAccountCustomers(accountId);
-            return customerDetail.OcuupationCode == "2104";
+            return customerDetail.OcuupationCode == "2104" || customerDetail.OcuupationCode == "1709";
         }
 
         public CustomerDetail GetCustomerByAccountId(string accountId)
