@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputPath>bin\Release</OutputPath>
-    <Version>1.0.57</Version>
+    <Version>1.0.58</Version>
     <Authors>Andrew Sam</Authors>
     <Company>GTBank Ghana</Company>
     <Description>

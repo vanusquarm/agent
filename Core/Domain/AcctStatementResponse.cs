@@ -11,10 +11,10 @@ namespace Finacle.Core.Domain
         public AccountDetails AccountDetails { get; set; }
 
         [JsonPropertyName("openingBalance")]
-        public int OpeningBalance { get; set; }
+        public double OpeningBalance { get; set; }
 
         [JsonPropertyName("closingBalance")]
-        public int ClosingBalance { get; set; }
+        public double ClosingBalance { get; set; }
 
         [JsonPropertyName("statementRecords")]
         public List<StatementRecord> StatementRecords { get; set; }

@@ -45,6 +45,21 @@ namespace Finacle.Core
             return primaryRM;
         }
 
+        // Get customer employment detail
+        public EmploymentDetail GetCustomerEmploymentDetail(string customerId)
+        {
+            var response = _httpClient.GetAsync($"/api/v1/Customers/{customerId}/employment").Result;
+
+            response.EnsureSuccessStatusCode(); // Throws exception if response is not 2xx
+
+            var content = response.Content.ReadAsStringAsync().Result;
+            var employmentDetailResponse = JsonSerializer.Deserialize<List<EmploymentDetail>>(content);
+
+            var employmentDetail = employmentDetailResponse.FirstOrDefault();
+
+            return employmentDetail;
+        }
+
         public bool IsCustomer(string phoneNumber)
         {
             var response = _httpClient.GetAsync($"/api/v1/Customers/{phoneNumber}").Result;

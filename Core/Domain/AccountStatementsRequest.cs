@@ -6,7 +6,6 @@ namespace Finacle.Core.Domain
 {
     public class AccountStatementsRequest
     {
-        public string AccountId { get; set; }  // This will be handled via route parameter
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public int? SetNumber { get; set; }
