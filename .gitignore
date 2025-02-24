@@ -9,3 +9,9 @@ AuthSystem/obj
 *.generated.sln
 *.zip
 app
+/src/Accounts/Accounts.API/Properties/PublishProfiles
+/src/Branches/Branches.API/Properties/PublishProfiles
+/src/Cheques/Cheques.API/Properties/PublishProfiles
+/src/Customers/Customers.API/Properties/PublishProfiles
+/src/Transactions/Transactions.API/Properties/PublishProfiles
+/src/Loans/Loans.API/Properties/PublishProfiles
