@@ -123,7 +123,32 @@ namespace Customers.API.Controllers
             }
         }
 
-
+        [HttpPost("createCustomer/{customerType}")]
+        public async Task<IActionResult> CreateCustomer2(CreateRetailCustomerRequestDto2 customerDto, string customerType)
+        {
+            try
+            {
+                if (customerType.ToUpper() == CustomerType.Corporate)
+                {
+                 // await customerClient.CreateCorporateCustomer((CreateCorpCustomerRequest)customerDto);
+                    return Ok();
+                }
+                else if (customerType.ToUpper() == CustomerType.Retail)
+                {
+                    var customer = await customerClient.CreateRetailCustomer2((CreateRetailCustomerRequestDto2) customerDto);
+                    return Ok(customer);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while creating customer: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
 
         [HttpGet("{customerId}/accounts")]
         public async Task<IActionResult> GetCustomerAccounts(string customerId, string includeClosedAccounts = "Y")

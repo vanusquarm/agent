@@ -225,5 +225,42 @@ namespace Finacle.Core
                 throw new Exception($"An unexpected error occurred: {ex.Message}");
             }
         }
+
+        public CreateRetailCustomerResponseDto2 CreateRetailCustomer2(CreateRetailCustomerRequestDto2 request)
+        {
+            try
+            {
+                var jsonContent = JsonSerializer.Serialize(request);
+                var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var response = _httpClient.PostAsync("/retail-customers/createCustomer/retail", httpContent).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+                    return JsonSerializer.Deserialize<CreateRetailCustomerResponseDto2>(content, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                }
+                else
+                {
+                    var errorContent = response.Content.ReadAsStringAsync().Result;
+                    throw new HttpRequestException($"Error creating customer. Status: {response.StatusCode}, Response: {errorContent}");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new Exception($"HTTP Request error: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                throw new Exception($"JSON Serialization/Deserialization error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An unexpected error occurred: {ex.Message}");
+            }
+        }
     }
 }
