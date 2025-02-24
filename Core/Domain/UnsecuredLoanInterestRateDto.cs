@@ -1,4 +1,6 @@
-﻿namespace Loans.API.Entities.DTOs
+﻿using System;
+
+namespace Loans.API.Entities.DTOs
 {
     public class UnsecuredLoanInterestRateDto
     {
