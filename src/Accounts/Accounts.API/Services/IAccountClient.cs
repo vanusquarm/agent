@@ -43,7 +43,10 @@ namespace Acccounts.API.Services
 
         // Get Customer Details of an Account
         [Post("/v2/accountCustomerDtls/getaccountCustomerDtls")]
-        Task<CustomerDto> GetCustomerDetailsByAccountIdAsync(object accountId);
+        Task<CustomerDto> GetCustomersDetailsByAccountIdAsync(object accountId);
+
+        [Post("/v2/CustomerAccountDtls/getCustomerAccountDtls")]
+        Task<object> GetCustomerDetailsByAccountIdAsync(object accountId);
 
 
         // Account Restriction

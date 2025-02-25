@@ -130,11 +130,32 @@ namespace Acccounts.API.Controllers
         }
 
         [HttpGet("{accountId}/customers")]
+        public async Task<IActionResult> GetCustomersDetailsByAccountIdAsync(string accountId)
+        {
+            try
+            {
+                var customerDetails = await accountClient.GetCustomersDetailsByAccountIdAsync(new { accountId });
+
+                if (customerDetails == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(customerDetails);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching customers of the account {accountId}: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpGet("{accountId}/customer")]
         public async Task<IActionResult> GetCustomerDetailsByAccountIdAsync(string accountId)
         {
             try
             {
-                var customerDetails = await accountClient.GetCustomerDetailsByAccountIdAsync(new { accountId });
+                var customerDetails = await accountClient.GetCustomerDetailsByAccountIdAsync(new { accountNumber = accountId });
 
                 if (customerDetails == null)
                 {
