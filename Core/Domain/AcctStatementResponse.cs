@@ -11,10 +11,10 @@ namespace Finacle.Core.Domain
         public AccountDetails AccountDetails { get; set; }
 
         [JsonPropertyName("openingBalance")]
-        public double OpeningBalance { get; set; }
+        public decimal  OpeningBalance { get; set; }
 
         [JsonPropertyName("closingBalance")]
-        public double ClosingBalance { get; set; }
+        public decimal ClosingBalance { get; set; }
 
         [JsonPropertyName("statementRecords")]
         public List<StatementRecord> StatementRecords { get; set; }
@@ -56,10 +56,10 @@ namespace Finacle.Core.Domain
         public string TransactionValueDate { get; set; }
 
         [JsonPropertyName("transactionAmount")]
-        public string TransactionAmount { get; set; }
+        public decimal TransactionAmount { get; set; }
 
         [JsonPropertyName("balance")]
-        public string Balance { get; set; }
+        public decimal Balance { get; set; }
 
         [JsonPropertyName("tranParticulars")]
         public string TranParticulars { get; set; }

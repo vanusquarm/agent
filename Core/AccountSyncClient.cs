@@ -133,20 +133,14 @@ namespace Finacle.Core
             return (deserializedResponse.AccountDetails[0], deserializedResponse.CustomerDetails[0]);
         }
 
-        //public bool IsStaff(string accountId)
-        //{
-        //    var (_, customerDetail) = GetAccountCustomers(accountId);
-        //    return customerDetail.OcuupationCode == "2104" || customerDetail.OcuupationCode == "1709";
-        //}
-
         public bool IsStaff(string accountId)
         {
             var (_, customerDetail) = GetAccountCustomers(accountId);
-            var customer = GetCustomerEmploymentDetail(customerDetail.CustomerReference);
-            return (customer.EmployerName.ToUpper().Contains("GUARANTY TRUST BANK".ToUpper()) 
-                || customer.EmployerName.ToUpper().Contains("GTBANK".ToUpper()) )
-                && customer.CurrentEmployment == "Y";
+            var customer = GetCustomer<GetRetailCustomerResponse>(customerDetail.CustomerReference);
+            return customer.Segment == "GTSTAFF";
         }
+
+
 
         public CustomerDetail GetCustomerByAccountId(string accountId)
         {
