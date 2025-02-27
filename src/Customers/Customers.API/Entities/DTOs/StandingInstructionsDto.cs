@@ -43,6 +43,7 @@
         public string branchReference { get; set; }
         public int standingInstructionPriority { get; set; }
         public Standinginstructionfrequency standingInstructionFrequency { get; set; }
+        public int repeatAfterDays { get; set; } = 0;
         public string executionTime { get; set; }
         public string nextExecutionFromDate { get; set; }
         public string nextExecutionToDate { get; set; }
@@ -53,6 +54,7 @@
     {
         public string standingInstructionFrequencyType { get; set; }
         public string holidayStatus { get; set; }
+        public DateTime startDate { get; set; }
     }
 
     public class Fixedinstructiondetail
@@ -62,7 +64,6 @@
         public string accountIdentification { get; set; }
         public string amountType { get; set; }
         public string referenceNumber { get; set; }
-        public string particulars { get; set; }
         public string remarks { get; set; }
         public string collectFees { get; set; }
         public float transactionAmount { get; set; }

@@ -50,5 +50,16 @@ namespace Customers.API.Services
         Task<GetStandingIstructionsResponse> GetCustomerStandingInstructions(GetStandingInstructionsRequest request);
         [Post("/v2/standing-instructions/Fixed")]
         Task<PostCustomerStandingInstructionsResponse> PostCustomerStandingInstructions(PostCustomerStandingInstructionsRequest request);
+
+        // Loan Account Inquiry
+        [Get("/v2/LoanAccountInquiryDtls/getLoanAccountInquiryDtls")]
+        Task<object> GetCustomerLoan([Body] Dictionary<string, string> request);
+
+        // Teller Transactions
+        [Post("/v2/TellerTranDtls/getTellerTranDtls")]
+        Task<object> GetTellerTransactionDetails(object request);
+
+        [Post("/v2/tellerAccountDtls/gettellerAccountDtls")]
+        Task<object> GetTellerAccountDetails(object request);
     }
 }
