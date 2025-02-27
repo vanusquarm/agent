@@ -148,7 +148,7 @@ namespace Customers.API.Controllers
             {
                 GetStandingInstructionsRequest payload = new GetStandingInstructionsRequest();
                 payload.cifId = customerId;
-                var standingOrders = await customerClient.GetCustomerStandingInstructions(payload);
+                GetStandingIstructionsResponse standingOrders = await customerClient.GetCustomerStandingInstructions(payload);
                 return Ok(standingOrders);
             }
             catch (Exception ex)
