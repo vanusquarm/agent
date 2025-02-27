@@ -20,6 +20,10 @@ namespace Customers.API.Services
         [Post("/retail-customers")] 
         Task<CreateRetailCustomerResponse> CreateRetailCustomer(CreateRetailCustomerRequest createRCRequest);
 
+        // Retail Customer
+        [Post("/retail-customers")]
+        Task<CreateRetailCustomerResponseDto2> CreateRetailCustomer2(CreateRetailCustomerRequestDto2 createRCRequest);
+
         [Get("/retail-customers/{customerId}")]
         Task<GetRetailCustomerResponse> GetRetailCustomer(string customerId);
 
