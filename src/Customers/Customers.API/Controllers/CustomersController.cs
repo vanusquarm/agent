@@ -126,7 +126,7 @@ namespace Customers.API.Controllers
 
 
         [HttpGet("{customerId}/accounts")]
-        public async Task<IActionResult> GetCustomerAccounts(string customerId, string includeClosedAccounts = "Y")
+        public async Task<IActionResult> GetCustomerAccounts(string customerId, string includeClosedAccounts = "N")
         {
             try
             {

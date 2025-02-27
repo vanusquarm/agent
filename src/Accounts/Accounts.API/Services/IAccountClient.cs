@@ -60,6 +60,10 @@ namespace Acccounts.API.Services
         [Post("/v2/acctstmnt/statementDetails")]
         Task<object> GetAccountStatements(AccountStatementRequest request);
 
+        [Post("/v2/accountstatement/getaccountstatement")]
+        Task<object> GetAccountStatement(AccountStatementRequest request);
+
+
         [Post("/v2/TerminalOfficeAcct/getTerminalOfficeAcct")]
         Task<object> GetTerminalOfficeAcct(TerminalOfficeAcctRequest request);
 

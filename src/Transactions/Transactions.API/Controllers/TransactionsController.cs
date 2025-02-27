@@ -1,3 +1,4 @@
+using Finacle.Core;
 using Microsoft.AspNetCore.Mvc;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
@@ -12,6 +13,7 @@ public class TransactionsController : ControllerBase
 {
 
     private readonly ITransactionClient _transactionClient;
+    private readonly FinacleClient _finacleClient;
 
     public TransactionsController(ITransactionClient transactionClient)
     {

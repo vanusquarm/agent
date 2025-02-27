@@ -86,6 +86,32 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        [HttpPost("{accountId}/statements")]
+        public async Task<IActionResult> GetAccountStatementAsync(
+            [FromRoute] string accountId,
+            [FromBody] AccountStatementRequest request)
+        {
+            try
+            {
+                // Ensure the route parameter is mapped to the request model
+                request.AccountId = accountId;
+
+                var accountDetails = await accountClient.GetAccountStatement(request);
+
+                if (accountDetails == null)
+                {
+                    return Ok("No Account Statement found");
+                }
+
+                return Ok(accountDetails);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching account statements: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
 
         [HttpPost("{accountId}/freeze")]
         public async Task<IActionResult> AddAccountRestrictionAsync(FreezeAccountRequest request)

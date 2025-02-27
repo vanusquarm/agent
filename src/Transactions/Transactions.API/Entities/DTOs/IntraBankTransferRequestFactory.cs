@@ -30,7 +30,7 @@ public class IntraBankTransferRequestFactory
                             TransactionParticulars = partTransactionRemarks.Split(50, 1),
                             Rate = IntraBankTransferConstants.Rate,
                             PartTransactionRemarks = partTransactionRemarks.Split(50, 2),
-                            ReferenceNumber = referenceNumber,
+                            ReferenceNumber = referenceNumber.Split(20, 1),
                             PartTransactionRemarks2 = partTransactionRemarks.Split(50, 3),
                             LienDetailsList = new List<LienDetails>(),
                                 MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
@@ -52,7 +52,7 @@ public class IntraBankTransferRequestFactory
                             TransactionParticulars = partTransactionRemarks.Split(50, 1),
                             Rate = IntraBankTransferConstants.Rate,
                             PartTransactionRemarks = partTransactionRemarks.Split(50, 2),
-                            ReferenceNumber = referenceNumber,
+                            ReferenceNumber = referenceNumber.Split(20, 1),
                             PartTransactionRemarks2 = partTransactionRemarks.Split(50, 3),
                             LienDetailsList = new List<LienDetails>(),
                                 MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
