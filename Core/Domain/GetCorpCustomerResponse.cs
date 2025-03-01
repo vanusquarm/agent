@@ -38,16 +38,16 @@ namespace Finacle.Core.Domain
         public string CorporateClassification { get; set; }
 
         [JsonPropertyName("standardIndustryCode")]
-        public object StandardIndustryCode { get; set; }
+        public string StandardIndustryCode { get; set; }
 
         [JsonPropertyName("segment")]
-        public object Segment { get; set; }
+        public string Segment { get; set; }
 
         [JsonPropertyName("taxIdType")]
         public string TaxIdType { get; set; }
 
         [JsonPropertyName("publiclyHeld")]
-        public object PubliclyHeld { get; set; }
+        public string PubliclyHeld { get; set; }
 
         [JsonPropertyName("healthCode")]
         public string HealthCode { get; set; }
@@ -56,16 +56,16 @@ namespace Finacle.Core.Domain
         public int NoOfEmployees { get; set; }
 
         [JsonPropertyName("subsegment")]
-        public object Subsegment { get; set; }
+        public string Subsegment { get; set; }
 
         [JsonPropertyName("sector")]
-        public object Sector { get; set; }
+        public string Sector { get; set; }
 
         [JsonPropertyName("subsector")]
-        public object Subsector { get; set; }
+        public string Subsector { get; set; }
 
         [JsonPropertyName("region")]
-        public object Region { get; set; }
+        public string Region { get; set; }
 
         [JsonPropertyName("primaryBranch")]
         public string PrimaryBranch { get; set; }
@@ -86,22 +86,22 @@ namespace Finacle.Core.Domain
         public List<AddressDetail> AddressDetails { get; set; }
 
         [JsonPropertyName("emailDetails")]
-        public List<object> EmailDetails { get; set; }
+        public List<EmailDetail> EmailDetails { get; set; }
 
         [JsonPropertyName("phoneDetails")]
-        public List<object> PhoneDetails { get; set; }
+        public List<PhoneDetail> PhoneDetails { get; set; }
 
         [JsonPropertyName("customerDocuments")]
         public List<CustomerDocument> CustomerDocuments { get; set; }
 
         [JsonPropertyName("riskRatingDetails")]
-        public List<object> RiskRatingDetails { get; set; }
+        public List<RiskRatingDetail> RiskRatingDetails { get; set; }
 
         [JsonPropertyName("relatedParty")]
         public List<object> RelatedParty { get; set; }
 
         [JsonPropertyName("productPreferenceDetails")]
-        public List<object> ProductPreferenceDetails { get; set; }
+        public List<ProductPreferenceDetail> ProductPreferenceDetails { get; set; }
 
         [JsonPropertyName("communicationPreferenceDetails")]
         public List<object> CommunicationPreferenceDetails { get; set; }

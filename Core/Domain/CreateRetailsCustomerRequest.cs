@@ -217,6 +217,18 @@ namespace Finacle.Core.Domain
         public DateTime RiskRatingOverriddenOn { get; set; }
         public string RiskRatingOverriddenBy { get; set; }
     }
+    public class RiskRatingDetail
+    {
+        public string CustomerRating { get; set; }
+        public string RiskRatingModel { get; set; }
+        public string RiskRating { get; set; }
+        public DateTime RiskRatingDate { get; set; }
+        public string Remarks { get; set; }
+        public DateTime RiskProfileValidTill { get; set; }
+        public string OverrideRiskRating { get; set; }
+        public DateTime RiskRatingOverriddenOn { get; set; }
+        public string RiskRatingOverriddenBy { get; set; }
+    }
 
     public class RelatedPartyDto
     {
@@ -246,7 +258,16 @@ namespace Finacle.Core.Domain
         public DateTime PreferenceEndDate { get; set; }
         public string Remarks { get; set; }
     }
-     
+
+    public class ProductPreferenceDetail
+    {
+        public string Category { get; set; }
+        public string Code { get; set; }
+        public DateTime PreferenceStartDate { get; set; }
+        public DateTime PreferenceEndDate { get; set; }
+        public string Remarks { get; set; }
+    }
+
     public class CommunicationPreferenceDetailDto
     {
         public string Type { get; set; }
