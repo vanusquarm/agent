@@ -330,6 +330,60 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        //Dealing with liens
+
+       
+
+        [HttpGet("{accountId}/liens/{lienType}")]
+        public async Task<IActionResult> GetAccountLiensAsync(
+           [FromRoute] string accountId,
+           [FromRoute] string lienType)
+        {
+            try
+            {
+                // Ensure the route parameter is mapped to the request model
+
+                var accountDetails = await accountClient.GetAccountLiens(accountId,lienType);
+
+                if (accountDetails == null)
+                {
+                    return Ok("No Account Lien found");
+                }
+
+                return Ok(accountDetails);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching account liens: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpPost("{accountId}/liens")]
+        public async Task<IActionResult> CreateAccountLiensAsync(
+          [FromRoute] string accountId,
+          [FromBody] LienRequestDto request)
+        {
+            try
+            {
+                // Ensure the route parameter is mapped to the request model
+
+                var accountDetails = await accountClient.CreateAccountLiens(accountId, request);
+
+                if (accountDetails == null)
+                {
+                    return Ok("No Account Lien creation failed");
+                }
+
+                return Ok(accountDetails);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while creating account liens: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
         private string Clean(string input)
         {
             return Regex.Replace(input, "[^a-zA-Z0-9 ]", "");

@@ -70,5 +70,20 @@ namespace Acccounts.API.Services
         // Unsecured Loan Account
         [Post("/v2/unsecured-loan-accounts")]
         Task<object> CreateUnsecuredLoanAcct(object request);
+
+
+        //Liens
+        [Get("/v2/savings-accounts/{accountId}/liens/{lientType}")]
+        Task<object> GetSavingsAccountLiens(string accountId,string lientType);
+
+
+
+        [Post("/v2/savings-accounts/{accountId}/liens")]
+        Task<LienCreationDto> CreateAccountLiens(string accountId, LienRequestDto lienRequest);
+
+        [Get("/v2/savings-accounts/{accountId}/liens/{lientType}")]
+        Task<LienResponseDto> GetAccountLiens(string accountId,string lientType);
+
+       
     }
 }
