@@ -25,21 +25,10 @@ namespace Finacle.Core
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public bool IsCorporate(string customerid)
+        public FinacleClient(HttpClient httpClient)
         {
-            if (string.IsNullOrEmpty(customerid))
-            {
-                throw new ArgumentNullException(nameof(customerid));
-            }
-            if (customerid.StartsWith("C"))
-            {
-                return true;
-            }
-            // Check if customer is a corporate customer
-            return false;
+            _httpClient = httpClient;
         }
-
-
 
         // Optional: Dispose of HttpClient when no longer needed (though it's better to use it for the lifetime of the app)
         public  void Dispose()

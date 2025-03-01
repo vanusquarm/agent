@@ -11,6 +11,19 @@ namespace Finacle.Core
 {
     public partial class FinacleClient
     {
+        // Check if customer is a corporate customer
+        public bool IsCorporate(string customerid)
+        {
+            if (string.IsNullOrEmpty(customerid))
+            {
+                throw new ArgumentNullException(nameof(customerid));
+            }
+            if (customerid.StartsWith("C"))
+            {
+                return true;
+            }
+            return false;
+        }
 
         // Get customer details
         public T GetCustomer<T>(string customerId)
