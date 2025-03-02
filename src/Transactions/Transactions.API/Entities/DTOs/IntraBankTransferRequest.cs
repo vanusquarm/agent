@@ -65,6 +65,10 @@ public class IntraBankTransferRequest
  
         [JsonPropertyName("lienDetailsList")]
         public List<LienDetails> LienDetailsList { get; set; }
+
+        [JsonPropertyName("chargeEventId")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string ChargeEventId { get; set; }
     }
  
     public class TransferMiscellaneousDetailsType

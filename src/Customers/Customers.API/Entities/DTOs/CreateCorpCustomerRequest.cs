@@ -59,7 +59,7 @@ namespace Customers.API.Entities.DTOs
         public string? HealthCode { get; set; }
 
         [JsonPropertyName("noOfEmployees")]
-        public string? NoOfEmployees { get; set; }
+        public int? NoOfEmployees { get; set; }
 
         [JsonPropertyName("sector")]
         public string? Sector { get; set; }
