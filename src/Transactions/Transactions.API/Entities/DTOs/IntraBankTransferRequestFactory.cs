@@ -4,7 +4,7 @@ namespace Transactions.API.Entities.DTOs;
 
 public class IntraBankTransferRequestFactory
 {
-    public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? docNum, string? chargeEventId = null)
+    public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? docNum, string? chargeEventId)
     {
         DateTime transactionDate = DateTime.ParseExact(
             DateTime.Now.ToString("yyyy-MM-dd"),
@@ -33,13 +33,14 @@ public class IntraBankTransferRequestFactory
                             ReferenceNumber = referenceNumber.Split(20, 1),
                             PartTransactionRemarks2 = partTransactionRemarks.Split(50, 3),
                             LienDetailsList = new List<LienDetails>(),
-                                MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
-                                {
-                                    DocumentNumber = docNum,
-                                    //Freetxt2 = "000013241218110101000037132501",
-                                    Freetxt3 = partTransactionRemarks.Split(50, 4),
-                                    Freetxt4 = partTransactionRemarks.Split(50, 5)
-                                }
+                            ChargeEventId = chargeEventId,
+                            MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
+                            {
+                                DocumentNumber = docNum,
+                                //Freetxt2 = "000013241218110101000037132501",
+                                Freetxt3 = partTransactionRemarks.Split(50, 4),
+                                Freetxt4 = partTransactionRemarks.Split(50, 5)
+                            }
                         },
                         new IntraBankTransferTransactionDetail
                         {
@@ -55,13 +56,13 @@ public class IntraBankTransferRequestFactory
                             ReferenceNumber = referenceNumber.Split(20, 1),
                             PartTransactionRemarks2 = partTransactionRemarks.Split(50, 3),
                             LienDetailsList = new List<LienDetails>(),
-                                MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
-                                {
-                                    DocumentNumber = docNum,
-                                    //Freetxt2 = "000013241218110101000037132501",
-                                    Freetxt3 = partTransactionRemarks.Split(50, 4),
-                                    Freetxt4 = partTransactionRemarks.Split(50, 5)
-                                }
+                            MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
+                            {
+                                DocumentNumber = docNum,
+                                //Freetxt2 = "000013241218110101000037132501",
+                                Freetxt3 = partTransactionRemarks.Split(50, 4),
+                                Freetxt4 = partTransactionRemarks.Split(50, 5)
+                            }
                         }
                     }
         };

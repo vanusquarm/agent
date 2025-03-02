@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace Finacle.Core.Domain
+namespace Customers.API.Entities.DTOs
 {
     public class GetCorpCustomerResponse
     {
