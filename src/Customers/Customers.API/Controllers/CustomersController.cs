@@ -191,6 +191,33 @@ namespace Customers.API.Controllers
             }
         }
 
+        [HttpGet("{customerId}/getRelationshipManager")]
+        public async Task<IActionResult> GetRelationshipManager(string customerId, bool isRetail =true)
+        {
+            try
+            {
+                
+                if (isRetail)
+                {
+                    RelationshipManagerResponseDto rm = await customerClient.GetRetailCustomerRelationshipManager(customerId);
+                    return Ok(rm);
+
+                }
+                else
+                {
+                    RelationshipManagerResponseDto rm = await customerClient.GetCorporateCustomerRelationshipManager(customerId);
+                    return Ok(rm);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while fetching customer account balances: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
         [HttpGet("{customerId}/accounts/{accountId}/transactions")]
         public async Task<IActionResult> GetCustomerAccountTransactions(string customerId, string accountId)
         {
