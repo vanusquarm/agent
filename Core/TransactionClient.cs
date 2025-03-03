@@ -36,7 +36,7 @@ namespace Finacle.Core
         }
 
 
-        public async Task<IntraBankTransferResponse> TransferFundsAsync(string sourceAccount, string destAccount, double amount, string channelReference, string remarks, string channelId)
+        public async Task<IntraBankTransferResponse> TransferFundsAsync(string sourceAccount, string destAccount, double amount, string channelReference, string remarks, string channelId, string chargeEventId)
         {
             // Creating a transfer request object
             var transferRequest = new IntraBankTransferRequest
@@ -47,7 +47,8 @@ namespace Finacle.Core
                 Remarks = remarks,
                 ChannelReference = channelReference,
                 ChannelId = channelId,
-                DocNum = null
+                DocNum = null,
+                ChargeEventId = chargeEventId
             };
             return await TransferFundsAsync(transferRequest);
         }

@@ -32,7 +32,7 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<IntraBankTransferResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public IntraBankTransferResponse TransferFunds(string sourceAccount, string destAccount, double amount, string channelReference, string remarks, string channelId)
+        public IntraBankTransferResponse TransferFunds(string sourceAccount, string destAccount, double amount, string channelReference, string remarks, string channelId, string chargeEventId)
         {
             var transferRequest = new IntraBankTransferRequest
             {
@@ -42,7 +42,8 @@ namespace Finacle.Core
                 Remarks = remarks,
                 ChannelReference = channelReference,
                 ChannelId = channelId,
-                DocNum = null
+                DocNum = null,
+                ChargeEventId = chargeEventId
             };
 
             return TransferFunds(transferRequest);
