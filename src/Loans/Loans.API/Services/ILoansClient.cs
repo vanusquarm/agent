@@ -62,6 +62,9 @@ namespace Loans.API.Services
         [Post("/v2/unsecured-loan-accounts/{accountIdentification}:close")]
         Task<dynamic> PayOffSecuredLoan(string accountIdentification);
 
+        [Post("/v2/LoanAccountInquiryDtls/getLoanAccountInquiryDtls")]
+        Task<dynamic> GetLoanInquiry(LoanInquiry loanInquiry);
+
 
     }
 }

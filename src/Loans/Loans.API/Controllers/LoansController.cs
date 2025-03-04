@@ -240,6 +240,27 @@ namespace Loan.API.Controllers
             return Ok(loans);
         }
 
+        [HttpPost("inquiry")]
+        public async Task<IActionResult> LoanInquiry(LoanInquiry loanInquiry)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(loanInquiry.CustomerId)) 
+                {
+                    var result = await loanClient.GetLoanInquiry(loanInquiry);
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while getting an interest: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
        
     }
 }
