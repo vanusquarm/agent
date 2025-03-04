@@ -113,5 +113,21 @@ namespace Finacle.Core.Domain
         public string Stan { get; set; }
     }
 
+    // Request DTO
+    public class ChargeRequest
+    {
+        public string RequestReference { get; set; }
+        public string AccountNumber { get; set; }
+        public string EventId { get; set; }
+        public decimal ChargeAmount { get; set; }
+    }
+
+    // Response DTO
+    public class ChargeResponse
+    {
+        public string TransactionId { get; set; }
+        public string ChrgAmt { get; set; } // Consider converting to decimal if needed
+        public string ErrorFlg { get; set; }
+    }
 
 }

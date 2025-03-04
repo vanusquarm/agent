@@ -1,7 +1,9 @@
 using Finacle.Core;
 using Microsoft.AspNetCore.Mvc;
+using Transactions.API.Entities;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
+using static Transactions.API.Entities.ResponseManager;
 using EodStatusRequest = Transactions.API.Entities.DTOs.EodStatusRequest;
 using TransactionRequest = Transactions.API.Entities.DTOs.TransactionRequest;
 
@@ -14,10 +16,12 @@ public class TransactionsController : ControllerBase
 
     private readonly ITransactionClient _transactionClient;
     private readonly FinacleClient _finacleClient;
+    private readonly AccountUtil _accountUtil;
 
-    public TransactionsController(ITransactionClient transactionClient)
+    public TransactionsController(ITransactionClient transactionClient, AccountUtil accountUtil)
     {
         _transactionClient = transactionClient;
+        _accountUtil = accountUtil;
     }
 
     [HttpGet]
@@ -77,8 +81,8 @@ public class TransactionsController : ControllerBase
             return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
         }
     }
-    
-        
+
+
     [HttpPost("cash-withdrawal")]
     public async Task<IActionResult> PerformCashWithdrawal([FromBody] CashWithdrawalRequest cashWithdrawalRequest)
     {
@@ -107,7 +111,7 @@ public class TransactionsController : ControllerBase
             return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
         }
     }
-        
+
     [HttpPost("transfer")]
     public async Task<IActionResult> PerformIntraBankTransfer([FromBody] AccountTransferRequest accountTransferRequest)
     {
@@ -168,5 +172,34 @@ public class TransactionsController : ControllerBase
         }
     }
 
+    [HttpPost("charges")]
+    public async Task<IActionResult> PerformCharge([FromBody] PerformChargeRequestDto chargeRequest)
+    {
+        try
+        {
+            var request = new ChargeDetailsDto
+            {
+                AccountNumber = chargeRequest.AccountNumber,
+                EventId = chargeRequest.EventId,
+                ChrgAmt = chargeRequest.ChargeAmount.ToString(),
+                Requestreference = chargeRequest.RequestReference
+            };
+            var response = await _transactionClient.PerformCharge(request);
 
+            //if (response == null || string.IsNullOrEmpty(response.TransactionReference))
+            //{
+            //    return StatusCode(500, "Failed to charge");
+            //}
+
+            return Ok(response);
+        }
+        catch (Refit.ApiException apiEx)
+        {
+            return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
+    }
 }

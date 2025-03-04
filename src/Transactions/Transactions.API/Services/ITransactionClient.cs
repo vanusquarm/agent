@@ -38,4 +38,9 @@ public interface ITransactionClient
     Task<IntraBankTransferResponse> PerformIntraBankTransfer(
         [Header("requestreference")] string requestReference,
         [Body] IntraBankTransferRequest intraBankTransferRequest);
+
+
+    [Post("/v2/createCustomCharge/createCustomChargeDtls")]
+    Task<object> PerformCharge(
+        [Body] ChargeDetailsDto intraBankTransferRequest);
 }

@@ -48,5 +48,17 @@ namespace Finacle.Core
 
             return TransferFunds(transferRequest);
         }
+
+        public ChargeResponse ChargeTransaction(ChargeRequest request)
+        {
+            var jsonContent = JsonSerializer.Serialize(request);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            var response = _httpClient.PostAsync("api/v1/Transactions/charges", httpContent).GetAwaiter().GetResult();
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonSerializer.Deserialize<ChargeResponse>(responseContent);
+        }
     }
 }
