@@ -6,11 +6,12 @@ public class IntraBankTransferRequestFactory
 {
     public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? docNum, string? chargeEventId)
     {
-        DateTime transactionDate = DateTime.ParseExact(
-            DateTime.Now.ToString("yyyy-MM-dd"),
-            "yyyy-MM-dd",
-            CultureInfo.InvariantCulture
-        );
+        DateTime transactionDate = DateTime.ParseExact("2025-02-21", "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        //DateTime transactionDate = DateTime.ParseExact(
+        //    DateTime.Now.ToString("yyyy-MM-dd"),
+        //    "yyyy-MM-dd",
+        //    CultureInfo.InvariantCulture
+        //);
         return new IntraBankTransferRequest
         {
             TransactionType = IntraBankTransferConstants.TransactionType,
