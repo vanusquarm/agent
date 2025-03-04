@@ -27,15 +27,9 @@ namespace Loan.API.Controllers
                 if (createUnsecuredLoanRequest!=null)
                 {
                     var loan = isSecured ?  await loanClient.CreateSecureLoan((CreateUnsecuredLoanRequest)createUnsecuredLoanRequest) : await loanClient.CreateUnsecureLoan((CreateUnsecuredLoanRequest)createUnsecuredLoanRequest);
+                    //var response =await loanClient.CreateUnsecureLoan<CreateUnsecuredLoanResponseJson>(createUnsecuredLoanRequest);
 
-                    if(loan!=null)
-                    {
-                        return Ok(loan);
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
+                    return Ok(loan);
 
                 }
                 else
@@ -128,14 +122,19 @@ namespace Loan.API.Controllers
         }
 
        
-        [HttpGet("GetOutstandingInquiry/{accountId}")]
-        public async Task<IActionResult> GetOutstandingInquiry(string accountId, bool isSecured = false)
+        [HttpGet("GetOutstandingInquiry/{customerId}")]
+        public async Task<IActionResult> GetOutstandingInquiry(string customerId, bool isSecured = false)
         {
             try
             {
-                if (!string.IsNullOrEmpty(accountId)) // secured loan condition
+               
+                if (!string.IsNullOrEmpty(customerId)) // secured loan condition
                 {
-                    var result = isSecured ? null : await loanClient.GetOutStandingIniquiry(accountId);
+                    var request = new Dictionary<string, string>
+                    {
+                        { "customerId", $"{ customerId }" }
+                    };
+                    var result = isSecured ? null : await loanClient.GetOutStandingIniquiry(request);
                     return Ok(result);
                 }
                 else
@@ -224,8 +223,16 @@ namespace Loan.API.Controllers
             var loans = isSecured ? await loanClient.GetSecuredLoanDetails(loanId) : await loanClient.GetLoanDetails(loanId);
             return Ok(loans);
         }
+        [HttpGet("unsecuredLoan/{loanId}")]
+        public async Task<IActionResult> GetUnsecuredLoanDetails(string loanId, bool isSecured = false)
+        {
+            if (string.IsNullOrEmpty(loanId)) { return NotFound(); }
 
-   
+            var loans = await loanClient.GetLoanDetails(loanId);
+            return Ok(loans);
+        }
+
+
         [HttpPatch("{loanId}")]
         public async Task<IActionResult> PayOffLoan(string loanId,PayoffRequestDTO payoffRequestDTO, bool isSecured = false)
         {
@@ -233,6 +240,27 @@ namespace Loan.API.Controllers
             return Ok(loans);
         }
 
+        [HttpPost("inquiry")]
+        public async Task<IActionResult> LoanInquiry(LoanInquiry loanInquiry)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(loanInquiry.CustomerId)) 
+                {
+                    var result = await loanClient.GetLoanInquiry(loanInquiry);
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error occurred while getting an interest: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
        
     }
 }

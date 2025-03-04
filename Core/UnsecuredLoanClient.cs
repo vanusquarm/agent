@@ -5,38 +5,75 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Finacle.Core
 {
     public partial class FinacleClient
     {
-        public CreateUnsecuredLoanResponse CreateUnsecuredLoan(CreateUnsecuredLoanRequest unsecuredLoanRequest)
+        public CreateUnsecuredLoanResponse CreateUnsecuredLoan(CreateUnsecuredLoanRequest request)
         {
-            if (unsecuredLoanRequest == null)
-                throw new ArgumentNullException(nameof(unsecuredLoanRequest));
+            var url = "/api/v1/Loans?isSecured=false";  // Append the query string
 
-            if (unsecuredLoanRequest.LoanAmount <= 0)
-                throw new ArgumentException("Loan amount must be greater than zero.", nameof(unsecuredLoanRequest.LoanAmount));
-
-            if (string.IsNullOrWhiteSpace(unsecuredLoanRequest.OperAccountId) ||
-                string.IsNullOrWhiteSpace(unsecuredLoanRequest.CustomerReference)) 
+            try
             {
-                throw new ArgumentException("Invalid OperAccountId || CustomerReference", nameof(unsecuredLoanRequest));
+                var jsonContent = JsonSerializer.Serialize(request);
+                var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var response = _httpClient.PostAsync(url, httpContent).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+                    return JsonSerializer.Deserialize<CreateUnsecuredLoanResponse>(content, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                }
+                else
+                {
+                    var errorContent = response.Content.ReadAsStringAsync().Result;
+                    throw new HttpRequestException($"Error creating LOAN. Status: {response.StatusCode}, Response: {errorContent}");
+                }
             }
-            if (string.IsNullOrWhiteSpace(unsecuredLoanRequest.AccountCurrency))
+            catch (HttpRequestException ex)
             {
-                throw new ArgumentException("Invalid AccountCurrency ", nameof(unsecuredLoanRequest));
+                throw new Exception($"HTTP Request error: {ex.Message}");
             }
-           
+            catch (JsonException ex)
+            {
+                throw new Exception($"JSON Serialization/Deserialization error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An unexpected error occurred: {ex.Message}");
+            }
 
-            var requestUri = "api/v1/Loans"; //
-            var jsonContent = new StringContent(JsonSerializer.Serialize(unsecuredLoanRequest), Encoding.UTF8, "application/json");
+         
+        }
 
-            var response = _httpClient.PostAsync(requestUri, jsonContent).GetAwaiter().GetResult();
-            response.EnsureSuccessStatusCode();
+        public async Task<CreateUnsecuredLoanResponse> CreateUnsecuredLoanAsync(CreateUnsecuredLoanRequest loanRequest)
+        {
+            var url = $"/api/v1/Loans?isSecured=false";  // Append the query string
 
-            var responseContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-            return JsonSerializer.Deserialize<CreateUnsecuredLoanResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            // Serialize the request object to JSON using System.Text.Json
+            var content = new StringContent(JsonSerializer.Serialize(loanRequest), Encoding.UTF8, "application/json");
+
+            // Send the POST request
+            var response = await _httpClient.PostAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Parse the response and return it
+                var responseData = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<CreateUnsecuredLoanResponse>(responseData);  // Deserialize the response body
+            }
+            else
+            {
+                // Handle error response
+                throw new HttpRequestException($"Error occurred while creating loan: {response.ReasonPhrase}");
+            }
         }
 
         public UpdateUnsecuredLoanResponse UpdateUnsecuredLoan(UpdateLoanFeesRequestDto updateLoanFeesRequestDto)
@@ -54,12 +91,12 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<UpdateUnsecuredLoanResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public DisbursementResponseDto Disburse(DisbursementRequestDTO disbursementRequestDTO)
+        public DisbursementResponseDto Disburse(string accountId, DisbursementRequestDTO disbursementRequestDTO)
         {
             if (disbursementRequestDTO == null)
                 throw new ArgumentNullException(nameof(disbursementRequestDTO));
 
-            var requestUri = "api/v1/Loans/Disbursement/{accountId}"; //
+            var requestUri = $"api/v1/Loans/Disbursement/{accountId}"; //
             var jsonContent = new StringContent(JsonSerializer.Serialize(disbursementRequestDTO), Encoding.UTF8, "application/json");
 
             var response = _httpClient.PostAsync(requestUri, jsonContent).GetAwaiter().GetResult();
@@ -77,7 +114,7 @@ namespace Finacle.Core
             if (string.IsNullOrEmpty(accountId))
                 throw new ArgumentNullException(nameof(accountId));
 
-            var requestUri = "api/v1/Loans/PayOff/{accountId}"; //
+            var requestUri = $"api/v1/Loans/PayOff/{accountId}"; //
             var jsonContent = new StringContent(JsonSerializer.Serialize(payoffRequestDTO), Encoding.UTF8, "application/json");
 
             var response = _httpClient.PostAsync(requestUri, jsonContent).GetAwaiter().GetResult();
@@ -87,25 +124,25 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<PayOffResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public OutstandingInquiryResponseDTO GetLoanOutstandingInquiry(string accountId)
+        public AccountInquiryDetailsResponseDto GetLoanOutstandingInquiry(string customerId)
         {
-            if (string.IsNullOrEmpty(accountId))
-                throw new ArgumentNullException(nameof(accountId));
+            if (string.IsNullOrEmpty(customerId))
+                throw new ArgumentNullException(nameof(customerId));
 
-            var requestUri = "api/v1/Loans/GetOutstandingInquiry/{accountId}"; //GetOutstandingInquiry/{accountId}
+            var requestUri = $"api/v1/Loans/GetOutstandingInquiry/{customerId}"; //GetOutstandingInquiry/{accountId}
 
             var response = _httpClient.GetAsync(requestUri).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
 
             var responseContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-            return JsonSerializer.Deserialize<OutstandingInquiryResponseDTO>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return JsonSerializer.Deserialize<AccountInquiryDetailsResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
         public DisbursementResponseDto schedulePayment(string accountId)
         {
             if (string.IsNullOrEmpty(accountId))
                 throw new ArgumentNullException(nameof(accountId));
-            var requestUri = "api/v1/Loans/SchedulePayment/{accountId}"; //GetOutstandingInquiry/{accountId}
+            var requestUri = $"api/v1/Loans/SchedulePayment/{accountId}"; //GetOutstandingInquiry/{accountId}
 
             var response = _httpClient.GetAsync(requestUri).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
@@ -119,7 +156,7 @@ namespace Finacle.Core
             if (string.IsNullOrEmpty(accountId))
                 throw new ArgumentNullException(nameof(accountId));
 
-            var requestUri = "api/v1/Loans/InterestDetails/{accountId}"; //GetOutstandingInquiry/{accountId}
+            var requestUri = $"api/v1/Loans/InterestDetails/{accountId}"; //GetOutstandingInquiry/{accountId}
             var jsonContent = new StringContent(JsonSerializer.Serialize(unsecuredLoanInterestRateDto), Encoding.UTF8, "application/json");
 
 
@@ -133,7 +170,7 @@ namespace Finacle.Core
         {
             if (string.IsNullOrEmpty(accountId))
                 throw new ArgumentNullException(nameof(accountId));
-            var requestUri = "api/v1/Loans/InterestDetails/{accountId}"; //GetOutstandingInquiry/{accountId}
+            var requestUri = $"api/v1/Loans/InterestDetails/{accountId}"; //GetOutstandingInquiry/{accountId}
 
             var response = _httpClient.GetAsync(requestUri).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
@@ -142,17 +179,17 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<GetInterestDetailsResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public GetInterestDetailsResponse GetLoanDetails(string accountId)
+        public FullAccountResponseDetailDto GetLoanDetails(string loanId)
         {
-            if (string.IsNullOrEmpty(accountId))
-                throw new ArgumentNullException(nameof(accountId));
-            var requestUri = "api/v1/Loans/{accountId}"; //GetOutstandingInquiry/{accountId}
+            if (string.IsNullOrEmpty(loanId))
+                throw new ArgumentNullException(nameof(loanId));
+            var requestUri = $"api/v1/Loans/unsecuredLoan/{loanId}"; //GetOutstandingInquiry/{accountId}
 
             var response = _httpClient.GetAsync(requestUri).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
 
             var responseContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-            return JsonSerializer.Deserialize<GetInterestDetailsResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return JsonSerializer.Deserialize<FullAccountResponseDetailDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
 
