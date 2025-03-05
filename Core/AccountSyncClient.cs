@@ -24,7 +24,7 @@ namespace Finacle.Core
         }
 
         // Get account status
-        public int isAccountActive(string accountId)
+        public int IsAccountActive(string accountId)
         {
             return GetAccountStatus(accountId) == "O" ? 1 : 0;
         }

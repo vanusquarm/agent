@@ -116,10 +116,11 @@ namespace Finacle.Core.Domain
     // Request DTO
     public class ChargeRequest
     {
-        public string RequestReference { get; set; }
-        public string AccountNumber { get; set; }
-        public string EventId { get; set; }
-        public decimal ChargeAmount { get; set; }
+        public string TransactionReference { get; set; }
+        public string AccountId { get; set; }
+        public string ChargeType { get; set; }
+        public decimal ChargeAmount { get; set; }  // Changed to decimal
+        public string Currency { get; set; } = "GHS";  // Changed to decimal
     }
 
     // Response DTO
