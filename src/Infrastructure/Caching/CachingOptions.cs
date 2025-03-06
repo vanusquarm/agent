@@ -1,7 +1,5 @@
-﻿using FSH.Framework.Infrastructure.Options;
-
-namespace Finacle.Infrastructure.Caching;
-public class CachingOptions : IOptionsRoot
+﻿namespace Finacle.Infrastructure.Caching;
+public class CachingOptions
 {
     public bool EnableDistributedCaching { get; set; } = false;
     public int SlidingExpirationInMinutes { get; set; } = 2;
