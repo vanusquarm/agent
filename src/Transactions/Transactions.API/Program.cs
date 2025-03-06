@@ -3,6 +3,7 @@
 using Finacle.Infrastructure.Auth;
 using Finacle.Infrastructure.Auth.BasicJwt;
 using Refit;
+using Transactions.API.Entities;
 using Transactions.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtMiddleware<ITransactionClient>(configuration);
 
+builder.Services.AddScoped<AccountUtil>();
 builder.Services.AddRefitClient<ITransactionClient>()
     .ConfigureHttpClient(c =>
     {

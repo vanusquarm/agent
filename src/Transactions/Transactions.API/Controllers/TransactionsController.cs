@@ -179,17 +179,13 @@ public class TransactionsController : ControllerBase
         {
             var request = new ChargeDetailsDto
             {
-                AccountNumber = chargeRequest.AccountNumber,
-                EventId = chargeRequest.EventId,
+                AccountNumber = chargeRequest.AccountId,
+                EventId = chargeRequest.ChargeType,
+                ChrgCrncy = chargeRequest.Currency ?? "GHS",
                 ChrgAmt = chargeRequest.ChargeAmount.ToString(),
-                Requestreference = chargeRequest.RequestReference
+                Requestreference = chargeRequest.TransactionReference
             };
             var response = await _transactionClient.PerformCharge(request);
-
-            //if (response == null || string.IsNullOrEmpty(response.TransactionReference))
-            //{
-            //    return StatusCode(500, "Failed to charge");
-            //}
 
             return Ok(response);
         }
