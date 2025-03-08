@@ -38,7 +38,8 @@ namespace Customers.API.Controllers
                         { "PhoneNumber", $"'{ localNumber }'" }
                     };
                     var customer = await customerClient.GetCustomerDetailsByPhoneAsync(request);
-                    var retailCustomer = customer?.Transform();
+                    var preferredCustomer = customer.CustomerDetails[0].CifId;
+                    var retailCustomer = await customerClient.GetRetailCustomer(preferredCustomer);
                     return Ok(retailCustomer);
                 }
                 else

@@ -364,6 +364,8 @@ namespace Customers.API.Entities.DTOs
             response.TierInformation = CustomerDetails[0].Tier;
             response.KycStatus = CustomerDetails[0].CifStatus == "A" ? "APPROVED" : "PENDING";
             response.Gender = CustomerDetails[0].Gender;
+            response.Dob = CustomerDetails[0].DOB;
+            response.CustomerName = $"{CustomerDetails[0].FirstName} {CustomerDetails[0].MiddleName} {CustomerDetails[0].LastName}";
             response.EmailDetails = new List<object>
             {
                 new
