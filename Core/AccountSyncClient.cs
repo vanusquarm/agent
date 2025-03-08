@@ -136,8 +136,7 @@ namespace Finacle.Core
         public bool IsStaff(string accountId)
         {
             var (_, customerDetail) = GetAccountCustomers(accountId);
-            var customer = GetCustomer<GetRetailCustomerResponse>(customerDetail.CustomerReference);
-            return customer.Segment == "GTSTAFF";
+            return customerDetail.RELATIONSHIPMANAGERID == "GH001800";
         }
 
 
