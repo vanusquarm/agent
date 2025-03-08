@@ -43,4 +43,14 @@ public interface ITransactionClient
     [Post("/v2/createCustomCharge/createCustomChargeDtls")]
     Task<object> PerformCharge(
         [Body] ChargeDetailsDto intraBankTransferRequest);
+
+
+
+    [Headers(
+        "delivery_channel: API",
+        "duptranchkreqd: Y",
+        "requesttype: SRV"
+    )]
+    [Post("/v2/savings-accounts:fundsTransferReversal")]
+    Task<object> Reverse([Header("requestreference")] string requestReference,[Body] object reversalTransferRequest);
 }
