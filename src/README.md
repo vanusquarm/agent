@@ -1,0 +1,1 @@
+[![Build Status](https://devops.gtbghana.com/DevOps/APIs/Finacle%20Integrations/_apis/build/status/Finacle.Gateway.CI?branchName=develop)](https://devops.gtbghana.com/DevOps/APIs/Finacle%20Integrations/_build/latest?definitionId=51&branchName=develop)
