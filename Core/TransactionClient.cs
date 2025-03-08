@@ -131,6 +131,18 @@ namespace Finacle.Core
 
         public async Task<ChargeResponse> ChargeTransactionAsync(ChargeRequest request)
         {
+            var jsonContent = JsonSerializer.Serialize(ChargeRequestv2.Map(request));
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync("/api/v1/Transactions/charges", httpContent);
+            response.EnsureSuccessStatusCode(); // Throws an exception if the response is not successful
+
+            var responseStream = await response.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<ChargeResponse>(responseStream);
+        }
+
+        public async Task<ChargeResponse> ChargeTransactionAsync(ChargeRequestv2 request)
+        {
             var jsonContent = JsonSerializer.Serialize(request);
             var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 

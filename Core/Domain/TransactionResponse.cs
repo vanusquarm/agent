@@ -114,13 +114,32 @@ namespace Finacle.Core.Domain
     }
 
     // Request DTO
-    public class ChargeRequest
+    public class ChargeRequestv2
     {
         public string TransactionReference { get; set; }
         public string AccountId { get; set; }
         public string ChargeType { get; set; }
         public decimal ChargeAmount { get; set; }  // Changed to decimal
         public string Currency { get; set; } = "GHS";  // Changed to decimal
+
+        public static ChargeRequestv2 Map(ChargeRequest chargeRequest)
+        {
+            return new ChargeRequestv2
+            {
+                TransactionReference = chargeRequest.RequestReference,
+                AccountId = chargeRequest.AccountNumber,
+                ChargeAmount = chargeRequest.ChargeAmount,
+                ChargeType = chargeRequest.EventId
+            };
+        }
+    }
+
+    public class ChargeRequest
+    {
+        public string RequestReference { get; set; }
+        public string AccountNumber { get; set; }
+        public string EventId { get; set; }
+        public decimal ChargeAmount { get; set; }
     }
 
     // Response DTO
