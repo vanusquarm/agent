@@ -15,3 +15,4 @@ app
 /src/Customers/Customers.API/Properties/PublishProfiles
 /src/Transactions/Transactions.API/Properties/PublishProfiles
 /src/Loans/Loans.API/Properties/PublishProfiles
+/src/Gateways/YarpGateway/Properties/PublishProfiles
