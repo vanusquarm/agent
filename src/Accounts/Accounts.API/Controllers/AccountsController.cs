@@ -369,23 +369,27 @@ namespace Acccounts.API.Controllers
             }
         }
 
-        [HttpGet("{TerminalId}/atm-office-account")]
-        public async Task<IActionResult> GetTerminalOfficeAcct([FromRoute] string TerminalId)
+        [HttpPost("atm-office-account")]
+        public async Task<IActionResult> GetTerminalOfficeAcct([FromBody] TerminalOfficeAcctRequest request)
         {
             try
             {
-                var request = new TerminalOfficeAcctRequest { TerminalId = TerminalId };
+                //var request = new { TerminalId };
+                //var request = new TerminalOfficeAcctRequest { TerminalId = TerminalId };
                 Log.Information("About to GetTerminalOfficeAcct with request: {@Request}", request);
-                var GetTerminalOfficeAcctResponse = await accountClient.GetTerminalOfficeAcct(request);
+                var GetTerminalOfficeAcctResponse = await accountClient.GetTerminalOfficeAccount(request);
                 Log.Information("Back from Getting TerminalOfficeAcct with response: {@Response}", GetTerminalOfficeAcctResponse);
                 return Ok(GetTerminalOfficeAcctResponse);
             }
+            catch (Refit.ApiException apiEx)
+            {
+                return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            }
             catch (Exception ex)
             {
-                Log.Error("An exception has occured at GetTerminalOfficeAcct with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while qyerying atm office account: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
+
         }
 
         //Dealing with liens      
