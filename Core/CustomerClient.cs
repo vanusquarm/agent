@@ -24,6 +24,29 @@ namespace Finacle.Core
             return customer;
         }
 
+        public bool IsCustomerStaff(string customerId)
+        {
+        
+            var customer = GetCustomer<GetRetailCustomerResponse>(customerId);
+            return customer.RelationshipManagerDetails[0].RelationshipManagerId == "GH001800";
+        }
+
+        public async Task<BankDateDto> GetCustomerBankDateAsync(string branchCode)
+        {
+            var jsonContent = JsonSerializer.Serialize(branchCode);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync($"/api/v1/transactions/bankdate", httpContent);
+
+            response.EnsureSuccessStatusCode(); // Throws exception if not 2xx response
+
+            var content = await response.Content.ReadAsStringAsync();
+            var date = JsonSerializer.Deserialize<BankDateDto>(content);
+
+            return date;
+        }
+
+
         public async Task<string> GetCustomerDataAsync(string customerId, string route)
         {
             // Construct the URL

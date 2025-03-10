@@ -106,8 +106,20 @@ namespace Loan.API.Controllers
             {
                 if (payoffRequestDTO != null) // secured loan condition
                 {
-                    var result = isSecured ? null : await loanClient.PayOffLoan(accountId, payoffRequestDTO);
-                    return Ok(result);
+                    var paid = isSecured ? null : await loanClient.PayOffLoan(accountId, payoffRequestDTO);
+                    if (paid != null && !string.IsNullOrEmpty(paid.AccountIdentification))
+                    {
+                        if(accountId.Length>3)
+                        {
+                            var branchCode = accountId.Substring(1, 3);
+                            var res = await loanClient.CloseAccount(accountId, branchCode);
+                        }
+                       
+                        return Ok(paid);
+                    }
+
+                    return NotFound();
+
                 }
                 else
                 {

@@ -3,6 +3,7 @@ using Transactions.API.Entities.DTOs;
 
 namespace Transactions.API.Services;
 using Refit;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public interface ITransactionClient
@@ -53,4 +54,7 @@ public interface ITransactionClient
     )]
     [Post("/v2/savings-accounts:fundsTransferReversal")]
     Task<object> Reverse([Header("requestreference")] string requestReference,[Body] object reversalTransferRequest);
+
+    [Post("/v2/bankBranchBodDateDtls/getbankBranchBodDateDtls")]
+    Task<BankDateDto> GetTransactionBankDate([Body] Dictionary<string, string> request);
 }

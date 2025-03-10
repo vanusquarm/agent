@@ -32,7 +32,12 @@ namespace Loans.API.Services
 
         [Headers("requesttype: SRV", "delivery_channel:API")]
         [Post("/v2/unsecured-loan-accounts/{accountIdentification}:payoff")]
-        Task<PayOffResponseDto> PayOffLoan(string accountIdentification,PayoffRequestDTO payoffRequestDTO);
+        Task<PayOffResponseDto> PayOffLoan(string accountIdentification, PayoffRequestDTO payoffRequestDTO);
+
+        [Headers("requesttype: SRV", "delivery_channel:API")]
+        [Post("/v2/unsecured-loan-accounts/{accountIdentification}:close")]
+        Task<PayOffResponseDto> CloseAccount(string accountIdentification, [Header("context_sol_id")]  string branchCode);
+
 
         [Post("/v2/unsecured-loan-accounts/{accountIdentification}:schedulePayment")]
         Task<dynamic> SchedulePayment(string accountIdentification, SchedulePaymentDTO schedulePaymentDTO);

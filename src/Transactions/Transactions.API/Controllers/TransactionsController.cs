@@ -226,4 +226,29 @@ public class TransactionsController : ControllerBase
         }
     }
 
+    [HttpGet("bankdate")]
+    public async Task<IActionResult> GetTransactionBankDate(string branchCode)
+    {
+        try
+        {
+            var request = new Dictionary<string, string>
+                    {
+                        { "solId", $"{ branchCode }" }
+                    };
+            BankDateDto date = await _transactionClient.GetTransactionBankDate(request);
+            //var contentx = result.Content.ReadAsStringAsync().Result;
+
+
+            return Ok(date);
+
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return NotFound();
+        }
+
+    }
+
 }
