@@ -65,7 +65,7 @@ namespace Acccounts.API.Services
 
 
         [Post("/v2/TerminalOfficeAcct/getTerminalOfficeAcct")]
-        Task<object> GetTerminalOfficeAcct(TerminalOfficeAcctRequest request);
+        Task<object> GetTerminalOfficeAccount(TerminalOfficeAcctRequest request);
 
         // Unsecured Loan Account
         [Post("/v2/unsecured-loan-accounts")]
