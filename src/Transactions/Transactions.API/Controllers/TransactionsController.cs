@@ -1,7 +1,9 @@
-using Finacle.Core;
+//using Finacle.Core;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using Transactions.API.Entities;
 using Transactions.API.Entities.DTOs;
+using Transactions.API.Entities.Models;
 using Transactions.API.Services;
 using static Transactions.API.Entities.ResponseManager;
 using EodStatusRequest = Transactions.API.Entities.DTOs.EodStatusRequest;
@@ -13,13 +15,14 @@ namespace Transactions.API.Controllers;
 [Route("api/v1/[controller]")]
 public class TransactionsController : ControllerBase
 {
-
+    private readonly FinacleDbContext _context;
     private readonly ITransactionClient _transactionClient;
-    private readonly FinacleClient _finacleClient;
+    //private readonly FinacleClient _finacleClient;
     private readonly AccountUtil _accountUtil;
 
-    public TransactionsController(ITransactionClient transactionClient, AccountUtil accountUtil)
+    public TransactionsController(FinacleDbContext context, ITransactionClient transactionClient, AccountUtil accountUtil)
     {
+        _context = context;
         _transactionClient = transactionClient;
         _accountUtil = accountUtil;
     }
@@ -115,10 +118,23 @@ public class TransactionsController : ControllerBase
     [HttpPost("transfer")]
     public async Task<IActionResult> PerformIntraBankTransfer([FromBody] AccountTransferRequest accountTransferRequest)
     {
+        var apirequestresponse = new Call
+        {
+            Channel = accountTransferRequest.ChannelId,
+            RequestParam = JsonSerializer.Serialize(accountTransferRequest),
+            RequestDate = DateTime.UtcNow,
+            Controller = "TransactionController",
+            EndPoint = "transactions/api/v1/transfer",
+            Amount = accountTransferRequest.Amount,
+            Apiservice = "PerformIntraBankTransfer",
+            RequestId = accountTransferRequest.ChannelReference
+        };
         try
         {
             if (accountTransferRequest == null)
             {
+                apirequestresponse.TraceId = "Invalid request data.";
+                apirequestresponse.ResponseCode = "400";
                 return BadRequest("Invalid request data.");
             }
 
@@ -126,9 +142,14 @@ public class TransactionsController : ControllerBase
                     accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId);
 
             var response = await _transactionClient.PerformIntraBankTransfer(accountTransferRequest.ChannelReference, request);
+            apirequestresponse.ReponseTime = DateTime.UtcNow;
+            apirequestresponse.ResponseCode = "200";
+            apirequestresponse.ResponseParam = JsonSerializer.Serialize(response);
 
             if (response == null || string.IsNullOrEmpty(response.TransactionReference))
             {
+                apirequestresponse.TraceId = "Invalid request data.";
+                apirequestresponse.ResponseCode = "500";
                 return StatusCode(500, "Failed to process the intra-bank transfer.");
             }
 
@@ -136,13 +157,23 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException apiEx)
         {
+            apirequestresponse.TraceId = $"{apiEx.Message}: {apiEx.StackTrace}";
+            apirequestresponse.ResponseCode = apiEx.StatusCode.ToString();
             return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
         }
         catch (Exception ex)
         {
+            apirequestresponse.TraceId = $"{ex.Message}: {ex.StackTrace}";
+            apirequestresponse.ResponseCode = "500";
             return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
         }
+        finally
+        {
+            await _context.ApiCalls.AddAsync(apirequestresponse);
+            await _context.SaveChangesAsync();
+        }
     }
+
 
     [HttpPost("eod-status")]
     public async Task<IActionResult> GetEodStatus([FromBody] EodStatusRequest request)

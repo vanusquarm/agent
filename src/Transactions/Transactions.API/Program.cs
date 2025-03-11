@@ -2,8 +2,10 @@
 
 using Finacle.Infrastructure.Auth;
 using Finacle.Infrastructure.Auth.BasicJwt;
+using Microsoft.EntityFrameworkCore;
 using Refit;
 using Transactions.API.Entities;
+using Transactions.API.Entities.Models;
 using Transactions.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +23,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtMiddleware<ITransactionClient>(configuration);
 
+// Add DbContext
+builder.Services.AddDbContext<FinacleDbContext>(options =>
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddScoped<AccountUtil>();
 builder.Services.AddRefitClient<ITransactionClient>()
     .ConfigureHttpClient(c =>
@@ -32,7 +38,7 @@ var app = builder.Build();
 // app.UseInfrastructure(builder.Environment, enableSwagger: enableSwagger);
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
