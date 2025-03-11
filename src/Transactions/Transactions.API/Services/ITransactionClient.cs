@@ -57,4 +57,8 @@ public interface ITransactionClient
 
     [Post("/v2/bankBranchBodDateDtls/getbankBranchBodDateDtls")]
     Task<BankDateDto> GetTransactionBankDate([Body] Dictionary<string, string> request);
+
+
+    [Post("/v2/eventIdchargeDtls/geteventIdchargeDtls")]
+    Task<object> ChargeInquiry(ChargeInquiryResponse request);
 }

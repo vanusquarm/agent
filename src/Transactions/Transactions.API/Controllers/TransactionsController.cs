@@ -280,6 +280,24 @@ public class TransactionsController : ControllerBase
         }
     }
 
+    [HttpPost("chargeinquiry")]
+    public async Task<IActionResult> PerformChargeInquiry([FromBody] ChargeInquiryRequest request)
+    {
+        try
+        {
+            var response = await _transactionClient.ChargeInquiry(request);
+
+            return Ok(response);
+        }
+        catch (Refit.ApiException apiEx)
+        {
+            return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
+    }
 
     [HttpPost("reverse")]
     public async Task<IActionResult> PerformReverse([FromBody] ReversalTransferRequestDto reversalRequest)
