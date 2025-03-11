@@ -66,6 +66,9 @@ public interface ITransactionClient
     [Post("/v2/FXRateDtls/getFXRateDtlssl")]
     Task<FxSaleRateResponse> GetFxRates(RatesRequestModel rateCodeString);
 
+    [Post("/v2/eventIdchargeDtls/geteventIdchargeDtls")]
+    Task<object> ChargeInquiry(ChargeInquiryRequest request);
+
     //"GetFxSaleRates": "v2/FXRateDtls/getFXRateDtlss",
     //"CurrencyConversion": "v2/currencies/CONVERT",
     //"TransactionStatusQuery": "v2/transactiondetails/gettransactiondetails",
