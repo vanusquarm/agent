@@ -1,0 +1,1 @@
+[![Build status](https://devops.gtbghana.com/DevOps/APIs/Finacle%20Integrations/_apis/build/status/Finacle.Acccounts.CI?branchName=develop)](https://devops.gtbghana.com/DevOps/APIs/Finacle%20Integrations/_build/latest?definitionId=38)
