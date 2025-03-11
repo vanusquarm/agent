@@ -10,7 +10,7 @@ namespace Finacle.Core
         protected readonly HttpClient _httpClient;
         private readonly string _baseUrl;
 
-        public FinacleClient(string baseUrl)
+        public FinacleClient(string baseUrl, string channelId)
         {
             if (string.IsNullOrWhiteSpace(baseUrl))
                 throw new ArgumentException("Base URL cannot be null or empty.", nameof(baseUrl));
@@ -23,11 +23,13 @@ namespace Finacle.Core
             };
 
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId);
         }
 
-        public FinacleClient(HttpClient httpClient)
+        public FinacleClient(HttpClient httpClient, string channelId = null)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId);
         }
 
         public static bool TryDeserialize<T>(string json, out T result)

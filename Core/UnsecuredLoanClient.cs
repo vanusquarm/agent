@@ -12,7 +12,7 @@ namespace Finacle.Core
 {
     public partial class FinacleClient
     {
-        public CreateUnsecuredLoanResponse CreateUnsecuredLoan(CreateUnsecuredLoanRequest request)
+        public CreateUnsecuredLoanResponse CreateUnsecuredLoan(CreateUnsecuredLoanRequest request, string requestId = null)
         {
             var url = "/api/v1/Loans?isSecured=false";  // Append the query string
 
@@ -53,7 +53,7 @@ namespace Finacle.Core
          
         }
 
-        public async Task<CreateUnsecuredLoanResponse> CreateUnsecuredLoanAsync(CreateUnsecuredLoanRequest loanRequest)
+        public async Task<CreateUnsecuredLoanResponse> CreateUnsecuredLoanAsync(CreateUnsecuredLoanRequest loanRequest, string requestId = null)
         {
             var url = $"/api/v1/Loans?isSecured=false";  // Append the query string
 
@@ -76,7 +76,7 @@ namespace Finacle.Core
             }
         }
 
-        public UpdateUnsecuredLoanResponse UpdateUnsecuredLoan(UpdateLoanFeesRequestDto updateLoanFeesRequestDto)
+        public UpdateUnsecuredLoanResponse UpdateUnsecuredLoan(UpdateLoanFeesRequestDto updateLoanFeesRequestDto, string requestId = null)
         {
             if (updateLoanFeesRequestDto == null)
                 throw new ArgumentNullException(nameof(updateLoanFeesRequestDto));
@@ -91,7 +91,7 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<UpdateUnsecuredLoanResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public DisbursementResponseDto Disburse(string accountId, DisbursementRequestDTO disbursementRequestDTO)
+        public DisbursementResponseDto Disburse(string accountId, DisbursementRequestDTO disbursementRequestDTO, string requestId = null)
         {
             if (disbursementRequestDTO == null)
                 throw new ArgumentNullException(nameof(disbursementRequestDTO));
@@ -106,7 +106,7 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<DisbursementResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public PayOffResponseDto PayOff(string accountId, PayoffRequestDTO payoffRequestDTO)
+        public PayOffResponseDto PayOff(string accountId, PayoffRequestDTO payoffRequestDTO, string requestId = null)
         {
             if (payoffRequestDTO == null)
                 throw new ArgumentNullException(nameof(payoffRequestDTO));
@@ -124,7 +124,7 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<PayOffResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public AccountInquiryDetailsResponseDto GetLoanOutstandingInquiry(string customerId)
+        public AccountInquiryDetailsResponseDto GetLoanOutstandingInquiry(string customerId, string requestId = null)
         {
             if (string.IsNullOrEmpty(customerId))
                 throw new ArgumentNullException(nameof(customerId));
@@ -138,7 +138,7 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<AccountInquiryDetailsResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public DisbursementResponseDto schedulePayment(string accountId)
+        public DisbursementResponseDto schedulePayment(string accountId, string requestId = null)
         {
             if (string.IsNullOrEmpty(accountId))
                 throw new ArgumentNullException(nameof(accountId));
@@ -151,7 +151,7 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<DisbursementResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public  ModifyAccountResponseDto ModifyLoanInterestRate(string accountId,UnsecuredLoanInterestRateDto unsecuredLoanInterestRateDto)
+        public  ModifyAccountResponseDto ModifyLoanInterestRate(string accountId,UnsecuredLoanInterestRateDto unsecuredLoanInterestRateDto, string requestId = null)
         {
             if (string.IsNullOrEmpty(accountId))
                 throw new ArgumentNullException(nameof(accountId));
@@ -166,7 +166,7 @@ namespace Finacle.Core
             var responseContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             return JsonSerializer.Deserialize<ModifyAccountResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
-        public GetInterestDetailsResponse GetInterestDetails(string accountId)
+        public GetInterestDetailsResponse GetInterestDetails(string accountId, string requestId = null)
         {
             if (string.IsNullOrEmpty(accountId))
                 throw new ArgumentNullException(nameof(accountId));
@@ -179,7 +179,7 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<GetInterestDetailsResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public FullAccountResponseDetailDto GetLoanDetails(string loanId)
+        public FullAccountResponseDetailDto GetLoanDetails(string loanId, string requestId = null)
         {
             if (string.IsNullOrEmpty(loanId))
                 throw new ArgumentNullException(nameof(loanId));

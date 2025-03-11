@@ -8,24 +8,24 @@ namespace Finacle.Core
 {
     public partial class FinacleClient
     {
-        public IntraBankTransferResponse TransferFunds(IntraBankTransferRequest transferRequest)
+        public IntraBankTransferResponse TransferFunds(IntraBankTransferRequest transferRequest, string requestId = null)
         {
             if (transferRequest == null)
                 throw new ArgumentNullException(nameof(transferRequest));
-
             if (transferRequest.Amount <= 0)
                 throw new ArgumentException("Transaction amount must be greater than zero.", nameof(transferRequest.Amount));
-
-            if (string.IsNullOrWhiteSpace(transferRequest.SourceAccountId) ||
-                string.IsNullOrWhiteSpace(transferRequest.DestinationAccountId))
-            {
+            if (string.IsNullOrWhiteSpace(transferRequest.SourceAccountId) || string.IsNullOrWhiteSpace(transferRequest.DestinationAccountId))
                 throw new ArgumentException("Invalid SourceAccount || DestinationAccount", nameof(transferRequest));
-            }
 
             var requestUri = "api/v1/Transactions/transfer";
-            var jsonContent = new StringContent(JsonSerializer.Serialize(transferRequest), Encoding.UTF8, "application/json");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(transferRequest), Encoding.UTF8, "application/json")
+            };
 
-            var response = _httpClient.PostAsync(requestUri, jsonContent).GetAwaiter().GetResult();
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
 
             var responseContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
@@ -49,12 +49,16 @@ namespace Finacle.Core
             return TransferFunds(transferRequest);
         }
 
-        public ChargeResponse ChargeTransaction(ChargeRequest request)
+        public ChargeResponse ChargeTransaction(ChargeRequest request, string requestId = null)
         {
-            var jsonContent = JsonSerializer.Serialize(request);
-            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "api/v1/Transactions/charges")
+            {
+                Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
+            };
 
-            var response = _httpClient.PostAsync("api/v1/Transactions/charges", httpContent).GetAwaiter().GetResult();
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
 
             var responseContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
