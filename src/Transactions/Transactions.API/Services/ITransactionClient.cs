@@ -5,6 +5,7 @@ namespace Transactions.API.Services;
 using Refit;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Transactions.API.Entities;
 
 public interface ITransactionClient
 {
@@ -59,6 +60,18 @@ public interface ITransactionClient
     Task<BankDateDto> GetTransactionBankDate([Body] Dictionary<string, string> request);
 
 
-    [Post("/v2/eventIdchargeDtls/geteventIdchargeDtls")]
-    Task<object> ChargeInquiry(ChargeInquiryResponse request);
+    [Post("/v2/FXRateDtls/getFXRateDtlssl")]
+    Task<FxSaleRateResponse> GetFxRates(string rateCodeString, string requestId);
+
+    [Post("/v2/FXRateDtls/getFXRateDtlssl")]
+    Task<FxSaleRateResponse> GetFxRates(RatesRequestModel rateCodeString);
+
+    //"GetFxSaleRates": "v2/FXRateDtls/getFXRateDtlss",
+    //"CurrencyConversion": "v2/currencies/CONVERT",
+    //"TransactionStatusQuery": "v2/transactiondetails/gettransactiondetails",
+    //"GetOfficeAccountDetails": "v2/officeAcctDtls/getOfficeAcctDtls",
+    //"StatementChargeEndpoint": "v2/createStatementCharge/createStatementChargeDtls",
+    //"GetAccountType": "v2/getAccntType/getAcType",
+    //"VirtualAccountInquiry": "v1/virtual-accounts/{VirtualAccountIdentification}",
+    //"VirtualAccountTransferEndpoint": "v1/virtual-accounts-transactions"
 }
