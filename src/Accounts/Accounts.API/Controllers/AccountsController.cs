@@ -430,14 +430,11 @@ namespace Acccounts.API.Controllers
         /// </summary>
         /// <param name="TerminalId"></param>
         /// <returns></returns>
-        [HttpGet("{TerminalId}/atm-office-account")]
-        public async Task<IActionResult> GetTerminalOfficeAcct([FromRoute] string TerminalId)
+        [HttpPost("atm-office-account")]
+        public async Task<IActionResult> GetTerminalOfficeAcct([FromBody] TerminalOfficeAcctRequest request)
         {
-            Log.Information("Recieved Request at GetTerminalOfficeAcct: {Request}", TerminalId);
             try
             {
-                //var request = new { TerminalId };
-                //var request = new TerminalOfficeAcctRequest { TerminalId = TerminalId };
                 Log.Information("About to GetTerminalOfficeAcct with request: {@Request}", request);
                 var GetTerminalOfficeAcctResponse = await accountClient.GetTerminalOfficeAccount(request);
                 Log.Information("Back from Getting TerminalOfficeAcct with response: {@Response}", GetTerminalOfficeAcctResponse);
