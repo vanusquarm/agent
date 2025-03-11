@@ -19,10 +19,12 @@ var policyNames = new List<string>
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 var configuration = builder.Configuration;
 
+var logFilePath = configuration["Serilog:WriteTo:2:Args:path"];
+
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .Enrich.WithCorrelationId()
-    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Day)
     .WriteTo.Console(new EcsTextFormatter())
     .Enrich.WithProperty("Environment", environment)
     .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]))
