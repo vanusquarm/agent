@@ -15,7 +15,5 @@ namespace Transactions.API.Entities.DTOs
         [JsonPropertyName("remarks")]
         public string Remarks { get; set; }
 
-        public string ChannelReference { get; set; }
-
     }
 }

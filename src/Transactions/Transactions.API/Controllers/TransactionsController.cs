@@ -207,12 +207,16 @@ public class TransactionsController : ControllerBase
         {
             var request = new
             {
-                TransactionDate = reversalRequest.TransactionDate,
-                TransactionReference = reversalRequest.TransactionReference,
-                Remarks = reversalRequest.Remarks
+                transactionIdentification=new 
+                {
+                    transactionDate = reversalRequest.TransactionDate,
+                    transactionReference = reversalRequest.TransactionReference,
+                    remarks = reversalRequest.Remarks
+                }
+               
             };
 
-            var response = await _transactionClient.Reverse(reversalRequest.ChannelReference, request);
+            var response = await _transactionClient.Reverse(reversalRequest.TransactionReference, request);
 
             return Ok(response);
         }
