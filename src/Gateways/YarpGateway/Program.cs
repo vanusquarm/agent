@@ -19,8 +19,6 @@ var policyNames = new List<string>
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 var configuration = builder.Configuration;
 
-var logFilePath = configuration["Serilog:WriteTo:2:Args:path"];
-
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration)
     .CreateLogger();
@@ -42,7 +40,7 @@ var app = builder.Build();
 // app.UseInfrastructure(builder.Environment, enableSwagger: enableSwagger);
 app.MapGet("/", () => "Healthy");
 app.UseRouting();
-//app.UseSerilogRequestLogging(); // Add Serilog request logging
+app.UseSerilogRequestLogging(); // Add Serilog request logging
 app.MapReverseProxy(config =>
 {
     config.Use(async (context, next) =>
