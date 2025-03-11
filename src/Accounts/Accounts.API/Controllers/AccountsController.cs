@@ -1,7 +1,6 @@
 using Acccounts.API.Entities;
 using Acccounts.API.Entities.DTOs;
 using Acccounts.API.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.Text.RegularExpressions;
@@ -14,9 +13,15 @@ namespace Acccounts.API.Controllers
     //[Authorize]
     public class AccountsController(IAccountClient accountClient) : ControllerBase
     {
+        /// <summary>
+        /// Async Method to Get Account
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
         [HttpGet("{accountId}")]
         public async Task<IActionResult> GetAccountAsync(string accountId)
         {
+            Log.Information("Recieved Request at GetAccountAsync: {Request}", accountId);
             var accountDetails = new object();
             try
             {
@@ -66,17 +71,21 @@ namespace Acccounts.API.Controllers
             return NotFound();
         }
 
+        /// <summary>
+        /// Async Method to Get Account Statements
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpGet("{accountId}/statements")]
-        public async Task<IActionResult> GetAccountStatementsAsync(
-            [FromRoute] string accountId,
-            [FromQuery] AccountStatementRequest request)
+        public async Task<IActionResult> GetAccountStatementsAsync([FromRoute] string accountId, [FromQuery] AccountStatementRequest request)
         {
+            Log.Information("Recieved Request at GetAccountStatementsAsync: {@Request}", request);
             try
-            {
+            {  
                 Log.Information("Recieved Request: {@Request}", request);                
                 // Ensure the route parameter is mapped to the request model
                 request.AccountId = accountId;
-
                 Log.Information("About to get account statements with request: {@Request}", request);
                 var accountDetails = await accountClient.GetAccountStatements(request);
                 Log.Information("Back from getting account statements with response: {@Response}", accountDetails);
@@ -96,18 +105,21 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Async Method to Get Account Statement
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("{accountId}/statements")]
-        public async Task<IActionResult> GetAccountStatementAsync(
-            [FromRoute] string accountId,
-            [FromBody] AccountStatementRequest request)
+        public async Task<IActionResult> GetAccountStatementAsync([FromRoute] string accountId, [FromBody] AccountStatementRequest request)
         {
+            Log.Information("Recieved Request at GetAccountStatementAsync: {@Request}", request);
             try
             {                
                 // Ensure the route parameter is mapped to the request model
                 request.AccountId = accountId;
-
                 Log.Information("Recieved Request: {@Request}", request);
-
                 Log.Information("About to get account statements with request: {@Request}", request);
                 var accountDetails = await accountClient.GetAccountStatement(request);
                 Log.Information("Back from getting account statements with response: {@Response}", accountDetails);
@@ -127,14 +139,18 @@ namespace Acccounts.API.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Async Method to Add Account Restriction
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("{accountId}/freeze")]
         public async Task<IActionResult> AddAccountRestrictionAsync(FreezeAccountRequest request)
         {
+            Log.Information("Recieved Request at AddAccountRestrictionAsync: {@Request}", request);
             try
-            {
+            {   
                 Log.Information("Recieved Request: {@Request}", request);
-
                 Log.Information("About to Add Account Restriction with request: {@Request}", request);
                 var accountDetails = await accountClient.AddAccountRestriction(request);
                 Log.Information("Back from Adding Account Restriction with request: {@Request}", request);
@@ -144,7 +160,6 @@ namespace Acccounts.API.Controllers
                     Log.Information("Account could not be restricted: {Account}", request.AccountNumber);
                     return Ok("Account Restriction Not Successful");
                 }
-
                 return Ok(accountDetails);
             }
             catch (Exception ex)
@@ -155,13 +170,18 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Async Method to Remove Account Restriction
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("{accountId}/unfreeze")]
         public async Task<IActionResult> RemoveAccountRestrictionAsync(UnFreezeAccountRequest request)
         {
-            try
+            Log.Information("Recieved Request at RemoveAccountRestrictionAsync: {@Request}", request);
+            try 
             {
                 Log.Information("Recieved Request: {@Request}", request);
-
                 Log.Information("About to Remove Account Restriction with request: {@Request}", request);
                 var accountDetails = await accountClient.RemoveAccountRestriction(request);
                 Log.Information("Back from Removing Account Restriction with request: {@Request}", request);
@@ -181,13 +201,18 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Async method to Get Customers Details By AccountId 
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
         [HttpGet("{accountId}/customers")]
         public async Task<IActionResult> GetCustomersDetailsByAccountIdAsync(string accountId)
         {
+            Log.Information("Recieved Request at GetCustomersDetailsByAccountIdAsync: {Request}", accountId);
             try
             {
                 Log.Information("Recieved Request: {Request}", accountId);
-
                 Log.Information("About to Get Customers Details By AccountId with request: {Request}", accountId);
                 var customerDetails = await accountClient.GetCustomersDetailsByAccountIdAsync(new { accountId });
                 Log.Information("Back from Getting Customers Details By AccountId  with request: {@Request}", customerDetails);
@@ -208,13 +233,18 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Async Method Get Customer Details By AccountId
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
         [HttpGet("{accountId}/customer")]
         public async Task<IActionResult> GetCustomerDetailsByAccountIdAsync(string accountId)
         {
+            Log.Information("Recieved Request at GetCustomerDetailsByAccountIdAsync: {Request}", accountId);
             try
             {
                 Log.Information("Recieved Request: {Request}", accountId);
-
                 Log.Information("About to Get Customer Details By AccountId with request: {Request}", accountId);
                 var customerDetails = await accountClient.GetCustomerDetailsByAccountIdAsync(new { accountNumber = accountId });
                 Log.Information("Back from Getting Customer Details By AccountId  with request: {@Request}", customerDetails);
@@ -224,7 +254,6 @@ namespace Acccounts.API.Controllers
                     Log.Information("Get Customers Details By AccountId  failed: {Account}", accountId);
                     return NotFound();
                 }
-
                 return Ok(customerDetails);
             }
             catch (Exception ex)
@@ -235,13 +264,19 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Method to Get Account Balances
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="accountType"></param>
+        /// <returns></returns>
         [HttpGet("{accountId}/balances")]
         public async Task<IActionResult> GetAccountBalances([FromRoute] string accountId, [FromQuery] string? accountType)
         {
+            Log.Information("Recieved Request at GetAccountBalances: {Request}", accountId);
             try
             {
                 Log.Information("Recieved Request: {Request}", accountId);
-                
                 // Validate accountType using the enum
                 if (string.IsNullOrEmpty(accountType)) { accountType = null; }
                 else
@@ -265,7 +300,6 @@ namespace Acccounts.API.Controllers
                 }
 
                 //filter for a specific account here
-
                 // Look for the specific balance matching the accountType
                 var balance = balances.Balances.FirstOrDefault(b => b.BalanceType == accountType);
                 if (balance != null) { return Ok(balance); }
@@ -280,12 +314,19 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Method to Get Account Balance
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
         [HttpGet("{accountId}/balance")]
         public async Task<IActionResult> GetAccountBalance([FromRoute] string accountId, [FromQuery] string? date = null)
         {
+            Log.Information("Recieved Request at GetAccountBalance: {Request}", accountId);
             try
             {
-                Log.Information("Recieved Request: {Request}", accountId);                
+                Log.Information("Recieved Request: {Request}", accountId);      
                 if (string.IsNullOrEmpty(accountId))
                 {
                     Log.Information("Account number is null and is required");
@@ -293,9 +334,7 @@ namespace Acccounts.API.Controllers
                 }
 
                 date ??= DateTime.UtcNow.ToString("yyyy-MM-dd");
-
                 var request = new { accountNumber = accountId, date  };
-
                 Log.Information("About to GetAccountBalance with request: {@Request}", request);
                 var balance = await accountClient.GetAccountBalance(request);
                 Log.Information("Back from Getting AccountBalance with response: {@Response}", balance);
@@ -305,7 +344,6 @@ namespace Acccounts.API.Controllers
                     Log.Information("No balance found on {date} for the specified account", date);
                     return NotFound($"No balance found on {date} for the specified account");
                 }
-
                 return Ok(balance);
             }
             catch (Exception ex)
@@ -315,9 +353,15 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Method to Create Current Account
+        /// </summary>
+        /// <param name="currentAcct"></param>
+        /// <returns></returns>
         [HttpPost("current-account")]
         public async Task<IActionResult> CreateCurrentAccount([FromBody] CreateCurrentAcctRequest currentAcct)
         {
+            Log.Information("Recieved Request at CreateCurrentAccount: {@Request}", currentAcct);
             try
             {
                 Log.Information("About to CreateCurrentAccount with request: {@Request}", currentAcct);
@@ -333,9 +377,15 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Method to Create Savings Account
+        /// </summary>
+        /// <param name="savingsAcct"></param>
+        /// <returns></returns>
         [HttpPost("savings-account")]
         public async Task<IActionResult> CreateSavingsAccount([FromBody] CreateSavingsAcctRequest savingsAcct)
         {
+            Log.Information("Recieved Request at CreateSavingsAccount: {@Request}", savingsAcct);
             try
             {
                 Log.Information("About to CreateSavingsAccount with request: {@Request}", savingsAcct);
@@ -351,9 +401,15 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Method to Create Corporate Current Account
+        /// </summary>
+        /// <param name="corpCurrentAcct"></param>
+        /// <returns></returns>
         [HttpPost("corporate-current-account")]
         public async Task<IActionResult> CreateCorpCurrentAccount([FromBody] CreateCorpCurrentAcctRequest corpCurrentAcct)
         {
+            Log.Information("Recieved Request at CreateCorpCurrentAccount: {@Request}", corpCurrentAcct);
             try
             {
                 Log.Information("About to CreateCorpCurrentAccount with request: {@Request}", corpCurrentAcct);
@@ -369,9 +425,15 @@ namespace Acccounts.API.Controllers
             }
         }
 
-        [HttpPost("atm-office-account")]
-        public async Task<IActionResult> GetTerminalOfficeAcct([FromBody] TerminalOfficeAcctRequest request)
+        /// <summary>
+        /// Method to Get Terminal Office Account
+        /// </summary>
+        /// <param name="TerminalId"></param>
+        /// <returns></returns>
+        [HttpGet("{TerminalId}/atm-office-account")]
+        public async Task<IActionResult> GetTerminalOfficeAcct([FromRoute] string TerminalId)
         {
+            Log.Information("Recieved Request at GetTerminalOfficeAcct: {Request}", TerminalId);
             try
             {
                 //var request = new { TerminalId };
@@ -392,13 +454,16 @@ namespace Acccounts.API.Controllers
 
         }
 
-        //Dealing with liens      
-
+        /// <summary>
+        /// Async method to Get Account Liens
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="lienType"></param>
+        /// <returns></returns>
         [HttpGet("{accountId}/liens/{lienType}")]
-        public async Task<IActionResult> GetAccountLiensAsync(
-           [FromRoute] string accountId,
-           [FromRoute] string lienType)
+        public async Task<IActionResult> GetAccountLiensAsync([FromRoute] string accountId, [FromRoute] string lienType)
         {
+            Log.Information("Recieved Request at GetAccountLiensAsync: {@Request}", (accountId, lienType));
             try
             {
                 // Ensure the route parameter is mapped to the request model
@@ -423,11 +488,16 @@ namespace Acccounts.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Async Method to Create Account Liens
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("{accountId}/liens")]
-        public async Task<IActionResult> CreateAccountLiensAsync(
-          [FromRoute] string accountId,
-          [FromBody] LienRequestDto request)
+        public async Task<IActionResult> CreateAccountLiensAsync([FromRoute] string accountId, [FromBody] LienRequestDto request)
         {
+            Log.Information("Recieved Request at CreateAccountLiensAsync: {@Request}", (accountId, request));
             try
             {
                 // Ensure the route parameter is mapped to the request model
@@ -450,11 +520,6 @@ namespace Acccounts.API.Controllers
                 Console.Error.WriteLine($"Error occurred while creating account liens: {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
-        }
-
-        private string Clean(string input)
-        {
-            return Regex.Replace(input, "[^a-zA-Z0-9 ]", "");
-        }
+        }        
     }
 }
