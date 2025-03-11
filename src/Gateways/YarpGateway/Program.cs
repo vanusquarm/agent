@@ -22,18 +22,6 @@ var configuration = builder.Configuration;
 var logFilePath = configuration["Serilog:WriteTo:2:Args:path"];
 
 Log.Logger = new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .Enrich.WithCorrelationId()
-    .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Day)
-    .WriteTo.Console(new EcsTextFormatter())
-    .Enrich.WithProperty("Environment", environment)
-    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]))
-    {
-        AutoRegisterTemplate = true,
-        IndexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower().Replace(".", "-")}-{environment?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}",
-        CustomFormatter = new EcsTextFormatter()
-    })
-    .Enrich.WithProperty("Environment", environment)
     .ReadFrom.Configuration(configuration)
     .CreateLogger();
 
