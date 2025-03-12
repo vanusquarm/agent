@@ -74,4 +74,16 @@
     {
         public string standingInstructionSerialNumber { get; set; }
     }
+
+    public class CancelCustomerStandingInstructionRequest
+    {
+        public string accountNumber { get; set; }
+        public string siNumber { get; set; }
+    }
+
+    public class CancelCustomerStandingInstructionResponse
+    {
+        public string successMsg { get; set; }
+        public string errorFlg { get; set; }
+    }
 }

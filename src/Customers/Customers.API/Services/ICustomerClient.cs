@@ -60,6 +60,9 @@ namespace Customers.API.Services
         [Post("/v2/standing-instructions/Fixed")]
         Task<PostCustomerStandingInstructionsResponse> PostCustomerStandingInstructions(PostCustomerStandingInstructionsRequest request);
 
+        [Post("/v2/deleteSI/getDeleteSIDtls")]
+        Task<CancelCustomerStandingInstructionResponse> DeleteCustomerStandingInstruction(CancelCustomerStandingInstructionRequest request);
+
         // Loan Account Inquiry
         [Get("/v2/LoanAccountInquiryDtls/getLoanAccountInquiryDtls")]
         Task<object> GetCustomerLoan([Body] Dictionary<string, string> request);
