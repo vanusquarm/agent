@@ -388,6 +388,30 @@ namespace Customers.API.Controllers
         }
 
         /// <summary>
+        /// Method to Delete Customer Standing Instructions
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpDelete("standing-instructions")]
+        public async Task<IActionResult> DeleteCustomerStandingInstruction([FromBody] CancelCustomerStandingInstructionRequest request)
+        {
+            Log.Information("Recieved Request at PostCustomerStandingInstructions: {@Request}", request);
+            try
+            {
+                Log.Information("About to PostCustomerStandingInstructions with request: {@Request}", request);
+                var resp = await customerClient.DeleteCustomerStandingInstruction(request);
+                Log.Information("Back from Posting CustomerStandingInstructions with response: {@Response}", resp);
+
+                return Ok(resp);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("An exception has occured at PostCustomerStandingInstructions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
+        }
+        /// <summary>
         /// Method to Get Loan Details
         /// </summary>
         /// <param name="customerId"></param>
