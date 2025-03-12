@@ -1,108 +1,113 @@
-﻿using System.Text.Json.Serialization;
+﻿using Customers.API.Entities.DTOs;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Customers.API.Entities.DTOs
 {
     public class GetCorpCustomerResponse
     {
         [JsonPropertyName("customerIdentifier")]
-        public string CustomerIdentifier { get; set; }
+        public string? CustomerIdentifier { get; set; }
 
         [JsonPropertyName("corporateName")]
-        public string CorporateName { get; set; }
+        public string? CorporateName { get; set; }
 
         [JsonPropertyName("BVN")]
-        public object BVN { get; set; }
+        public string? BVN { get; set; }
 
         [JsonPropertyName("TierInformation")]
-        public object TierInformation { get; set; }
+        public string? TierInformation { get; set; }
 
         [JsonPropertyName("dateOfIncorporation")]
-        public string DateOfIncorporation { get; set; }
+        public string? DateOfIncorporation { get; set; }
 
         [JsonPropertyName("registrationNumber")]
-        public string RegistrationNumber { get; set; }
+        public string? RegistrationNumber { get; set; }
 
         [JsonPropertyName("countryOfIncorporation")]
-        public string CountryOfIncorporation { get; set; }
+        public string? CountryOfIncorporation { get; set; }
 
         [JsonPropertyName("taxIdentificationNumber")]
-        public string TaxIdentificationNumber { get; set; }
+        public string? TaxIdentificationNumber { get; set; }
 
         [JsonPropertyName("corporateEntityType")]
-        public string CorporateEntityType { get; set; }
+        public string? CorporateEntityType { get; set; }
 
         [JsonPropertyName("corporateClassification")]
-        public object CorporateClassification { get; set; }
+        public string? CorporateClassification { get; set; }
 
         [JsonPropertyName("standardIndustryCode")]
-        public object StandardIndustryCode { get; set; }
+        public string? StandardIndustryCode { get; set; }
 
         [JsonPropertyName("segment")]
-        public object Segment { get; set; }
+        public string? Segment { get; set; }
 
         [JsonPropertyName("taxIdType")]
-        public string TaxIdType { get; set; }
+        public string? TaxIdType { get; set; }
 
         [JsonPropertyName("publiclyHeld")]
-        public object PubliclyHeld { get; set; }
+        public string? PubliclyHeld { get; set; }
 
         [JsonPropertyName("healthCode")]
-        public object HealthCode { get; set; }
+        public string? HealthCode { get; set; }
 
         [JsonPropertyName("noOfEmployees")]
-        public object NoOfEmployees { get; set; }
+        public int? NoOfEmployees { get; set; }
 
         [JsonPropertyName("subsegment")]
-        public object Subsegment { get; set; }
+        public string? Subsegment { get; set; }
 
         [JsonPropertyName("sector")]
-        public object Sector { get; set; }
+        public string? Sector { get; set; }
 
         [JsonPropertyName("subsector")]
-        public object Subsector { get; set; }
+        public string? Subsector { get; set; }
 
         [JsonPropertyName("region")]
-        public object Region { get; set; }
+        public string? Region { get; set; }
 
         [JsonPropertyName("primaryBranch")]
-        public string PrimaryBranch { get; set; }
+        public string? PrimaryBranch { get; set; }
 
         [JsonPropertyName("relationshipStartDate")]
-        public string RelationshipStartDate { get; set; }
+        public string? RelationshipStartDate { get; set; }
 
         [JsonPropertyName("reviewedDate")]
-        public string ReviewedDate { get; set; }
+        public string? ReviewedDate { get; set; }
 
         [JsonPropertyName("kycStatus")]
-        public string KycStatus { get; set; }
+        public string? KycStatus { get; set; }
 
         [JsonPropertyName("relationshipManagerDetails")]
-        public List<RelationshipManagerDetail> RelationshipManagerDetails { get; set; }
+        public List<RelationshipManagerDetail>? RelationshipManagerDetails { get; set; }
 
         [JsonPropertyName("addressDetails")]
-        public List<AddressDetail> AddressDetails { get; set; }
+        public List<AddressDetail>? AddressDetails { get; set; }
 
         [JsonPropertyName("emailDetails")]
-        public List<object> EmailDetails { get; set; }
+        public List<EmailDetail>? EmailDetails { get; set; }
 
         [JsonPropertyName("phoneDetails")]
-        public List<object> PhoneDetails { get; set; }
+        public List<PhoneDetail>? PhoneDetails { get; set; }
 
         [JsonPropertyName("customerDocuments")]
-        public List<CustomerDocument> CustomerDocuments { get; set; }
+        public List<CustomerDocument>? CustomerDocuments { get; set; }
 
         [JsonPropertyName("riskRatingDetails")]
-        public List<object> RiskRatingDetails { get; set; }
+        public List<RiskRatingDetail>? RiskRatingDetails { get; set; }
 
         [JsonPropertyName("relatedParty")]
-        public List<object> RelatedParty { get; set; }
+        public List<object>? RelatedParty { get; set; }
 
         [JsonPropertyName("productPreferenceDetails")]
-        public List<object> ProductPreferenceDetails { get; set; }
+        public List<ProductPreferenceDetail>? ProductPreferenceDetails { get; set; }
 
         [JsonPropertyName("communicationPreferenceDetails")]
-        public List<object> CommunicationPreferenceDetails { get; set; }
+        public List<object>? CommunicationPreferenceDetails { get; set; }
     }
+
     //public class AddressDetail
     //{
     //    [JsonPropertyName("addressId")]
@@ -261,4 +266,5 @@ namespace Customers.API.Entities.DTOs
     //    [JsonPropertyName("teamEmail")]
     //    public object TeamEmail { get; set; }
     //}
+
 }

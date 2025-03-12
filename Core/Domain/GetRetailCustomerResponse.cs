@@ -339,6 +339,9 @@ namespace Finacle.Core.Domain
 
     public class EmailDetail
     {
+        [JsonPropertyName("emailId")]
+        public string EmailId { get; set; }
+
         [JsonPropertyName("emailType")]
         public string EmailType { get; set; }
 

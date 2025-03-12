@@ -1,9 +1,17 @@
-﻿namespace Loans.API.Entities.DTOs
+﻿using System.Text.Json.Serialization;
+
+namespace Loans.API.Entities.DTOs
 {
     public class PayOffResponseDto
     {
-        public string accountIdentification;
-        public string transactionReference;
-        public string transactionDate;
+        [JsonPropertyName("accountIdentification")]
+        public string AccountIdentification { get; set; }
+
+        [JsonPropertyName("transactionReference")]
+        public string TransactionReference { get; set; }
+
+        [JsonPropertyName("transactionDate")]
+        public DateTime TransactionDate { get; set; }
     }
+
 }

@@ -9,27 +9,35 @@ namespace Loans.API.Services
     {
         // UnSecured Loan (example: quick loans, personal loans)
         // Diburse loan by crediting customer's account
+        [Headers("requesttype: SRV","delivery_channel:API")]
         [Post("/v2/unsecured-loan-accounts/{accountId}/DISBURSEMENT")]         
         Task<dynamic> DiburseLoan(string accountId, DisbursementRequestDTO disburseRequestDTO);
 
         // 
-        [Get("v2/unsecured-loan-accounts/{accountIdentification}/interest-details  ")]
+        [Get("/v2/unsecured-loan-accounts/{accountIdentification}/interest-details  ")]
         Task<dynamic> GetUnsecuredLoanInterest(string accountIdentification);
 
-        [Get("v2/unsecured-loan-accounts/{accountIdentification}/interest-details  ")]
+        [Get("/v2/unsecured-loan-accounts/{accountIdentification}/interest-details  ")]
         Task<dynamic> ModifyUnsecuredLoanInterest(string accountIdentification, UnsecuredLoanInterestRateDto unsecuredLoanInterestRateDto);
 
-        [Get("/v2/unsecured-loan-accounts/{accountIdentification}")]
-        Task<dynamic> GetLoanDetails(string accountIdentification);
+        [Get("/v2/unsecured-loan-accounts/{accountIdentification}/basic")]
+        Task<FullAccountResponseDetailDto> GetLoanDetails(string accountIdentification);
 
-        [Get("/v2/unsecured-loan-accounts/{accountIdentification}/outstanding-inquiry")]
-        Task<dynamic> GetOutStandingIniquiry(string accountIdentification);
+
+        [Post("/v2/LoanAccountInquiryDtls/getLoanAccountInquiryDtls")]
+        Task<AccountInquiryDetailsResponseDto> GetOutStandingIniquiry([Body] Dictionary<string, string> request);
 
         [Get("/v2/unsecured-loan-accounts/{accountIdentification}/repayment-history")] 
         Task<dynamic> GetLoans(string accountIdentification);
 
+        [Headers("requesttype: SRV", "delivery_channel:API")]
         [Post("/v2/unsecured-loan-accounts/{accountIdentification}:payoff")]
-        Task<dynamic> PayOffLoan(string accountIdentification,PayoffRequestDTO payoffRequestDTO);
+        Task<PayOffResponseDto> PayOffLoan(string accountIdentification, PayoffRequestDTO payoffRequestDTO);
+
+        [Headers("requesttype: SRV", "delivery_channel:API")]
+        [Post("/v2/unsecured-loan-accounts/{accountIdentification}:close")]
+        Task<PayOffResponseDto> CloseAccount(string accountIdentification, [Header("context_sol_id")]  string branchCode);
+
 
         [Post("/v2/unsecured-loan-accounts/{accountIdentification}:schedulePayment")]
         Task<dynamic> SchedulePayment(string accountIdentification, SchedulePaymentDTO schedulePaymentDTO);
@@ -58,6 +66,9 @@ namespace Loans.API.Services
 
         [Post("/v2/unsecured-loan-accounts/{accountIdentification}:close")]
         Task<dynamic> PayOffSecuredLoan(string accountIdentification);
+
+        [Post("/v2/LoanAccountInquiryDtls/getLoanAccountInquiryDtls")]
+        Task<dynamic> GetLoanInquiry(LoanInquiry loanInquiry);
 
 
     }

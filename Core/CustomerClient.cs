@@ -10,28 +10,56 @@ namespace Finacle.Core
 {
     public partial class FinacleClient
     {
-
         // Get customer details
-        public async Task<T> GetCustomerAsync<T>(string customerId)
+        public async Task<T> GetCustomerAsync<T>(string customerId, string requestId = null)
         {
-            var response = await _httpClient.GetAsync($"/api/v1/Customers/{customerId}");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Customers/{customerId}");
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = await _httpClient.SendAsync(requestMessage);
 
             response.EnsureSuccessStatusCode(); // Throws exception if not 2xx response
 
             var content = await response.Content.ReadAsStringAsync();
-            var customer = JsonSerializer.Deserialize<T>(content);
-
-            return customer;
+            return JsonSerializer.Deserialize<T>(content);
         }
 
-        public async Task<string> GetCustomerDataAsync(string customerId, string route)
+        public bool IsCustomerStaff(string customerId, string requestId = null)
+        {
+            var customer = GetCustomer<GetRetailCustomerResponse>(customerId, requestId);
+            return customer.RelationshipManagerDetails[0].RelationshipManagerId == "GH001800";
+        }
+
+        public async Task<BankDateDto> GetCustomerBankDateAsync(string branchCode, string requestId = null)
+        {
+            var jsonContent = JsonSerializer.Serialize(branchCode);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"/api/v1/transactions/bankdate")
+            {
+                Content = httpContent
+            };
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            response.EnsureSuccessStatusCode(); // Throws exception if not 2xx response
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<BankDateDto>(content);
+        }
+
+        public async Task<string> GetCustomerDataAsync(string customerId, string route, string requestId = null)
         {
             // Construct the URL
             var url = $"/api/v1/Customers/{customerId}/{route}";
 
             try
             {
-                var response = await _httpClient.GetAsync(url);
+                var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+                requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+                var response = await _httpClient.SendAsync(requestMessage);
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsStringAsync();
 
@@ -45,18 +73,21 @@ namespace Finacle.Core
             }
         }
 
-        public async Task<string> GetCustomerPreferredNameAsync(string customerId)
+        public async Task<string> GetCustomerPreferredNameAsync(string customerId, string requestId = null)
         {
-            var customerName = (await GetCustomerAsync<GetRetailCustomerResponse>(customerId)).CustomerName ??
-                (await GetCustomerAsync<GetCorpCustomerResponse>(customerId)).CorporateName;
+            var customerName = (await GetCustomerAsync<GetRetailCustomerResponse>(customerId, requestId)).CustomerName ??
+                (await GetCustomerAsync<GetCorpCustomerResponse>(customerId, requestId)).CorporateName;
 
             return customerName;
         }
 
         // Get accounts of a customer
-        public async Task<List<Account>> GetCustomerAccountsAsync(string customerId)
+        public async Task<List<Account>> GetCustomerAccountsAsync(string customerId, string requestId = null)
         {
-            var response = await _httpClient.GetAsync($"/api/v1/Customers/{customerId}/accounts");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Customers/{customerId}/accounts");
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = await _httpClient.SendAsync(requestMessage);
 
             response.EnsureSuccessStatusCode();
 
@@ -67,9 +98,12 @@ namespace Finacle.Core
         }
 
         // Get account balances of a customer
-        public async Task<List<CustomerAccountBalance>> GetCustomerAccountBalancesAsync(string customerId)
+        public async Task<List<CustomerAccountBalance>> GetCustomerAccountBalancesAsync(string customerId, string requestId = null)
         {
-            var response = await _httpClient.GetAsync($"/api/v1/Customers/{customerId}/account-balances");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Customers/{customerId}/account-balances");
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = await _httpClient.SendAsync(requestMessage);
 
             response.EnsureSuccessStatusCode();
 
@@ -80,9 +114,12 @@ namespace Finacle.Core
         }
 
         // Get transactions for a specific account of a customer
-        public async Task<List<Transaction>> GetAccountTransactionsAsync(string customerId, string accountId)
+        public async Task<List<Transaction>> GetAccountTransactionsAsync(string customerId, string accountId, string requestId = null)
         {
-            var response = await _httpClient.GetAsync($"/api/v1/Customers/{customerId}/accounts/{accountId}/transactions");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Customers/{customerId}/accounts/{accountId}/transactions");
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = await _httpClient.SendAsync(requestMessage);
 
             response.EnsureSuccessStatusCode();
 
@@ -91,15 +128,21 @@ namespace Finacle.Core
 
             return transactions.TransactionDetailsList;
         }
-        
-        public async Task<CreateRetailCustomerResponse> CreateRetailCustomerAsync(RetailCustomerRequest request)
+
+        public async Task<CreateRetailCustomerResponse> CreateRetailCustomerAsync(RetailCustomerRequest request, string requestId = null)
         {
             try
             {
                 var jsonContent = JsonSerializer.Serialize(request);
                 var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PostAsync("/retail-customers", httpContent);
+                var requestMessage = new HttpRequestMessage(HttpMethod.Post, "/retail-customers")
+                {
+                    Content = httpContent
+                };
+                requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+                var response = await _httpClient.SendAsync(requestMessage);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -130,3 +173,6 @@ namespace Finacle.Core
         }
     }
 }
+
+
+

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Transactions.API.Entities.DTOs;
 
 public class CashDepositRequest
@@ -33,4 +35,46 @@ public class ChargeDetails
     public string ChargeSerialNumber { get; set; }
     public decimal ChargeAmount { get; set; }
 }
+
+// Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
+public class ChargeDetailsDto
+{
+    [JsonPropertyName("accountNumber")]
+    public string AccountNumber { get; set; }
+
+    [JsonPropertyName("eventId")] 
+    public string EventId { get; set; }
+
+    [JsonPropertyName("chrgAmt")]
+    public string ChrgAmt { get; set; }
+
+    [JsonPropertyName("chrgCrncy")]
+    public string? ChrgCrncy { get; set; } = "GHS";
+
+    [JsonPropertyName("remarks")]
+    public string? Remarks { get; set; } = "";
+
+    [JsonPropertyName("delivery_channel")]
+    public string? DeliveryChannel { get; set; } = "API";
+
+    [JsonPropertyName("duptranchkreqd")]
+    public string? Duptranchkreqd { get; set; } = "Y";
+
+    [JsonPropertyName("requesttype")]
+    public string? Requesttype { get; set; } = "SRV";
+
+    [JsonPropertyName("requestreference")]
+    public required string Requestreference { get; set; }
+}
+
+public class PerformChargeRequestDto
+{
+    public string TransactionReference { get; set; }
+    public string AccountId { get; set; }
+    public string ChargeType { get; set; }
+    public decimal ChargeAmount { get; set; }  // Changed to decimal
+    public string Currency { get; set; } = "GHS";  // Changed to decimal
+}
+
+
 

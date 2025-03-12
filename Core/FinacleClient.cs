@@ -1,53 +1,69 @@
 ﻿using System;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Net.Http.Headers;
-using System.Configuration; // Make sure to add this namespace
+using System.Text.Json;
 
 namespace Finacle.Core
 {
-    public partial class FinacleClient
+    public partial class FinacleClient : IDisposable
     {
-        protected  readonly HttpClient _httpClient;
-        private  readonly string _baseUrl;
+        protected readonly HttpClient _httpClient;
+        private readonly string _baseUrl;
 
-        public FinacleClient(string _baseUrl)
+        public FinacleClient(string baseUrl, string channelId)
         {
-            // Read base URL from web.config (app.config for console applications)
+            if (string.IsNullOrWhiteSpace(baseUrl))
+                throw new ArgumentException("Base URL cannot be null or empty.", nameof(baseUrl));
 
-            // Initialize HttpClient
+            _baseUrl = baseUrl;
+
             _httpClient = new HttpClient
             {
                 BaseAddress = new Uri(_baseUrl)
             };
 
-            // Set default request headers
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId);
         }
 
-        public bool IsCorporate(string customerid)
+        public FinacleClient(HttpClient httpClient, string channelId = null)
         {
-            if (string.IsNullOrEmpty(customerid))
-            {
-                throw new ArgumentNullException(nameof(customerid));
-            }
-            if (customerid.StartsWith("C"))
-            {
-                return true;
-            }
-            // Check if customer is a corporate customer
-            return false;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId);
         }
 
+        public static bool TryDeserialize<T>(string json, out T result)
+        {
+            try
+            {
+                result = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return result != null;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"{nameof(T)} JSON Deserialization failed: {ex.Message}");
+                result = default;
+                return false;
+            }
+        }
 
+        public static T TryDeserialize<T>(string json)
+        {
+            try
+            {
+                return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-        // Optional: Dispose of HttpClient when no longer needed (though it's better to use it for the lifetime of the app)
-        public  void Dispose()
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"{nameof(T)} JSON Deserialization failed: {ex.Message}");
+                return default;
+            }
+        }
+
+        public void Dispose()
         {
             _httpClient?.Dispose();
         }
     }
-
-
 }
-

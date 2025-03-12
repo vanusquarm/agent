@@ -43,7 +43,10 @@ namespace Acccounts.API.Services
 
         // Get Customer Details of an Account
         [Post("/v2/accountCustomerDtls/getaccountCustomerDtls")]
-        Task<CustomerDto> GetCustomerDetailsByAccountIdAsync(object accountId);
+        Task<CustomerDto> GetCustomersDetailsByAccountIdAsync(object accountId);
+
+        [Post("/v2/CustomerAccountDtls/getCustomerAccountDtls")]
+        Task<object> GetCustomerDetailsByAccountIdAsync(object accountId);
 
 
         // Account Restriction
@@ -57,11 +60,30 @@ namespace Acccounts.API.Services
         [Post("/v2/acctstmnt/statementDetails")]
         Task<object> GetAccountStatements(AccountStatementRequest request);
 
+        [Post("/v2/accountstatement/getaccountstatement")]
+        Task<object> GetAccountStatement(AccountStatementRequest request);
+
+
         [Post("/v2/TerminalOfficeAcct/getTerminalOfficeAcct")]
-        Task<object> GetTerminalOfficeAcct(TerminalOfficeAcctRequest request);
+        Task<object> GetTerminalOfficeAccount(TerminalOfficeAcctRequest request);
 
         // Unsecured Loan Account
         [Post("/v2/unsecured-loan-accounts")]
         Task<object> CreateUnsecuredLoanAcct(object request);
+
+
+        //Liens
+        [Get("/v2/savings-accounts/{accountId}/liens/{lientType}")]
+        Task<object> GetSavingsAccountLiens(string accountId,string lientType);
+
+
+
+        [Post("/v2/savings-accounts/{accountId}/liens")]
+        Task<LienCreationDto> CreateAccountLiens(string accountId, LienRequestDto lienRequest);
+
+        [Get("/v2/savings-accounts/{accountId}/liens/{lientType}")]
+        Task<LienResponseDto> GetAccountLiens(string accountId,string lientType);
+
+       
     }
 }

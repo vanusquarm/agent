@@ -39,8 +39,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acccounts.API", "src\Accoun
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Loans.API", "src\Loans\Loans.API\Loans.API.csproj", "{67BA8AB9-B497-49F4-A8C9-54945E82DC76}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Locations.API", "src\Locations\Locations.API\Locations.API.csproj", "{C2DB0D7B-901E-443E-A753-47324071EFE7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,10 +93,6 @@ Global
 		{67BA8AB9-B497-49F4-A8C9-54945E82DC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67BA8AB9-B497-49F4-A8C9-54945E82DC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67BA8AB9-B497-49F4-A8C9-54945E82DC76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2DB0D7B-901E-443E-A753-47324071EFE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2DB0D7B-901E-443E-A753-47324071EFE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2DB0D7B-901E-443E-A753-47324071EFE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2DB0D7B-901E-443E-A753-47324071EFE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,7 +115,6 @@ Global
 		{7BD53D34-4279-44D8-8CD0-4A152E65410E} = {F65C1A01-F1B3-492D-98F3-50BA3B438ABD}
 		{72121572-1F18-4A4A-984B-5B0DC4F936B7} = {19932C74-EDA8-4DF7-AF8C-75CFAFE42213}
 		{67BA8AB9-B497-49F4-A8C9-54945E82DC76} = {19932C74-EDA8-4DF7-AF8C-75CFAFE42213}
-		{C2DB0D7B-901E-443E-A753-47324071EFE7} = {19932C74-EDA8-4DF7-AF8C-75CFAFE42213}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8F29FF30-CD91-436D-BD79-845DBF5E1341}

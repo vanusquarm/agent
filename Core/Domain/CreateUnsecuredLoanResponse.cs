@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Finacle.Core.Domain
 {
     public class CreateUnsecuredLoanResponse
     {
-        public string AccountIdentification;
-        public string Iban;
+       
+        public string accountIdentification;
+     
+        public string iban;
     }
 }

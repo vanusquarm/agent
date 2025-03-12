@@ -1,10 +1,15 @@
 using Cheques.API.Services;
+using Finacle.Infrastructure.Auth;
 using Finacle.Infrastructure.Auth.BasicJwt;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
+// Decrypt the client secret
+var encryptedClientSecret = builder.Configuration["JwtSettings:ClientSecret"];
+var decryptedClientSecret = EncryptionHelper.Decrypt(encryptedClientSecret);
+builder.Configuration["JwtSettings:ClientSecret"] = decryptedClientSecret;
 
 // Add services to the container.
 // builder.AddInfrastructure(enableSwagger: enableSwagger);

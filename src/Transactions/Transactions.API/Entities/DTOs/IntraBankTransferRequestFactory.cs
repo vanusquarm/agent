@@ -4,8 +4,9 @@ namespace Transactions.API.Entities.DTOs;
 
 public class IntraBankTransferRequestFactory
 {
-    public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? docNum)
+    public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? docNum, string? chargeEventId)
     {
+        //DateTime transactionDate = DateTime.ParseExact("2025-02-21", "yyyy-MM-dd", CultureInfo.InvariantCulture);
         DateTime transactionDate = DateTime.ParseExact(
             DateTime.Now.ToString("yyyy-MM-dd"),
             "yyyy-MM-dd",
@@ -30,16 +31,17 @@ public class IntraBankTransferRequestFactory
                             TransactionParticulars = partTransactionRemarks.Split(50, 1),
                             Rate = IntraBankTransferConstants.Rate,
                             PartTransactionRemarks = partTransactionRemarks.Split(50, 2),
-                            ReferenceNumber = referenceNumber,
+                            ReferenceNumber = referenceNumber.Split(20, 1),
                             PartTransactionRemarks2 = partTransactionRemarks.Split(50, 3),
                             LienDetailsList = new List<LienDetails>(),
-                                MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
-                                {
-                                    DocumentNumber = docNum,
-                                    //Freetxt2 = "000013241218110101000037132501",
-                                    Freetxt3 = partTransactionRemarks.Split(50, 4),
-                                    Freetxt4 = partTransactionRemarks.Split(50, 5)
-                                }
+                            ChargeEventId = chargeEventId,
+                            MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
+                            {
+                                DocumentNumber = docNum,
+                                //Freetxt2 = "000013241218110101000037132501",
+                                Freetxt3 = partTransactionRemarks.Split(50, 4),
+                                Freetxt4 = partTransactionRemarks.Split(50, 5)
+                            }
                         },
                         new IntraBankTransferTransactionDetail
                         {
@@ -52,16 +54,16 @@ public class IntraBankTransferRequestFactory
                             TransactionParticulars = partTransactionRemarks.Split(50, 1),
                             Rate = IntraBankTransferConstants.Rate,
                             PartTransactionRemarks = partTransactionRemarks.Split(50, 2),
-                            ReferenceNumber = referenceNumber,
+                            ReferenceNumber = referenceNumber.Split(20, 1),
                             PartTransactionRemarks2 = partTransactionRemarks.Split(50, 3),
                             LienDetailsList = new List<LienDetails>(),
-                                MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
-                                {
-                                    DocumentNumber = docNum,
-                                    //Freetxt2 = "000013241218110101000037132501",
-                                    Freetxt3 = partTransactionRemarks.Split(50, 4),
-                                    Freetxt4 = partTransactionRemarks.Split(50, 5)
-                                }
+                            MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
+                            {
+                                DocumentNumber = docNum,
+                                //Freetxt2 = "000013241218110101000037132501",
+                                Freetxt3 = partTransactionRemarks.Split(50, 4),
+                                Freetxt4 = partTransactionRemarks.Split(50, 5)
+                            }
                         }
                     }
         };
@@ -74,14 +76,15 @@ public class IntraBankTransferRequestFactory
             return (null, null, null, null, null);
 
         // Split into chunks of up to 50 characters each
-        string part1 = partTransactionRemarks.Length > 0 ? partTransactionRemarks.Substring(0, Math.Min(50, partTransactionRemarks.Length)) : null;
-        string part2 = partTransactionRemarks.Length > 50 ? partTransactionRemarks.Substring(50, Math.Min(50, partTransactionRemarks.Length - 50)) : null;
-        string part3 = partTransactionRemarks.Length > 100 ? partTransactionRemarks.Substring(100, Math.Min(50, partTransactionRemarks.Length - 100)) : null;
-        string part4 = partTransactionRemarks.Length > 150 ? partTransactionRemarks.Substring(150, Math.Min(50, partTransactionRemarks.Length - 150)) : null;
-        string part5 = partTransactionRemarks.Length > 200 ? partTransactionRemarks.Substring(200, Math.Min(50, partTransactionRemarks.Length - 200)) : null;
+        string part1 = partTransactionRemarks.Length > 0 ? partTransactionRemarks.Substring(0, Math.Min(50, partTransactionRemarks.Length)) : "";
+        string part2 = partTransactionRemarks.Length > 50 ? partTransactionRemarks.Substring(50, Math.Min(50, partTransactionRemarks.Length - 50)) : "";
+        string part3 = partTransactionRemarks.Length > 100 ? partTransactionRemarks.Substring(100, Math.Min(50, partTransactionRemarks.Length - 100)) : "";
+        string part4 = partTransactionRemarks.Length > 150 ? partTransactionRemarks.Substring(150, Math.Min(50, partTransactionRemarks.Length - 150)) : "";
+        string part5 = partTransactionRemarks.Length > 200 ? partTransactionRemarks.Substring(200, Math.Min(50, partTransactionRemarks.Length - 200)) : "";
 
         return (part1, part2, part3, part4, part5);
     }
+
     public static string MapService(string key)
     {
         // List of services and their corresponding channel IDs
@@ -92,7 +95,13 @@ public class IntraBankTransferRequestFactory
             { "GTWORLD", "GTBGH3" },
             { "MYGHPAY", "GTBGH4" },
             { "GTCOLLECT", "GTBGH5" },
-            { "IPAY", "GTBGH6" }
+            { "IPAY", "GTBGH6" },
+            { "EWALLET", "GTBGH7" },
+            { "AIRTELTIGO", "GTBGH8" },
+            { "VODAFONE", "GTBGH9" },
+            { "EXPRESSPAY", "GTBGH10" },
+            { "APIHUB", "GTBGH11" },
+            { "APISWITCH", "GTBGH12" }
         };
         return serviceMap.TryGetValue(key.ToUpper(), out string value) ? value : "GTBGH100";
     }

@@ -1,11 +1,9 @@
-﻿using FluentValidation;
-using Finacle.Infrastructure.Exceptions;
+﻿using Finacle.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Finacle.Infrastructure.Auth.BasicJwt;
-using Microsoft.EntityFrameworkCore;
 using Finacle.Infrastructure.Notifications;
 using Finacle.Infrastructure.Swagger;
 

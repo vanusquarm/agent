@@ -15,6 +15,12 @@ namespace Customers.API.Services
 
         [Get("/corporate-customers/{customerId}/{route}")]
         Task<dynamic> GetCorporateCustomer(string customerId, string route);
+       
+        [Get("/corporate-customers/{customerId}/RelationshipmanagerInfos")]
+        Task<RelationshipManagerResponseDto> GetCorporateCustomerRelationshipManager(string customerId);
+
+        [Get("/retail-customers/{customerId}/RelationshipmanagerInfos")]
+        Task<RelationshipManagerResponseDto> GetRetailCustomerRelationshipManager(string customerId);
 
         // Retail Customer
         [Post("/retail-customers")] 
@@ -30,9 +36,12 @@ namespace Customers.API.Services
         [Get("/retail-customers/{customerId}/{route}")]
         Task<dynamic> GetRetailCustomer(string customerId, string route);
 
+
         // All Customers
         [Post("/v2/CustomerDtls/getCustomerDtls")]
         Task<CustomerDetailsResponse> GetCustomerDetailsByPhoneAsync([Body] Dictionary<string, string> request);
+
+ 
 
 
         [Get("/v2/customers/{customerId}/accounts?includeClosedAccounts={includeClosedAccounts}")]
