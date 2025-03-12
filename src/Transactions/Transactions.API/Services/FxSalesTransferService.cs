@@ -106,7 +106,8 @@ namespace Transactions.API.Services
 
             var rateCodeString = string.Join(",", model.RateCodes.Select(x => $"'{x}'"));
             var fxRateResponse = await _fxSaleRateRepo.GetFxRates(rateCodeString, "header.RequestId");
-            return ResponseManager.ReturnSuccess(fxRateResponse);
+            //return ResponseManager.ReturnSuccess(fxRateResponse);
+            return default;
         }
 
         //public async Task<ResponseWithStatusCode> ConvertCurrency(CurrencyConversionReqVM request)

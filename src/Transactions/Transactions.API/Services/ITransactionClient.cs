@@ -37,7 +37,7 @@ public interface ITransactionClient
         "requesttype: SRV"
     )]
     [Post("/v2/transactions/INTRA-BANK-FUND-TRANSFER")]
-    Task<IntraBankTransferResponse> PerformIntraBankTransfer(
+    Task<object> PerformIntraBankTransfer(
         [Header("requestreference")] string requestReference,
         [Body] IntraBankTransferRequest intraBankTransferRequest);
 

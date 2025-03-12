@@ -8,6 +8,10 @@ using Transactions.API.Entities.Models;
 using Transactions.API.Services;
 using EodStatusRequest = Transactions.API.Entities.DTOs.EodStatusRequest;
 using TransactionRequest = Transactions.API.Entities.DTOs.TransactionRequest;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
+using System.Security.Cryptography.Xml;
+using Transactions.API.Filters;
 
 namespace Transactions.API.Controllers;
 
@@ -198,7 +202,7 @@ public class TransactionsController : ControllerBase
             apirequestresponse.ResponseParam = JsonSerializer.Serialize(response);
             Log.Information("Back from Performing IntraBankTransfer with response: {@Response}", response);
 
-            if (response == null || string.IsNullOrEmpty(response.TransactionReference))
+            if (response == null)
             {
                 apirequestresponse.TraceId = "Invalid request data.";
                 apirequestresponse.ResponseCode = "500";

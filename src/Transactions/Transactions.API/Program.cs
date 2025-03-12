@@ -2,11 +2,13 @@
 
 using Finacle.Infrastructure.Auth;
 using Finacle.Infrastructure.Auth.BasicJwt;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Refit;
 using Serilog;
 using Transactions.API.Entities;
 using Transactions.API.Entities.Models;
+using Transactions.API.Filters;
 using Transactions.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +27,14 @@ builder.Configuration["JwtSettings:ClientSecret"] = decryptedClientSecret;
 
 // Add services to the container.
 // builder.AddInfrastructure(enableSwagger: enableSwagger);
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true; // Disable automatic validation handling
+});
+
+builder.Services.AddScoped<ValidateModelFilter>();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

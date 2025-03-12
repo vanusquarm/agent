@@ -45,19 +45,17 @@ namespace Transactions.API.Entities
         /// </summary>
         /// <param name="Data">the object to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnSuccess(object Data, string? Message = null)
+        public static GenericBaseResponse ReturnSuccess(object Data, string? Message = null)
         {
-            return new ResponseWithStatusCode()
+
+            return new GenericBaseResponse()
             {
-                StatusCode = (int)HttpStatusCode.OK,
-                Response = new GenericBaseResponse()
-                {
-                    IsSuccess = true,
-                    ResponseCode = Success.Item1,
-                    ResponseDescription = Success.Item2,
-                    Data = Data
-                }
+                IsSuccess = true,
+                ResponseCode = Success.Item1,
+                ResponseDescription = Success.Item2,
+                Data = Data
             };
+            
         }
 
         /// <summary>
@@ -66,21 +64,17 @@ namespace Transactions.API.Entities
         /// <param name="exception">the message to return in the Data of the API response.</param>
         /// <param name="message">the message to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnFinacleCallUnsuccessful(dynamic? exception = null, dynamic? FinacleData = null, string? message = null)
+        public static GenericBaseResponse ReturnFinacleCallUnsuccessful(object Data, string? Message = null)
         {
-            return new ResponseWithStatusCode()
+
+            return new GenericBaseResponse()
             {
-                StatusCode = (int)HttpStatusCode.UnprocessableEntity,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = FinacleFailure.Item1,
-                    IsSuccess = false,
-                    Title = message ?? FinacleFailure.Item2,
-                    Status = (int)HttpStatusCode.UnprocessableEntity,
-                    Extensions = new Dictionary<string, object?> { { "errors", exception } },
-                    FinacleData = FinacleData
-                }
+                ResponseCode = FinacleFailure.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? FinacleFailure.Item2,
+                Data = Data
             };
+            
         }
 
         /// <summary>
@@ -88,20 +82,17 @@ namespace Transactions.API.Entities
         /// </summary>
         /// <param name="message">the object to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnFeatureUnavailable(string message = "")
+        public static GenericBaseResponse ReturnFeatureUnavailable(object Data, string? Message = null)
         {
-            return new ResponseWithStatusCode()
+
+            return new GenericBaseResponse()
             {
-                StatusCode = (int)HttpStatusCode.UnprocessableEntity,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = FeatureUnavailable.Item1,
-                    IsSuccess = false,
-                    Title = FeatureUnavailable.Item2,
-                    Status = (int)HttpStatusCode.UnprocessableEntity,
-                    Extensions = new Dictionary<string, object?> { { "errors", message } }
-                }
+                ResponseCode = FeatureUnavailable.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? FinacleFailure.Item2,
+                Data = Data
             };
+            
         }
 
         /// <summary>
@@ -109,79 +100,17 @@ namespace Transactions.API.Entities
         /// </summary>
         /// <param name="exception">the message to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnException(dynamic? exception = null)
+        public static GenericBaseResponse ReturnException(object Data, string? Message = null)
         {
-            return new ResponseWithStatusCode()
-            {
-                StatusCode = (int)HttpStatusCode.InternalServerError,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = Exception.Item1,
-                    IsSuccess = false,
-                    Title = Exception.Item2,
-                    Status = (int)HttpStatusCode.InternalServerError,
-                    Extensions = new Dictionary<string, object?> { { "errors", exception } }
-                }
-            };
-        }
 
-        /// <summary>
-        /// Formats the response for a FailedValidations API call 
-        /// </summary>
-        /// <param name="validationErrors">the serialized validation errors to return.</param>
-        /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnFailedValidations(string validationErrors)
-        {
-            return new ResponseWithStatusCode()
+            return new GenericBaseResponse()
             {
-                StatusCode = (int)HttpStatusCode.BadRequest,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = FailedValidation.Item1,
-                    IsSuccess = false,
-                    Title = FailedValidation.Item2,
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Extensions = new Dictionary<string, object?> { { "errors", validationErrors } }
-                }
-            };
-        }
-
-        /// <summary>
-        /// Formats the response for an Unauthrized entity API call 
-        /// </summary>
-        /// <param name="errors">the serialized errors to return.</param>
-        /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnUnauthorized(string message = "Invalid or Incorrect Credentials")
-        {
-            return new ResponseWithStatusCode()
-            {
-                StatusCode = (int)HttpStatusCode.Unauthorized,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = Unauthorized.Item1,
-                    IsSuccess = false,
-                    Title = Unauthorized.Item2,
-                    Detail = message,
-                    Status = (int)HttpStatusCode.Unauthorized,
-                }
-            };
-        }
-
-        /// <summary>
-        /// Formats the response for an Unauthrized entity API call 
-        /// </summary>
-        /// <param name="errors">the serialized errors to return.</param>
-        /// <returns>ApiResponse</returns>
-        public static CustomProblemDetails ReturnNullAuthModeUnauthorized(string? message = null)
-        {
-            return new CustomProblemDetails()
-            {
-                ResponseCode = UnAuthorizedAuthMode.Item1,
+                ResponseCode = Exception.Item1,
                 IsSuccess = false,
-                Title = UnAuthorizedAuthMode.Item2,
-                Detail = message ?? UnAuthorizedAuthMode.Item2,
-                Status = (int)HttpStatusCode.Unauthorized,
+                ResponseDescription = Message ?? Exception.Item2,
+                Data = Data
             };
+            
         }
 
         /// <summary>
@@ -189,17 +118,17 @@ namespace Transactions.API.Entities
         /// </summary>
         /// <param name="validationErrors">the serialized validation errors to return.</param>
         /// <returns>ApiResponse</returns>
-        public static CustomProblemDetails ReturnFailedValidationsV2(string? validationErrors)
+        public static GenericBaseResponse ReturnFailedValidations(object? Data, string? Message = null)
         {
-            return new CustomProblemDetails()
+
+            return new GenericBaseResponse()
             {
                 ResponseCode = FailedValidation.Item1,
                 IsSuccess = false,
-                Title = FailedValidation.Item2,
-                Detail = validationErrors,
-                Status = (int)HttpStatusCode.BadRequest,
-                Extensions = new Dictionary<string, object?> { { "errors", validationErrors } }
+                ResponseDescription = Message ?? FailedValidation.Item2,
+                Data = Data,
             };
+            
         }
 
         /// <summary>
@@ -207,59 +136,37 @@ namespace Transactions.API.Entities
         /// </summary>
         /// <param name="errors">the serialized errors to return.</param>
         /// <returns>ApiResponse</returns>
-        public static CustomProblemDetails ReturnAuthModeUnauthorized()
+        public static GenericBaseResponse ReturnUnauthorized(object Data,string Message = "Invalid or Incorrect Credentials")
         {
-            return new CustomProblemDetails()
+
+            return new GenericBaseResponse()
             {
-                ResponseCode = UnAuthorizedAuthMode.Item1,
+                ResponseCode = Unauthorized.Item1,
                 IsSuccess = false,
-                Title = UnAuthorizedAuthMode.Item2,
-                Detail = UnAuthorizedAuthMode.Item3,
-                Status = (int)HttpStatusCode.Unauthorized,
+                ResponseDescription = Message ?? Unauthorized.Item2,
+                Data = Data
             };
+            
         }
+
 
         /// <summary>
         /// Formats the response for a Required Session to Transfer API call 
         /// </summary>
         /// <param name="Data">the object to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnFraudResponse(string Message)
+        public static GenericBaseResponse ReturnFraudResponse(object Data,string? Message)
         {
-            return new ResponseWithStatusCode()
+
+            return new GenericBaseResponse
             {
-                StatusCode = (int)HttpStatusCode.Forbidden,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = SuspectedFraud.Item1,
-                    IsSuccess = false,
-                    Title = SuspectedFraud.Item2 + " | " + "Fraud Detected",
-                    Detail = Message,
-                    Status = (int)HttpStatusCode.Forbidden,
-                }
+                ResponseCode = SuspectedFraud.Item1,
+                IsSuccess = false,
+                ResponseDescription = (Message ?? SuspectedFraud.Item2) + " | " + "Fraud Detected",
+                Data = Data
             };
         }
 
-        /// <summary>
-        /// Formats the response for a gtworld duplicate record to Transfer API call 
-        /// </summary>
-        /// <param name="Data">the object to return in the Data of the API response.</param>
-        /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnGTWorldDuplicateRecord(string Message)
-        {
-            return new ResponseWithStatusCode()
-            {
-                StatusCode = (int)HttpStatusCode.Ambiguous,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = DuplicateRecord.Item1,
-                    IsSuccess = false,
-                    Title = DuplicateRecord.Item2,
-                    Detail = Message,
-                    Status = (int)HttpStatusCode.Ambiguous
-                }
-            };
-        }
 
 
         /// <summary>
@@ -267,41 +174,34 @@ namespace Transactions.API.Entities
         /// </summary>
         /// <param name="Data">the object to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnFinacleDuplicateRecord(string Message, Object FinacleData)
+        public static GenericBaseResponse ReturnFinacleDuplicateRecord(object? Data, string? Message)
         {
-            return new ResponseWithStatusCode()
+
+            return new GenericBaseResponse()
             {
-                StatusCode = (int)HttpStatusCode.UnprocessableEntity,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = DuplicateRecord.Item1,
-                    IsSuccess = false,
-                    Title = DuplicateRecord.Item2,
-                    Detail = Message,
-                    Status = (int)HttpStatusCode.UnprocessableEntity,
-                    FinacleData = FinacleData != null ? JsonConvert.SerializeObject(FinacleData) : null
-                }
+                ResponseCode = DuplicateRecord.Item1,
+                IsSuccess = false,
+                ResponseDescription =Message ?? DuplicateRecord.Item2,
+                Data = Data
             };
+            
         }
         /// <summary>
         /// Formats the response for Generic Failed Vlidation to Transfer API call 
         /// </summary>
         /// <param name="Data">the object to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnFailed(string Message)
+        public static GenericBaseResponse ReturnFailed(object? Data,string? Message)
         {
-            return new ResponseWithStatusCode()
+
+            return new GenericBaseResponse()
             {
-                StatusCode = (int)HttpStatusCode.UnprocessableEntity,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = FailedTransaction.Item1,
-                    IsSuccess = false,
-                    Title = FailedTransaction.Item2,
-                    Detail = Message,
-                    Status = (int)HttpStatusCode.UnprocessableEntity
-                }
+                ResponseCode = FailedTransaction.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? FailedTransaction.Item2,
+                Data = Data
             };
+            
         }
 
         /// <summary>
@@ -309,20 +209,17 @@ namespace Transactions.API.Entities
         /// </summary>
         /// <param name="Data">the object to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnNoRecordFound(string Message)
+        public static GenericBaseResponse ReturnNoRecordFound(object Data,string? Message)
         {
-            return new ResponseWithStatusCode()
+
+            return new GenericBaseResponse()
             {
-                StatusCode = (int)HttpStatusCode.UnprocessableEntity,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = NoRecordReturned.Item1,
-                    IsSuccess = false,
-                    Title = NoRecordReturned.Item2,
-                    Detail = Message,
-                    Status = (int)HttpStatusCode.UnprocessableEntity
-                }
+                ResponseCode = NoRecordReturned.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? NoRecordReturned.Item2,
+                Data = Data
             };
+            
         }
 
         /// <summary>
@@ -330,20 +227,17 @@ namespace Transactions.API.Entities
         /// </summary>
         /// <param name="Data">the object to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        public static ResponseWithStatusCode ReturnInsufficientBalance()
+        public static GenericBaseResponse ReturnInsufficientBalance(object Data, string? Message)
         {
-            return new ResponseWithStatusCode()
+
+            return new GenericBaseResponse()
             {
-                StatusCode = (int)HttpStatusCode.UnprocessableEntity,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = InsufficientBalance.Item1,
-                    IsSuccess = false,
-                    Title = InsufficientBalance.Item2,
-                    Detail = InsufficientBalance.Item2,
-                    Status = (int)HttpStatusCode.UnprocessableEntity
-                }
+                ResponseCode = InsufficientBalance.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? InsufficientBalance.Item2,
+                Data = Data
             };
+            
         }
 
         /// <summary>
@@ -352,20 +246,17 @@ namespace Transactions.API.Entities
         /// <param name="exception">the message to return in the Data of the API response.</param>
         /// <param name="message">the message to return in the Data of the API response.</param>
         /// <returns>ResponseWithStatusCode</returns>
-        public static ResponseWithStatusCode ReturnFinacleFailure(dynamic? exception = null, string? message = null)
+        public static GenericBaseResponse ReturnFinacleFailure(object Data, string? Message = null)
         {
-            return new ResponseWithStatusCode()
+
+            return new GenericBaseResponse()
             {
-                StatusCode = (int)HttpStatusCode.UnprocessableEntity,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = FinacleFailure.Item1,
-                    IsSuccess = false,
-                    Title = message ?? FinacleFailure.Item2,
-                    Status = (int)HttpStatusCode.UnprocessableEntity,
-                    Extensions = new Dictionary<string, object?> { { "errors", exception } }
-                }
+                ResponseCode = FinacleFailure.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? FinacleFailure.Item2,
+                Data = Data
             };
+            
         }
 
         /// <summary>
@@ -373,20 +264,17 @@ namespace Transactions.API.Entities
         /// </summary>
         /// <param name="message">A Customized message to send </param>
         /// <returns>ResponseWithStatusCode</returns>
-        public static ResponseWithStatusCode ReturnNoRecordsFound(string? message = null)
+        public static GenericBaseResponse ReturnNoRecordsFound(object Data,string? Message = null)
         {
-            return new ResponseWithStatusCode()
+
+            return new GenericBaseResponse()
             {
-                StatusCode = (int)HttpStatusCode.UnprocessableEntity,
-                Response = new CustomProblemDetails()
-                {
-                    ResponseCode = NoRecordReturned.Item1,
-                    IsSuccess = false,
-                    Title = NoRecordReturned.Item2,
-                    Status = (int)HttpStatusCode.UnprocessableEntity,
-                    Extensions = new Dictionary<string, object?> { { "errors", message ?? NoRecordReturned.Item2 } }
-                }
+                ResponseCode = NoRecordReturned.Item1,
+                IsSuccess = false,
+                ResponseDescription =Message ?? NoRecordReturned.Item2,
+                Data = Data
             };
+            
         }
 
 
@@ -411,7 +299,7 @@ namespace Transactions.API.Entities
             public string ResponseCode { get; set; }
             public string ResponseDescription { get; set; }
             public bool IsSuccess { get; set; }
-            public object Data { get; set; }
+            public object? Data { get; set; }
         }
 
     }

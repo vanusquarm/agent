@@ -8,4 +8,6 @@
         public string eventId { get; set; }
         public string eventType { get; set; }
     }
+
+    
 }
