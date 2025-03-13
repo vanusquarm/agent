@@ -25,7 +25,7 @@ namespace Finacle.Core
                 Content = new StringContent(JsonSerializer.Serialize(transferRequest), Encoding.UTF8, "application/json")
             };
 
-            requestMessage.Headers.Add("requestId", requestId ?? Guid.NewGuid().ToString());
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
             var response = await _httpClient.SendAsync(requestMessage);
             response.EnsureSuccessStatusCode();
@@ -44,7 +44,7 @@ namespace Finacle.Core
                 Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
             };
 
-            requestMessage.Headers.Add("requestId", requestId ?? Guid.NewGuid().ToString());
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
             var response = await _httpClient.SendAsync(requestMessage);
             response.EnsureSuccessStatusCode();
@@ -53,20 +53,55 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<EodStatusResponse>(responseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public async Task<TransactionResponse> GetTransactionsAsync(Dictionary<string, string> queryParams, string requestId = null)
+        public async Task<TransactionResponse> GetTransactionsAsync(
+            string fromDate, string toDate, string accountId, string remarks = null, string refNo = null,
+            string tranInd = null, string revInd = null, string tranId = null, string tranType = null,
+            string userTransactionCode = null, string currency = null, string tellerId = null,
+            string tranRefNumber = null, string tranRmks = null, string requestId = null)
         {
-            var queryString = new FormUrlEncodedContent(queryParams).ReadAsStringAsync().Result;
-            var requestUrl = $"/api/v1/Transactions?{queryString}";
+            var queryParams = new Dictionary<string, string>
+            {
+                { "FromDate", fromDate },
+                { "ToDate", toDate },
+                { "AccountId", accountId }
+            };
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-            requestMessage.Headers.Add("requestId", requestId ?? Guid.NewGuid().ToString());
+            if (!string.IsNullOrEmpty(remarks)) queryParams.Add("Remarks", remarks);
+            if (!string.IsNullOrEmpty(refNo)) queryParams.Add("RefNo", refNo);
+            if (!string.IsNullOrEmpty(tranInd)) queryParams.Add("TranInd", tranInd);
+            if (!string.IsNullOrEmpty(revInd)) queryParams.Add("RevInd", revInd);
+            if (!string.IsNullOrEmpty(tranId)) queryParams.Add("TranId", tranId);
+            if (!string.IsNullOrEmpty(tranType)) queryParams.Add("TranType", tranType);
+            if (!string.IsNullOrEmpty(userTransactionCode)) queryParams.Add("UserTransactionCode", userTransactionCode);
+            if (!string.IsNullOrEmpty(currency)) queryParams.Add("Currency", currency);
+            if (!string.IsNullOrEmpty(tellerId)) queryParams.Add("TellerId", tellerId);
+            if (!string.IsNullOrEmpty(tranRefNumber)) queryParams.Add("TranRefNumber", tranRefNumber);
+            if (!string.IsNullOrEmpty(tranRmks)) queryParams.Add("TranRmks", tranRmks);
 
-            var response = await _httpClient.SendAsync(requestMessage);
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                var queryString = new FormUrlEncodedContent(queryParams).ReadAsStringAsync().Result;
+                var requestUrl = $"/api/v1/Transactions?{queryString}";
 
-            var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<TransactionResponse>(content);
+                var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+                requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+                var response = await _httpClient.SendAsync(requestMessage);
+                response.EnsureSuccessStatusCode();
+
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<TransactionResponse>(content);
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new Exception($"HTTP Request error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An unexpected error occurred: {ex.Message}");
+            }
         }
+
 
         public async Task<ChargeResponse> ChargeTransactionAsync(ChargeRequest request, string requestId = null)
         {
@@ -75,7 +110,7 @@ namespace Finacle.Core
                 Content = new StringContent(JsonSerializer.Serialize(ChargeRequestv2.Map(request)), Encoding.UTF8, "application/json")
             };
 
-            requestMessage.Headers.Add("requestId", requestId ?? Guid.NewGuid().ToString());
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
             var response = await _httpClient.SendAsync(requestMessage);
             response.EnsureSuccessStatusCode();

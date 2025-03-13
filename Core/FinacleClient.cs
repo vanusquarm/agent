@@ -23,13 +23,21 @@ namespace Finacle.Core
             };
 
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId);
+            _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId.ToUpper());
         }
 
-        public FinacleClient(HttpClient httpClient, string channelId = null)
+        public FinacleClient(HttpClient httpClient, string channelId)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId);
+            _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId.ToUpper());
+        }
+
+        public void SetAccessToken(string accessToken)
+        {
+            if (string.IsNullOrWhiteSpace(accessToken))
+                throw new ArgumentException("Access token cannot be null or empty.", nameof(accessToken));
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         }
 
         public static bool TryDeserialize<T>(string json, out T result)
