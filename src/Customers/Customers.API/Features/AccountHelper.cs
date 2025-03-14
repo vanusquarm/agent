@@ -13,7 +13,8 @@ namespace Customers.API.Features
                 if (string.IsNullOrWhiteSpace(phone)) { return false; }
 
                 // Remove all non-digit characters
-                string cleanPhoneNumber = Regex.Replace(phone, @"[^\d]", "");
+                Regex regex = new Regex(@"[^\d]", RegexOptions.None, TimeSpan.FromSeconds(1));
+                string cleanPhoneNumber = regex.Replace(phone, "");
 
                 // Ensure it is numeric
                 if (!long.TryParse(cleanPhoneNumber, out _)) { return false; }                   

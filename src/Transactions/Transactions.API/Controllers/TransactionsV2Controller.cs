@@ -41,6 +41,8 @@ public class TransactionsV2Controller : ControllerBase
     [ServiceFilter(typeof(ValidateModelFilter))]
     public async Task<IActionResult> PerformIntraBankTransfer([FromBody] AccountTransferRequest accountTransferRequest)
     {
+        Regex regex = new(@"\[[^\]]*\]", RegexOptions.None, TimeSpan.FromSeconds(1));
+
         var apirequestresponse = new Call
         {
             Channel = accountTransferRequest.ChannelId,
@@ -120,9 +122,9 @@ public class TransactionsV2Controller : ControllerBase
             //return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
 
             if(errorCode == "W0205")
-                return Ok(ResponseManager.ReturnInsufficientBalance(null, Regex.Replace(errorMessage, @"\[[^\]]*\]", "").Trim()));
+                return Ok(ResponseManager.ReturnInsufficientBalance(null, regex.Replace(errorMessage, "").Trim()));
             else
-                return Ok(ResponseManager.ReturnFailed(null, Regex.Replace(errorMessage, @"\[[^\]]*\]", "").Trim()));
+                return Ok(ResponseManager.ReturnFailed(null, regex.Replace(errorMessage, "").Trim()));
         }
         catch (Exception ex)
         {
