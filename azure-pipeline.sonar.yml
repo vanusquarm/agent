@@ -1,0 +1,31 @@
+pool:
+  name: QA pool
+
+
+trigger:
+- develop # or the name of your main branch
+- feature/*
+
+
+
+steps:
+# Prepare Analysis Configuration task
+- task: SonarQubePrepare@5
+  inputs:
+    SonarQube: Sonar-Server
+    scannerMode: 'MSBuild'
+    projectKey: Finacle-Middleware
+
+# Dotnet build task
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+
+# Run Code Analysis task
+- task: SonarQubeAnalyze@5
+
+# Publish Quality Gate Result task
+- task: SonarQubePublish@5
+  inputs:
+    pollingTimeoutSec: '300'
+   
+
