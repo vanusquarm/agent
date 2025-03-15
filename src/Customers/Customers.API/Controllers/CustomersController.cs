@@ -73,14 +73,15 @@ namespace Customers.API.Controllers
                 return NotFound();
             }
             
-        }     
+        }
 
-        /// <summary>
-        /// This is a generic endpoint to fetch specific details (properties) for a customer
-        /// </summary>
-        /// <param name="customerId"></param>
-        /// <param name="route"></param>
-        /// <returns></returns>
+        /* <summary>This is a generic endpoint to fetch specific details (properties) for a customer</summary>
+         * <param name="customerId">The cif or customer reference</param>
+         * <param name="route">
+         * phones, emails, addresses, products, RelationshipmanagerInfos, documents, related - parties, communication-preferences,
+         * product-preferences, education, employment, risk-rating, tax-details, notes, suspend, 
+         * </param>
+         */
         [HttpGet("{customerId}/{route?}")]
         public async Task<IActionResult> GetCustomerProps([FromRoute] string customerId, [FromRoute] string? route)
         {
@@ -99,7 +100,7 @@ namespace Customers.API.Controllers
                     Log.Information("cif starts with C. Now about to GetCorporateCustomer with request: {@Request}", (customerId, route));
                     var customer = await customerClient.GetCorporateCustomer(customerId, route);
                     Log.Information("Back from Getting CorporateCustomer with response: {@Response}", customer);
-                    return Ok(customer);
+                    return Ok(customer); 
                 }
                 else if (customerId.StartsWith("R"))
                 {
