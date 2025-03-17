@@ -15,29 +15,35 @@ namespace Finacle.Infrastructure.Auth.BasicJwt
         Task<string> GetTokenAsync();
     }
 
-    public class JwtService(IHttpClientFactory _httpClientFactory, IOptions<JwtOptions> options) : IJwtService
+    public class JwtService : IJwtService
     {
-        private readonly string SecretKey = options.Value.SecretKey; // Secret key for signing the JWT
-        private string _accessToken = options.Value.AccessToken; 
-        private string _refreshToken;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly JwtOptions _options;
+        private readonly IJwtStorage _tokenStorage;
 
+        public JwtService(IHttpClientFactory httpClientFactory, IOptions<JwtOptions> options, IJwtStorage tokenStorage)
+        {
+            _httpClientFactory = httpClientFactory;
+            _options = options.Value;
+            _tokenStorage = tokenStorage;
+        }
 
         // Generate local token
         public string GenerateToken()
         {
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, options.Value.Subject),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("scope", "api.read") // Custom claim for example
+                new Claim(JwtRegisteredClaimNames.Sub, _options.Subject),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("scope", "api.read") // Custom claim for example
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: options.Value.IssuerUrl,
-                audience: options.Value.Audience,
+                issuer: _options.IssuerUrl,
+                audience: _options.Audience,
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(5), // Short expiry for demo purposes
                 signingCredentials: creds);
@@ -48,7 +54,7 @@ namespace Finacle.Infrastructure.Auth.BasicJwt
         // Validate locally generated token from request
         public bool ValidateToken(string token)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
             var tokenHandler = new JwtSecurityTokenHandler();
 
             try
@@ -75,12 +81,12 @@ namespace Finacle.Infrastructure.Auth.BasicJwt
         // Call the API to get the token
         public async Task<string> GetTokenAsync()
         {
-            if (string.IsNullOrEmpty(_accessToken))
+            if (string.IsNullOrEmpty(_tokenStorage.AccessToken) || DateTime.UtcNow >= _tokenStorage.ExpiresAt)
             {
-                await RefreshTokenAsync(); // Retrieve a new token if it doesn't exist
+                await RefreshTokenAsync(); // Retrieve a new token if it doesn't exist or is expired
             }
 
-            return _accessToken;
+            return _tokenStorage.AccessToken;
         }
 
         // Refresh the token
@@ -89,14 +95,14 @@ namespace Finacle.Infrastructure.Auth.BasicJwt
             var client = _httpClientFactory.CreateClient();
 
             // Finacle authentication server's token endpoint
-            var tokenEndpoint = options.Value.IssuerUrl;
+            var tokenEndpoint = _options.IssuerUrl;
 
             var formData = new Dictionary<string, string>
-        {
-            { "client_id", options.Value.ClientId },
-            { "client_secret", options.Value.ClientSecret },
-            { "grant_type", "client_credentials" }
-        };
+            {
+                { "client_id", _options.ClientId },
+                { "client_secret", _options.ClientSecret },
+                { "grant_type", "client_credentials" }
+            };
 
             // Create FormUrlEncodedContent from the form data
             var requestBody = new FormUrlEncodedContent(formData);
@@ -112,8 +118,9 @@ namespace Finacle.Infrastructure.Auth.BasicJwt
             var responseContent = await response.Content.ReadAsStringAsync();
             var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent);
 
-            _accessToken = tokenResponse?.AccessToken;
-            _refreshToken = tokenResponse?.RefreshToken;  // Optional, depending on your OAuth flow
+            _tokenStorage.AccessToken = tokenResponse?.AccessToken;
+            _tokenStorage.RefreshToken = tokenResponse?.RefreshToken;  // Optional, depending on your OAuth flow
+            _tokenStorage.ExpiresAt = DateTime.UtcNow.AddSeconds(tokenResponse?.ExpiresIn ?? 3600); // Set the expiration time
         }
 
         private class TokenResponse
@@ -128,5 +135,4 @@ namespace Finacle.Infrastructure.Auth.BasicJwt
             public int ExpiresIn { get; set; }
         }
     }
-
 }

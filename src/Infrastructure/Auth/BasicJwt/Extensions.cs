@@ -22,7 +22,8 @@ namespace Finacle.Infrastructure.Auth.BasicJwt
         public static IServiceCollection AddJwtMiddleware<T>(this IServiceCollection services, IConfiguration configuration) where T : class
         {
             services.Configure<JwtOptions>(configuration.GetSection("JwtSettings"));
-
+            services.AddMemoryCache();
+            services.AddSingleton<IJwtStorage, JwtStorage>();
             services.AddTransient<AuthHttpClientHandler>();
             services.AddSingleton<IJwtService, JwtService>();
 
