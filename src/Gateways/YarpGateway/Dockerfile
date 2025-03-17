@@ -26,6 +26,10 @@ RUN dotnet publish "./Gateway.csproj" -c release -o /app/publish /p:UseAppHost=f
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+
+USER nonroot
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Gateway.dll"] 
