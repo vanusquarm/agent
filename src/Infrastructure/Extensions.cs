@@ -6,12 +6,15 @@ using System.Reflection;
 using Finacle.Infrastructure.Auth.BasicJwt;
 using Finacle.Infrastructure.Notifications;
 using Finacle.Infrastructure.Swagger;
+using Microsoft.Extensions.Configuration;
 
 namespace Finacle.Infrastructure;
 
 public static class Extensions
 {
     public const string AllowAllOrigins = "AllowAll";
+    private static IConfiguration config;
+
     public static void AddInfrastructure(this WebApplicationBuilder builder, Assembly? applicationAssembly = null, bool enableSwagger = true)
     {
         var config = builder.Configuration;
@@ -37,6 +40,6 @@ public static class Extensions
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
-        if (enableSwagger) app.UseSwaggerExtension(env);
+        if (enableSwagger) app.UseSwaggerExtension(env, config);
     }
 }

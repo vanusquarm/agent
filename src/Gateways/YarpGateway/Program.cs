@@ -46,7 +46,7 @@ builder.Services.AddHttpLogging(logging =>
 
 var app = builder.Build();
 
-app.UseSwaggerExtension(app.Environment);
+app.UseSwaggerExtension(app.Environment, configuration);
 app.Use(async (context, next) =>
 {
     context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload";

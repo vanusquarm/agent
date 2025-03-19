@@ -6,12 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System;
+using System.Collections.Generic;
 
 namespace Finacle.Infrastructure.Swagger
 {
     public static class Extensions
     {
-        public static void UseSwaggerExtension(this IApplicationBuilder app, IWebHostEnvironment env)
+        public static void UseSwaggerExtension(this IApplicationBuilder app, IWebHostEnvironment env, IConfiguration configuration)
         {
             if (!env.IsProduction())
             {
@@ -20,6 +22,7 @@ namespace Finacle.Infrastructure.Swagger
                     c.RouteTemplate = "swagger/{documentName}/swagger.json";
                     c.PreSerializeFilters.Add((swagger, httpReq) => swagger.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{httpReq.PathBase.Value}" } });
                 });
+
                 app.UseSwaggerUI(config =>
                 {
                     config.SwaggerEndpoint("v1/swagger.json", "Version 1");
@@ -27,9 +30,29 @@ namespace Finacle.Infrastructure.Swagger
                     config.DocExpansion(DocExpansion.List);
                     config.DisplayRequestDuration();
                     config.DefaultModelsExpandDepth(-1);
+
+                    // Add Swagger endpoints for each destination
+                    var reverseProxyConfig = configuration.GetSection("ReverseProxy").Get<ReverseProxyOptions>();
+                    foreach (var cluster in reverseProxyConfig.Clusters)
+                    {
+                        foreach (var destination in cluster.Value.Destinations)
+                        {
+                            if (destination.Value.Swaggers != null)
+                            {
+                                foreach (var swagger in destination.Value.Swaggers)
+                                {
+                                    foreach (var path in swagger.Paths)
+                                    {
+                                        config.SwaggerEndpoint($"{destination.Value.Address.Split(new string[] { "/api" }, StringSplitOptions.None)[0]}{path}", $"{cluster.Key} - {swagger.PrefixPath}");
+                                    }
+                                }//destination.Value.Address.Split(new string[] { "/api" }, StringSplitOptions.None)[0] + "/swagger"
+                            }
+                        }
+                    }
                 });
             }
         }
+
         public static void AddSwaggerExtension(this IServiceCollection services, IConfiguration configuration)
         {
             var swaggerOptions = configuration.GetSection("SwaggerOptions").Get<SwaggerOptions>();
