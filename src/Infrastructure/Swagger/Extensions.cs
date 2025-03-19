@@ -9,7 +9,7 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace Finacle.Infrastructure.Swagger
 {
-    internal static class Extensions
+    public static class Extensions
     {
         public static void UseSwaggerExtension(this IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -17,20 +17,20 @@ namespace Finacle.Infrastructure.Swagger
             {
                 app.UseSwagger(c =>
                 {
-                    c.RouteTemplate = "docs/{documentName}/openapi.json";
+                    c.RouteTemplate = "swagger/{documentName}/swagger.json";
                     c.PreSerializeFilters.Add((swagger, httpReq) => swagger.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{httpReq.PathBase.Value}" } });
                 });
                 app.UseSwaggerUI(config =>
                 {
-                    config.SwaggerEndpoint("v1/openapi.json", "Version 1");
-                    config.RoutePrefix = "docs";
+                    config.SwaggerEndpoint("v1/swagger.json", "Version 1");
+                    config.RoutePrefix = "swagger";
                     config.DocExpansion(DocExpansion.List);
                     config.DisplayRequestDuration();
                     config.DefaultModelsExpandDepth(-1);
                 });
             }
         }
-        internal static void AddSwaggerExtension(this IServiceCollection services, IConfiguration configuration)
+        public static void AddSwaggerExtension(this IServiceCollection services, IConfiguration configuration)
         {
             var swaggerOptions = configuration.GetSection("SwaggerOptions").Get<SwaggerOptions>();
 

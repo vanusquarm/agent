@@ -1,33 +1,41 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.HttpLogging;
 using Serilog;
-using Serilog.Formatting.Compact;
-using Serilog.Sinks.Elasticsearch;
-using System.Reflection;
-using Elastic.CommonSchema.Serilog; 
+using Finacle.Infrastructure.Swagger;
+using Finacle.Infrastructure.Auth.OpenId;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 bool enableSwagger = false;
 
 var policyNames = new List<string>
 {
-    "identity:read",
-    "identity:write",
+    "accounts:read",
+    "accounts:write",
+    "customers:read",
+    "customers:write",
+    "transactions:read",
+    "transactions:write",
+    "branches:read",
+    "branches:write",
+    "loans:read",
+    "loans:write",
+    "payments:read",
+    "payments:write",
 };
 
 // Configure Serilog
-var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-var configuration = builder.Configuration;
-
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration)
     .CreateLogger();
 
 builder.Host.UseSerilog(Log.Logger, true);
 
-// builder.Services.AddOpenIdAuth(builder.Configuration, policyNames);
+builder.Services.AddOpenIdAuth(builder.Configuration, policyNames);
 
 // builder.AddInfrastructure(enableSwagger: enableSwagger);
+builder.Services.AddSwaggerExtension(configuration);
+
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 builder.Services.AddHttpLogging(logging =>
 {
@@ -37,7 +45,17 @@ builder.Services.AddHttpLogging(logging =>
 });
 
 var app = builder.Build();
-// app.UseInfrastructure(builder.Environment, enableSwagger: enableSwagger);
+
+app.UseSwaggerExtension(app.Environment);
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload";
+    context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+
+    await next();
+});
 app.MapGet("/", () => "Healthy");
 app.UseRouting();
 app.UseSerilogRequestLogging(); // Add Serilog request logging
@@ -45,8 +63,8 @@ app.MapReverseProxy(config =>
 {
     config.Use(async (context, next) =>
     {
-        //string? token = await context.GetTokenAsync("access_token");
-        //context.Request.Headers["Authorization"] = $"Bearer {token}";
+        string? token = await context.GetTokenAsync("access_token");
+        context.Request.Headers["Authorization"] = $"Bearer {token}";
 
         await next().ConfigureAwait(false);
     });

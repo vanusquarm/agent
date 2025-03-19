@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputPath>bin\Release</OutputPath>
-    <Version>1.1.0</Version>
-    <Authors>Andrew Sam</Authors>
+    <Version>1.1.1</Version>
+    <Authors>Sylvanus Quarm, Ofoe Hadjoe</Authors>
     <Company>GTBank Ghana</Company>
     <Description>
       Finacle client library for Finacle Banking Integrations.
