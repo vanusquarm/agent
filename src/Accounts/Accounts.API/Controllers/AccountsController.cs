@@ -1,16 +1,15 @@
 using Acccounts.API.Entities;
 using Acccounts.API.Entities.DTOs;
 using Acccounts.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Acccounts.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class AccountsController(IAccountClient accountClient) : ControllerBase
     {
         /// <summary>

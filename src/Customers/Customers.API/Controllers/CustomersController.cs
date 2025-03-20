@@ -2,6 +2,7 @@ using Customers.API.Entities;
 using Customers.API.Entities.DTOs;
 using Customers.API.Features;
 using Customers.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -9,7 +10,7 @@ namespace Customers.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class CustomersController(ICustomerClient customerClient) : ControllerBase
     {
         /// <summary>
