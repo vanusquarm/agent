@@ -1,17 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Loans.API.Entities.DTOs;
 using Loans.API.Services;
-using Refit;
 using Serilog;
-using Loans.API.Entities.Models;
-using static MassTransit.ValidationResultExtensions;
 
 
 namespace Loan.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class LoansController(ILoanClient loanClient) : ControllerBase
     {
         /// <summary>
@@ -39,7 +37,7 @@ namespace Loan.API.Controllers
                     return NotFound();
                 }
             }
-            catch (ApiException ex)
+            catch (Refit.ApiException ex)
             {
                 Log.Error("An exception has occured at CreateLoan with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
                 var errorContent = await ex.GetContentAsAsync<LoanError>();
