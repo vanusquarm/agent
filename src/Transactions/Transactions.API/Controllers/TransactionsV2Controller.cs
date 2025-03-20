@@ -13,11 +13,13 @@ using System.Diagnostics;
 using System.Security.Cryptography.Xml;
 using Transactions.API.Filters;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Transactions.API.Controllers;
 
 [ApiController]
 [Route("api/v2/transactions")]
+[Authorize]
 public class TransactionsV2Controller : ControllerBase
 {
     private readonly FinacleDbContext _context;
