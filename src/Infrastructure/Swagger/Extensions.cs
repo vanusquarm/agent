@@ -15,8 +15,9 @@ namespace Finacle.Infrastructure.Swagger
     {
         public static void UseSwaggerExtension(this IApplicationBuilder app, IWebHostEnvironment env, IConfiguration configuration)
         {
-            if (!env.IsProduction())
+            if (env.IsProduction() || env.IsDevelopment())
             {
+                app.UseCors("CorsPolicy");
                 app.UseSwagger(c =>
                 {
                     c.RouteTemplate = "swagger/{documentName}/swagger.json";
@@ -43,9 +44,9 @@ namespace Finacle.Infrastructure.Swagger
                                 {
                                     foreach (var path in swagger.Paths)
                                     {
-                                        config.SwaggerEndpoint($"{destination.Value.Address.Split(new string[] { "/api" }, StringSplitOptions.None)[0]}{path}", $"{cluster.Key} - {swagger.PrefixPath}");
+                                        config.SwaggerEndpoint($"{destination.Value.Address.Split(new []{ "/api" }, StringSplitOptions.None)[0]}{path}", $"{cluster.Key} - {swagger.PrefixPath}");
                                     }
-                                }//destination.Value.Address.Split(new string[] { "/api" }, StringSplitOptions.None)[0] + "/swagger"
+                                }
                             }
                         }
                     }
@@ -56,6 +57,18 @@ namespace Finacle.Infrastructure.Swagger
         public static void AddSwaggerExtension(this IServiceCollection services, IConfiguration configuration)
         {
             var swaggerOptions = configuration.GetSection("SwaggerOptions").Get<SwaggerOptions>();
+
+            // Register CORS policy
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
 
             _ = services.AddSwaggerGen(config =>
             {

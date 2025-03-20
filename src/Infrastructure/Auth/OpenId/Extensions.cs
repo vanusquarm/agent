@@ -10,7 +10,20 @@ public static class Extensions
 {
     public static IServiceCollection AddOpenIdAuth(this IServiceCollection services, IConfiguration config, List<string> policyNames)
     {
+        var allowedOrigins = config.GetSection("CorsOptions:AllowedOrigins").Get<string[]>();
         var authOptions = new OpenIdOptions();
+        config.GetSection("JwtSettings").Bind(authOptions);
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy", builder =>
+            {
+                builder.WithOrigins(allowedOrigins)
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials();
+            });
+        });
 
         services.AddAuthentication(options =>
         {
@@ -25,22 +38,22 @@ public static class Extensions
             options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
             {
                 RequireAudience = true,
-                ValidateAudience = true,
+                ValidateAudience = false,
             };
-            options.Events = new JwtBearerEvents
-            {
-                OnChallenge = context =>
-                {
-                    context.HandleResponse();
-                    if (!context.Response.HasStarted)
-                    {
-                        throw new UnauthorizedException(context.Error!, context.ErrorDescription!);
-                    }
+            //options.Events = new JwtBearerEvents
+            //{
+            //    OnChallenge = context =>
+            //    {
+            //        context.HandleResponse();
+            //        if (!context.Response.HasStarted)
+            //        {
+            //            throw new UnauthorizedException(context.Error!, context.ErrorDescription!);
+            //        }
 
-                    return Task.CompletedTask;
-                },
-                OnForbidden = _ => throw new ForbiddenException()
-            };
+            //        return Task.CompletedTask;
+            //    },
+            //    OnForbidden = _ => throw new ForbiddenException()
+            //};
         });
 
         if (policyNames?.Count > 0)
