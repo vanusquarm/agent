@@ -30,25 +30,6 @@ namespace Finacle.Core
             return customer.RelationshipManagerDetails[0].RelationshipManagerId == "GH001800";
         }
 
-        public async Task<BankDateDto> GetCustomerBankDateAsync(string branchCode, string requestId = null)
-        {
-            var jsonContent = JsonSerializer.Serialize(branchCode);
-            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"/api/v1/transactions/bankdate")
-            {
-                Content = httpContent
-            };
-            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
-
-            var response = await _httpClient.SendAsync(requestMessage);
-
-            response.EnsureSuccessStatusCode(); // Throws exception if not 2xx response
-
-            var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<BankDateDto>(content);
-        }
-
         public async Task<string> GetCustomerDataAsync(string customerId, string route, string requestId = null)
         {
             // Construct the URL

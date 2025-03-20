@@ -64,5 +64,17 @@ namespace Finacle.Core
             var responseContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             return JsonSerializer.Deserialize<ChargeResponse>(responseContent);
         }
+
+        public BankDateDto GetTransactionBankDate(string branchCode, string requestId = null)
+        {
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/transactions/bankdate?branchCode={branchCode}");
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = _httpClient.SendAsync(requestMessage).Result;
+            response.EnsureSuccessStatusCode();
+
+            var content = response.Content.ReadAsStringAsync().Result;
+            return JsonSerializer.Deserialize<BankDateDto>(content);
+        }
     }
 }
