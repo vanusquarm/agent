@@ -1,4 +1,4 @@
-namespace Todo.API.Entities.DTOs;
+namespace Branches.API.Entities.DTOs;
 
 public class BranchAddressDto
 {

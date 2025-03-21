@@ -1,6 +1,6 @@
-using Todo.API.Entities.DTOs;
+using Branches.API.Entities.DTOs;
 
-namespace Todo.API.Services;
+namespace Branches.API.Services;
 using Refit;
 
 public interface IBranchesClient

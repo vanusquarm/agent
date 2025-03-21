@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.Net.Http;
-using Todo.API.Services;
+using Branches.API.Services;
 
-namespace Todo.API.Controllers;
+namespace Branches.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
