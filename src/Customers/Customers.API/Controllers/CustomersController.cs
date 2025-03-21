@@ -78,13 +78,13 @@ namespace Customers.API.Controllers
 
         /* <summary>This is a generic endpoint to fetch specific details (properties) for a customer</summary>
          * <param name="customerId">The cif or customer reference</param>
-         * <param name="route">
+         * <param name="prop">
          * phones, emails, addresses, products, RelationshipmanagerInfos, documents, related - parties, communication-preferences,
          * product-preferences, education, employment, risk-rating, tax-details, notes, suspend, 
          * </param>
          */
-        [HttpGet("{customerId}/{route?}")]
-        public async Task<IActionResult> GetCustomerProps([FromRoute] string customerId, [FromRoute] string? route)
+        [HttpGet("{customerId}/{prop?}")]
+        public async Task<IActionResult> GetCustomerProps([FromRoute] string customerId, [FromRoute] string? prop)
         {
             Log.Information("Recieved Request in GetCustomer method: {Request}", customerId);
 
@@ -98,15 +98,15 @@ namespace Customers.API.Controllers
 
                 if (customerId.StartsWith("C"))
                 {
-                    Log.Information("cif starts with C. Now about to GetCorporateCustomer with request: {@Request}", (customerId, route));
-                    var customer = await customerClient.GetCorporateCustomer(customerId, route);
+                    Log.Information("cif starts with C. Now about to GetCorporateCustomer with request: {@Request}", (customerId, prop));
+                    var customer = await customerClient.GetCorporateCustomer(customerId, prop);
                     Log.Information("Back from Getting CorporateCustomer with response: {@Response}", customer);
                     return Ok(customer); 
                 }
                 else if (customerId.StartsWith("R"))
                 {
                     Log.Information("cif starts with R. Now about to GetRetailCustomer with request: {Request}", customerId);
-                    var customer = await customerClient.GetRetailCustomer(customerId, route);
+                    var customer = await customerClient.GetRetailCustomer(customerId, prop);
                     Log.Information("Back from Getting RetailCustomer with response: {@Response}", customer);
                     return Ok(customer);
                 }
@@ -262,40 +262,6 @@ namespace Customers.API.Controllers
             catch (Exception ex)
             {
                 Log.Error("An exception has occured at GetCustomerAccountsBalances with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while fetching customer account balances: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
-            }
-        }
-
-        /// <summary>
-        /// Method to Get Relationship Manager
-        /// </summary>
-        /// <param name="customerId"></param>
-        /// <param name="isRetail"></param>
-        /// <returns></returns>
-        [HttpGet("{customerId}/getRelationshipManager")]
-        public async Task<IActionResult> GetRelationshipManager(string customerId, bool isRetail =true)
-        {
-            try
-            {                
-                if (isRetail)
-                {
-                    Log.Information("Retail. About to GetRetailCustomerRelationshipManager with request: {Request}", customerId);
-                    RelationshipManagerResponseDto rm = await customerClient.GetRetailCustomerRelationshipManager(customerId);
-                    Log.Information("Retail. Back from Getting RetailCustomerRelationshipManager with response: {@Response}", rm);
-                    return Ok(rm);
-                }
-                else
-                {
-                    Log.Information("Corporate. About to GetCorporateCustomerRelationshipManager with request: {Request}", customerId);
-                    RelationshipManagerResponseDto rm = await customerClient.GetCorporateCustomerRelationshipManager(customerId);
-                    Log.Information("Corporate. Back from Getting CorporateCustomerRelationshipManager with response: {@Response}", rm);
-                    return Ok(rm);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error("An exception has occured at GetRelationshipManager with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
                 Console.Error.WriteLine($"Error occurred while fetching customer account balances: {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }

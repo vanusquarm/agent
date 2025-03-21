@@ -13,14 +13,8 @@ namespace Customers.API.Services
         [Get("/corporate-customers/{customerId}")] 
         Task<GetCorpCustomerResponse> GetCorporateCustomer(string customerId);
 
-        [Get("/corporate-customers/{customerId}/{route}")]
-        Task<dynamic> GetCorporateCustomer(string customerId, string route);
-       
-        [Get("/corporate-customers/{customerId}/RelationshipmanagerInfos")]
-        Task<RelationshipManagerResponseDto> GetCorporateCustomerRelationshipManager(string customerId);
-
-        [Get("/retail-customers/{customerId}/RelationshipmanagerInfos")]
-        Task<RelationshipManagerResponseDto> GetRetailCustomerRelationshipManager(string customerId);
+        [Get("/corporate-customers/{customerId}/{prop}")]
+        Task<dynamic> GetCorporateCustomer(string customerId, string prop);
 
         // Retail Customer
         [Post("/retail-customers")] 
@@ -33,16 +27,13 @@ namespace Customers.API.Services
         [Get("/retail-customers/{customerId}")]
         Task<GetRetailCustomerResponse> GetRetailCustomer(string customerId);
 
-        [Get("/retail-customers/{customerId}/{route}")]
-        Task<dynamic> GetRetailCustomer(string customerId, string route);
+        [Get("/retail-customers/{customerId}/{prop}")]
+        Task<dynamic> GetRetailCustomer(string customerId, string prop);
 
 
         // All Customers
         [Post("/v2/CustomerDtls/getCustomerDtls")]
         Task<CustomerDetailsResponse> GetCustomerDetailsByPhoneAsync([Body] Dictionary<string, string> request);
-
- 
-
 
         [Get("/v2/customers/{customerId}/accounts?includeClosedAccounts={includeClosedAccounts}")]
         Task<GetCustomerAcctsResponse> GetCustomerAccounts(string customerId, string includeClosedAccounts);
