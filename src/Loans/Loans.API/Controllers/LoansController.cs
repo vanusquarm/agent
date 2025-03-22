@@ -9,7 +9,7 @@ namespace Loan.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    [Authorize]
+
     public class LoansController(ILoanClient loanClient) : ControllerBase
     {
         /// <summary>

@@ -10,7 +10,7 @@ namespace Customers.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    [Authorize]
+
     public class CustomersController(ICustomerClient customerClient) : ControllerBase
     {
         /// <summary>
