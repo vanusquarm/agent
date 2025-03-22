@@ -38,10 +38,10 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog(Log.Logger, true);
 
-builder.Services.AddOpenIdAuth(builder.Configuration, policyNames);
+//builder.Services.AddOpenIdAuth(builder.Configuration, policyNames);
 
 // builder.AddInfrastructure(enableSwagger: enableSwagger);
-builder.Services.AddSwaggerExtension(configuration);
+//builder.Services.AddSwaggerExtension(configuration);
 
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 builder.Services.AddHttpLogging(logging =>
@@ -69,7 +69,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseSwaggerExtension(app.Environment, configuration);
+//app.UseSwaggerExtension(app.Environment, configuration);
 app.Use(async (context, next) =>
 {
     context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload";
@@ -87,8 +87,8 @@ app.Use(async (context, next) =>
 
 app.MapGet("/", () => "Healthy");
 app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 app.UseSerilogRequestLogging(); // Add Serilog request logging
 app.MapReverseProxy(config =>
 {

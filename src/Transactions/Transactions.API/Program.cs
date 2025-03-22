@@ -33,7 +33,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtMiddleware<ITransactionClient>(configuration);
-builder.Services.AddOpenIdAuth(builder.Configuration, null); // Add Token Validation
+//builder.Services.AddOpenIdAuth(builder.Configuration, null); // Add Token Validation
 
 var app = builder.Build();
 
@@ -47,9 +47,9 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 // Use CORS policy
-app.UseCors("CorsPolicy");
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseCors("CorsPolicy");
+//app.UseAuthentication();
+//app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
