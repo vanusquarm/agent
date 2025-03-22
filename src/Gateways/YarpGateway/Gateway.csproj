@@ -24,8 +24,10 @@
       <ProjectReference Include="..\..\Infrastructure\Finacle.Infrastructure.csproj" />
     </ItemGroup> -->
     <PropertyGroup>
+       <!--
         <ContainerImageName>finacle.gateway</ContainerImageName>
         <ContainerImageTags>1.0.0;latest</ContainerImageTags>
         <PublishProfile>DefaultContainer</PublishProfile>
+        -->
     </PropertyGroup>
 </Project>
