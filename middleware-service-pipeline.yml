@@ -20,7 +20,7 @@ pool:
 variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-
+  artifactName: 'GatewayAPI'
 
 # steps:
 
@@ -144,6 +144,6 @@ stages:
         displayName: 'Build_Artifact'
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'TestGatewayAPI'
+          ArtifactName: '$(artifactName)'
           publishLocation: 'Container'
 
