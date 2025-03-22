@@ -1,8 +1,15 @@
-using Microsoft.AspNetCore.Authentication;
+using Finacle.Infrastructure.Logging;
 using Microsoft.AspNetCore.HttpLogging;
 using Serilog;
 using Finacle.Infrastructure.Swagger;
 using Finacle.Infrastructure.Auth.OpenId;
+using System.Collections.Concurrent;
+using System;
+using Microsoft.EntityFrameworkCore;
+using Finacle.Infrastructure.Persistence;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -44,6 +51,22 @@ builder.Services.AddHttpLogging(logging =>
     logging.ResponseBodyLogLimit = 4096;
 });
 
+// Register DbContext
+builder.Services.AddDbContext<FinacleDbContext>(options =>
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+// Register CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
+
 var app = builder.Build();
 
 app.UseSwaggerExtension(app.Environment, configuration);
@@ -54,10 +77,18 @@ app.Use(async (context, next) =>
     context.Response.Headers["X-Frame-Options"] = "DENY";
     context.Response.Headers["X-Content-Type-Options"] = "nosniff";
 
+    context.Response.Headers["Access-Control-Allow-Origin"] = "*"; // Adjust as needed
+    context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
+    context.Response.Headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
+
+
     await next();
 });
+
 app.MapGet("/", () => "Healthy");
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseSerilogRequestLogging(); // Add Serilog request logging
 app.MapReverseProxy(config =>
 {
@@ -70,5 +101,7 @@ app.MapReverseProxy(config =>
     });
 });
 
-app.Run();
+//app.UseMiddleware<RequestResponseLoggerMiddleware>();
+app.UseRequestResponseLoggerMiddleware();
 
+app.Run();

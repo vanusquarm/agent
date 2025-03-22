@@ -1,17 +1,15 @@
 ﻿using Finacle.Infrastructure.Persistence;
 using Finacle.Infrastructure.Utils;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+
+
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Finacle.Infrastructure.Logging
 {
@@ -31,7 +29,7 @@ namespace Finacle.Infrastructure.Logging
                     Channel = context.Request.Headers["Channel"].FirstOrDefault()?.Split(50, 1),
                     RequestParam = context.Request.QueryString.Value?.Split(200, 1),
                     IpAddress = context.Connection.RemoteIpAddress?.ToString().Split(50, 1),
-                    Controller = context.Request.Path.Value?.Split('/')[1].Split(50, 1),
+                    Controller = context.Request.RouteValues["controller"]?.ToString().Split(50, 1),
                     EndPoint = context.Request.Path.Value?.Split(200, 1),
                     RequestDate = DateTime.UtcNow,
                     UserAgent = context.Request.Headers["User-Agent"].FirstOrDefault()?.Split(200, 1),
@@ -41,21 +39,35 @@ namespace Finacle.Infrastructure.Logging
 
                 try
                 {
-                    var dbContext = context.RequestServices.GetRequiredService<FinacleDbContext>();
-                    dbContext.ApiCalls.Add(apiCall);
-                    await dbContext.SaveChangesAsync();
+                    if (!context.Request.Path.ToString().StartsWith("/swagger"))
+                    {
+                        var dbContext = context.RequestServices.GetRequiredService<FinacleDbContext>();
+                        dbContext.ApiCalls.Add(apiCall);
+                        await dbContext.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 2627) // SQL Server error code for unique constraint violation
                 {
                     Log.Warning("Duplicate requestId detected: {RequestId}", requestId);
                 }
 
+                // Capture the response body
+                var originalBodyStream = context.Response.Body;
+                using var responseBody = new MemoryStream();
+                context.Response.Body = responseBody;
+
                 await next();
 
                 // Update the response details after the request has been processed
                 apiCall.ResponseCode = context.Response.StatusCode.ToString().Split(50, 1);
-                apiCall.ResponseParam = context.Response.Headers.ToString()?.Split(200, 1);
+                responseBody.Seek(0, SeekOrigin.Begin);
+                var responseText = await new StreamReader(responseBody).ReadToEndAsync();
+                apiCall.ResponseParam = responseText.Split(200, 1);
                 apiCall.ReponseTime = DateTime.UtcNow;
+
+                responseBody.Seek(0, SeekOrigin.Begin);
+                await responseBody.CopyToAsync(originalBodyStream);
+                context.Response.Body = originalBodyStream;
 
                 try
                 {
