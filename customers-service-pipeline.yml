@@ -35,7 +35,7 @@ variables:
 #   displayName: 'NuGet restore packages'
 #   inputs:
 #     command: 'restore'
-#     restoreSolution: '**/Customers.sln'
+#     restoreSolution: '**/Customers.API.sln'
 #     feedsToUse: 'select'
 
 # ## NetCore Test
@@ -44,7 +44,7 @@ variables:
 #   displayName: 'Run tests'
 #   inputs:
 #     command: 'test'
-#     projects: '**/Customers.sln'
+#     projects: '**/Customers.API.sln'
 #     arguments: '--configuration $(buildConfiguration)'
 
 # ## NetCore Publish
@@ -54,7 +54,7 @@ variables:
 #   inputs:
 #     command: 'publish'
 #     publishWebProjects: false
-#     projects: '**/Customers.csproj'
+#     projects: '**/Customers.API.csproj'
 #     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 #     zipAfterPublish: false
 
@@ -103,7 +103,7 @@ stages:
         displayName: 'Restore'
         inputs:
           command: 'restore'
-          projects: '**/Customers.csproj'
+          projects: '**/Customers.API.csproj'
 
             # 3. Build the project
       - task: DotNetCoreCLI@2
@@ -111,7 +111,7 @@ stages:
         displayName: Build
         inputs:
           command: 'build'
-          projects: '**/Customers.csproj'
+          projects: '**/Customers.API.csproj'
           arguments: '--configuration $(buildConfiguration)'
 
             # 4. Run tests
@@ -120,7 +120,7 @@ stages:
         displayName: 'Test'
         inputs:
           command: 'test'
-          projects: '**/*Tests/Customers.csproj'
+          projects: '**/*Tests/Customers.API.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
 
           #. Clean restore before publishing
@@ -134,7 +134,7 @@ stages:
         inputs:
           command: 'publish'
           publishWebProjects: false
-          projects: '**/Customers.csproj'
+          projects: '**/Customers.API.csproj'
           arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
           zipAfterPublish: false
 
