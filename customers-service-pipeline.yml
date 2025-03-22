@@ -1,0 +1,149 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+      - preprod
+  
+  paths:
+         ### Include means file or dir to trigger a build
+    include:
+#      - path/to/your/folder/*
+       - .src/Customers/Customers.API/*
+
+pool:
+    name: 'TestPool'
+    
+variables:
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  artifactName: 'CustomersAPI'
+
+# steps:
+
+# ## NuGet Installer
+# - task: NuGetToolInstaller@1
+#   name: 'NuGetToolInstaller'
+#   displayName: 'NuGet Restore Installer'
+
+# ## NuGet Restore
+# - task: NuGetCommand@2
+#   name: 'NuGetRestore'
+#   displayName: 'NuGet restore packages'
+#   inputs:
+#     command: 'restore'
+#     restoreSolution: '**/Customers.sln'
+#     feedsToUse: 'select'
+
+# ## NetCore Test
+# - task: DotNetCoreCLI@2
+#   name: 'Tests'
+#   displayName: 'Run tests'
+#   inputs:
+#     command: 'test'
+#     projects: '**/Customers.sln'
+#     arguments: '--configuration $(buildConfiguration)'
+
+# ## NetCore Publish
+# - task: DotNetCoreCLI@2
+#   name: 'Publish'
+#   displayName: 'Publish'
+#   inputs:
+#     command: 'publish'
+#     publishWebProjects: false
+#     projects: '**/Customers.csproj'
+#     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+#     zipAfterPublish: false
+
+
+# ## Publish Build Artifacts
+# - task: PublishBuildArtifacts@1
+#   name: 'PublishBuildArtifact'
+#   displayName: 'Publish Build Artifacts'
+#   inputs:
+#     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#     ArtifactName: '$(artifactName)'
+#     publishLocation: 'Container'
+
+
+##################################################################
+
+  ### PART 2
+
+stages:
+
+- stage: Run_Dependence
+  jobs:
+   - job: Run_Dependence
+     pool:
+      name: 'TestPool'
+     steps:
+
+            # 1. Checkout the code from the repository
+      - task: UseDotNet@2
+        name: 'DependenceInstall'
+        displayName: 'Install_Depen'
+        inputs:
+          packageType: 'sdk'
+          version: '8.x'
+          installationPath: $(Agent.ToolsDirectory)/dotnet
+
+      #        #. Add Docker setup before dotnet publish
+      # - script: |
+      #     echo "Setting up Docker..."
+      #     docker --version
+      #   displayName: 'Check Docker Installation'
+
+            # 2. Restore dependencies
+      - task: DotNetCoreCLI@2
+        name: 'Restore'
+        displayName: 'Restore'
+        inputs:
+          command: 'restore'
+          projects: '**/Customers.csproj'
+
+            # 3. Build the project
+      - task: DotNetCoreCLI@2
+        name: 'Build'
+        displayName: Build
+        inputs:
+          command: 'build'
+          projects: '**/Customers.csproj'
+          arguments: '--configuration $(buildConfiguration)'
+
+            # 4. Run tests
+      - task: DotNetCoreCLI@2
+        name: 'Test'
+        displayName: 'Test'
+        inputs:
+          command: 'test'
+          projects: '**/*Tests/Customers.csproj'
+          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+
+          #. Clean restore before publishing
+      - script: dotnet restore --no-cache
+        displayName: 'Restore Packages'
+
+            # 5. Publish the build output
+      - task: DotNetCoreCLI@2
+        name: 'Publish'
+        displayName: 'Publish'
+        inputs:
+          command: 'publish'
+          publishWebProjects: false
+          projects: '**/Customers.csproj'
+          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+          zipAfterPublish: false
+
+            # 6. Publish build artifacts
+      - task: PublishBuildArtifacts@1
+        name: 'ArtifactBuild'
+        displayName: 'Build_Artifact'
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: '$(artifactName)'
+          publishLocation: 'Container'
+
