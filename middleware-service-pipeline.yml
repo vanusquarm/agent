@@ -65,7 +65,7 @@ variables:
 #   displayName: 'Publish Build Artifacts'
 #   inputs:
 #     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-#     ArtifactName: 'TestGateway'
+#     ArtifactName: '$(artifactName)'
 #     publishLocation: 'Container'
 
 
