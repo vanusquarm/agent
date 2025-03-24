@@ -20,7 +20,7 @@ pool:
 variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  artifactName: 'TransactionsAPI'
+  artifactName: 'Finacle-Transactions'
 
 # steps:
 
