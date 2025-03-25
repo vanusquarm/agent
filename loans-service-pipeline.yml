@@ -21,6 +21,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   artifactName: 'LoansAPI'
+  projectName: 'Finacle-Loans'
 
 # steps:
 
