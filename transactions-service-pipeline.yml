@@ -21,6 +21,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   artifactName: 'TransactionsAPI'
+  projectName: 'Finacle-Transactions'
 
 # steps:
 
