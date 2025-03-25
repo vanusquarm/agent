@@ -21,6 +21,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   artifactName: 'GatewayAPI'
+  projectName: 'Finacle-Gateway'
 
 
 # steps:
@@ -56,7 +57,7 @@ variables:
 #     command: 'publish'
 #     publishWebProjects: false
 #     projects: '**/Gateway.csproj'
-#     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+#     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(projectName)'
 #     zipAfterPublish: false
 
 
@@ -136,7 +137,7 @@ stages:
           command: 'publish'
           publishWebProjects: false
           projects: '**/Gateway.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(projectName)'
           zipAfterPublish: false
 
             # 6. Publish build artifacts
