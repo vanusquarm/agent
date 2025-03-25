@@ -56,7 +56,7 @@ variables:
 #     command: 'publish'
 #     publishWebProjects: false
 #     projects: '**/Acccounts.API.csproj'
-#     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(projectName)'
+#     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 #     zipAfterPublish: false
 
 
@@ -136,7 +136,7 @@ stages:
           command: 'publish'
           publishWebProjects: false
           projects: '**/Acccounts.API.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(projectName)'
+          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
           zipAfterPublish: false
 
             # 6. Publish build artifacts
