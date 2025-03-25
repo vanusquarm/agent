@@ -12,7 +12,7 @@ trigger:
          ### Include means file or dir to trigger a build
     include:
 #      - path/to/your/folder/*
-       - ./src/Gateways/YarpGateway/*
+       - src/Gateways/YarpGateway/*
 
 pool:
     name: 'TestPool'
