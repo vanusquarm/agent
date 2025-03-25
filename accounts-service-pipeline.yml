@@ -8,11 +8,11 @@ trigger:
     include:
       - preprod
   
-#   paths:
-#          ### Include means file or dir to trigger a build
-#     include:
-# #      - path/to/your/folder/*
-#        - .src/Accounts/Accounts.API/*
+  paths:
+         ### Include means file or dir to trigger a build
+    include:
+#      - path/to/your/folder/*
+       - .src/Accounts/Accounts.API/*
 
 pool:
     name: 'TestPool'
