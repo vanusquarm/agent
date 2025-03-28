@@ -11,7 +11,7 @@ namespace Transactions.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-[Authorize]
+
 public class TransactionsController : ControllerBase
 {
     private readonly ITransactionClient _transactionClient;

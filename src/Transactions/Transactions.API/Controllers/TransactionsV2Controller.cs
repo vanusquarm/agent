@@ -19,7 +19,7 @@ namespace Transactions.API.Controllers;
 
 [ApiController]
 [Route("api/v2/transactions")]
-[Authorize]
+
 public class TransactionsV2Controller : ControllerBase
 {
     private readonly FinacleDbContext _context;
