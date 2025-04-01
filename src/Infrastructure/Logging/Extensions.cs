@@ -41,6 +41,7 @@ namespace Finacle.Infrastructure.Logging
                 {
                     if (!context.Request.Path.ToString().StartsWith("/swagger"))
                     {
+                        Log.Information("About to insert into ApiCall table with parameters: {@Request}", apiCall);
                         var dbContext = context.RequestServices.GetRequiredService<FinacleDbContext>();
                         dbContext.ApiCalls.Add(apiCall);
                         await dbContext.SaveChangesAsync();
