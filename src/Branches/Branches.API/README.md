@@ -1,0 +1,1 @@
+[![Build status](https://devops.gtbghana.com/DevOps/APIs/Finacle%20Integrations/_apis/build/status/PREPROD.Finacle.Branches.CI)](https://devops.gtbghana.com/DevOps/APIs/Finacle%20Integrations/_apis/build/status/PREPROD.Finacle.Branches.CI?branchName=preprod)
