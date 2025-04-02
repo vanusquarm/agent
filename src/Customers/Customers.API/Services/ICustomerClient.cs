@@ -63,6 +63,6 @@ namespace Customers.API.Services
         Task<object> GetTellerTransactionDetails(object request);
 
         [Post("/v2/tellerAccountDtls/gettellerAccountDtls")]
-        Task<object> GetTellerAccountDetails(object request);
+        Task<TellerAccountDetails> GetTellerAccountDetails(object request);
     }
 }

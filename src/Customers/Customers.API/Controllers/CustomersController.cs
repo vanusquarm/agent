@@ -447,7 +447,8 @@ namespace Customers.API.Controllers
                 var resp = await customerClient.GetTellerAccountDetails(request);
                 Log.Information("Back from Getting TellerAccountDetails with response: {@Response}", resp);
 
-                return Ok(resp);
+                if(resp.ErrorFlg == "N") return Ok(resp);
+                else return NotFound();
             }
             catch (Exception ex)
             {
