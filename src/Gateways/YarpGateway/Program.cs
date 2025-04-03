@@ -85,7 +85,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.MapGet("/", () => "Healthy");
+
 app.UseRouting();
 //app.UseAuthentication();
 //app.UseAuthorization();
@@ -103,5 +103,6 @@ app.MapReverseProxy(config =>
 
 //app.UseMiddleware<RequestResponseLoggerMiddleware>();
 app.UseRequestResponseLoggerMiddleware();
+app.MapGet("/", () => "Healthy");
 
 app.Run();
