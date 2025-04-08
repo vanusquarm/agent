@@ -141,7 +141,7 @@ namespace Finacle.Core
             var content = response.Content.ReadAsStringAsync().Result;
             var accounts = JsonSerializer.Deserialize<GetCustomerAcctsResponse>(content);
 
-            return accounts.BasicAccountDetails;
+            return accounts.BasicAccountDetails.Where(a => a.AccountStatus== "O" && (a.ProductType == "CAA" || a.ProductType == "SBA")).ToList();
         }
 
         public List<Account> ListDormantAccounts(string customerId, string requestId = null)

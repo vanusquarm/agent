@@ -12,24 +12,21 @@ namespace Finacle.Core
 
         public FinacleClient(string baseUrl, string channelId)
         {
-            if (string.IsNullOrWhiteSpace(baseUrl))
-                throw new ArgumentException("Base URL cannot be null or empty.", nameof(baseUrl));
-
-            _baseUrl = baseUrl;
-
+            _baseUrl = baseUrl ?? throw new ArgumentException("Base URL cannot be null or empty.", nameof(baseUrl));
             _httpClient = new HttpClient
             {
                 BaseAddress = new Uri(_baseUrl)
             };
-
+            _httpClient.Timeout = TimeSpan.FromSeconds(30);
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId.ToUpper());
         }
 
-        public FinacleClient(HttpClient httpClient, string channelId)
+        public FinacleClient(HttpClient httpClient, string channelId = null)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId.ToUpper());
+            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+            if (!string.IsNullOrEmpty(channelId)) _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId.ToUpper());
         }
 
         public void SetAccessToken(string accessToken)
@@ -38,6 +35,18 @@ namespace Finacle.Core
                 throw new ArgumentException("Access token cannot be null or empty.", nameof(accessToken));
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+
+        public void SetRequestHeader(string headerName, string headerValue)
+        {
+            if (string.IsNullOrWhiteSpace(headerName))
+                throw new ArgumentException("Header name cannot be null or empty.", nameof(headerName));
+
+            if (string.IsNullOrWhiteSpace(headerValue))
+                throw new ArgumentException("Header value cannot be null or empty.", nameof(headerValue));
+
+            _httpClient.DefaultRequestHeaders.Remove(headerName);
+            _httpClient.DefaultRequestHeaders.Add(headerName, headerValue);
         }
 
         public static bool TryDeserialize<T>(string json, out T result)

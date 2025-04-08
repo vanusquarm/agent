@@ -129,7 +129,7 @@ namespace Finacle.Core
             if (string.IsNullOrEmpty(customerId))
                 throw new ArgumentNullException(nameof(customerId));
 
-            var requestUri = $"api/v1/Loans/GetOutstandingInquiry/{customerId}"; //GetOutstandingInquiry/{accountId}
+            var requestUri = $"api/v1/Loans/outstanding-inquiry/{customerId}"; //outstanding-inquiry/{accountId}
 
             var response = _httpClient.GetAsync(requestUri).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
@@ -142,7 +142,7 @@ namespace Finacle.Core
         {
             if (string.IsNullOrEmpty(accountId))
                 throw new ArgumentNullException(nameof(accountId));
-            var requestUri = $"api/v1/Loans/SchedulePayment/{accountId}"; //GetOutstandingInquiry/{accountId}
+            var requestUri = $"api/v1/Loans/SchedulePayment/{accountId}"; //outstanding-inquiry/{accountId}
 
             var response = _httpClient.GetAsync(requestUri).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
@@ -156,7 +156,7 @@ namespace Finacle.Core
             if (string.IsNullOrEmpty(accountId))
                 throw new ArgumentNullException(nameof(accountId));
 
-            var requestUri = $"api/v1/Loans/InterestDetails/{accountId}"; //GetOutstandingInquiry/{accountId}
+            var requestUri = $"api/v1/Loans/InterestDetails/{accountId}"; //outstanding-inquiry/{accountId}
             var jsonContent = new StringContent(JsonSerializer.Serialize(unsecuredLoanInterestRateDto), Encoding.UTF8, "application/json");
 
 
@@ -170,7 +170,7 @@ namespace Finacle.Core
         {
             if (string.IsNullOrEmpty(accountId))
                 throw new ArgumentNullException(nameof(accountId));
-            var requestUri = $"api/v1/Loans/InterestDetails/{accountId}"; //GetOutstandingInquiry/{accountId}
+            var requestUri = $"api/v1/Loans/InterestDetails/{accountId}"; //outstanding-inquiry/{accountId}
 
             var response = _httpClient.GetAsync(requestUri).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
@@ -183,7 +183,7 @@ namespace Finacle.Core
         {
             if (string.IsNullOrEmpty(loanId))
                 throw new ArgumentNullException(nameof(loanId));
-            var requestUri = $"api/v1/Loans/unsecuredLoan/{loanId}"; //GetOutstandingInquiry/{accountId}
+            var requestUri = $"api/v1/Loans/unsecuredLoan/{loanId}"; //outstanding-inquiry/{accountId}
 
             var response = _httpClient.GetAsync(requestUri).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();

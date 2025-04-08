@@ -8,8 +8,10 @@ namespace Finacle.Core
 {
     public partial class FinacleClient
     {
-        public IntraBankTransferResponse TransferFunds(IntraBankTransferRequest transferRequest, string requestId = null)
+        public IntraBankTransferResponse TransferFunds(IntraBankTransferRequest transferRequest, string requestId)
         {
+            if (string.IsNullOrEmpty(requestId))
+                throw new ArgumentNullException(nameof(requestId));
             if (transferRequest == null)
                 throw new ArgumentNullException(nameof(transferRequest));
             if (transferRequest.Amount <= 0)
@@ -23,7 +25,7 @@ namespace Finacle.Core
                 Content = new StringContent(JsonSerializer.Serialize(transferRequest), Encoding.UTF8, "application/json")
             };
 
-            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+            requestMessage.Headers.Add("RequestId", requestId);
 
             var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
@@ -32,7 +34,7 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<IntraBankTransferResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public IntraBankTransferResponse TransferFunds(string sourceAccount, string destAccount, double amount, string channelReference, string remarks, string channelId, string chargeEventId)
+        public IntraBankTransferResponse TransferFunds(string sourceAccount, string destAccount, double amount, string channelReference, string remarks, string channelId, string requestId, string docNum = null, string chargeEventId = null)
         {
             var transferRequest = new IntraBankTransferRequest
             {
@@ -42,21 +44,23 @@ namespace Finacle.Core
                 Remarks = remarks,
                 ChannelReference = channelReference,
                 ChannelId = channelId,
-                DocNum = null,
+                DocNum = docNum,
                 ChargeEventId = chargeEventId
             };
 
-            return TransferFunds(transferRequest);
+            return TransferFunds(transferRequest, requestId);
         }
 
-        public ChargeResponse ChargeTransaction(ChargeRequest request, string requestId = null)
+        public ChargeResponse ChargeTransaction(ChargeRequest request, string requestId)
         {
+            if (string.IsNullOrEmpty(requestId))
+                throw new ArgumentNullException(nameof(requestId));
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, "api/v1/Transactions/charges")
             {
                 Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
             };
 
-            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+            requestMessage.Headers.Add("RequestId", requestId);
 
             var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();

@@ -1,6 +1,7 @@
 ﻿using Finacle.Core.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -37,29 +38,53 @@ namespace Finacle.Core
         }
 
         // Get account balances
-        public async Task<List<CustomerAccountBalance>> GetAccountBalancesAsync(string accountId, string accountType, string requestId = null)
+        public async Task<AccountBalance> GetAccountBalanceAsync(string accountId, string date = null, string requestId = null)
         {
             try
             {
                 // Ensure accountType is valid (non-null and non-empty). If invalid, set a default or handle appropriately
-                if (string.IsNullOrEmpty(accountType))
+                if (string.IsNullOrEmpty(date))
                 {
-                    accountType = null;
+                    date = DateTime.UtcNow.ToString("yyyy-MM-dd");
                 }
 
+                var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Accounts/{accountId}/balance");
+                requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+                var response = await _httpClient.SendAsync(requestMessage);
+
+                var content = await response.Content.ReadAsStringAsync();
+                var accountsBalance = JsonSerializer.Deserialize<AccountBalance>(content);
+
+                return accountsBalance;
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public async Task<List<Domain.Balance>> GetAccountBalancesAsync(string accountId, string balanceType, string requestId = null)
+        {
+            try
+            {
                 var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Accounts/{accountId}/balances");
                 requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
                 var response = await _httpClient.SendAsync(requestMessage);
 
                 var content = await response.Content.ReadAsStringAsync();
-                var accountsBalances = JsonSerializer.Deserialize<GetAcctBalancesResponse>(content);
+                var accountsBalances = JsonSerializer.Deserialize<AccountBalanceDto>(content);
 
-                return accountsBalances.CustomerAccountBalances;
+                if (!string.IsNullOrEmpty(balanceType))
+                {
+                    return accountsBalances.Balances.Where(balance => balance.BalanceType == balanceType).ToList();
+                }
+                return accountsBalances.Balances;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new List<CustomerAccountBalance>();
+                return default;
             }
         }
 
@@ -141,10 +166,11 @@ namespace Finacle.Core
             return (deserializedResponse.AccountDetails[0], deserializedResponse.CustomerDetails[0]);
         }
 
-        public async Task<CustomerDetail> GetCustomerByAccountIdAsync(string accountId, string requestId = null)
+        public async Task<GetRetailCustomerResponse> GetCustomerByAccountIdAsync(string accountId, string requestId = null)
         {
             var (_, customer) = await GetAccountCustomersAsync(accountId, requestId);
-            return customer;
+            var customerDetails = await GetCustomerAsync<GetRetailCustomerResponse>(customer.CustomerReference, requestId);
+            return customerDetails;
         }
 
         public async Task<string> GetCustPreferredNameByAccountIdAsync(string accountId, string requestId = null)
@@ -191,6 +217,18 @@ namespace Finacle.Core
 
             // Return the response content as a string
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<bool> HasSufficientFundsAsync(string AccountNumber, double amount)
+        {
+            var balance = await GetAccountBalancesAsync(AccountNumber, "EFFAVL");
+            var currentBalance = balance.FirstOrDefault()?.Amount?.Value.ToString();
+
+            // Check if the balance is sufficient
+            double closingBalance = 0;
+            double.TryParse(currentBalance, out closingBalance);
+
+            return closingBalance >= amount;
         }
     }
 }

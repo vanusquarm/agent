@@ -10,8 +10,10 @@ namespace Finacle.Core
 {
     public partial class FinacleClient
     {
-        public async Task<IntraBankTransferResponse> TransferFundsAsync(IntraBankTransferRequest transferRequest, string requestId = null)
+        public async Task<IntraBankTransferResponse> TransferFundsAsync(IntraBankTransferRequest transferRequest, string requestId)
         {
+            if (transferRequest == null)
+                throw new ArgumentNullException(nameof(transferRequest));
             if (transferRequest == null)
                 throw new ArgumentNullException(nameof(transferRequest));
             if (transferRequest.Amount <= 0)
@@ -25,7 +27,7 @@ namespace Finacle.Core
                 Content = new StringContent(JsonSerializer.Serialize(transferRequest), Encoding.UTF8, "application/json")
             };
 
-            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+            requestMessage.Headers.Add("RequestId", requestId);
 
             var response = await _httpClient.SendAsync(requestMessage);
             response.EnsureSuccessStatusCode();
@@ -103,14 +105,16 @@ namespace Finacle.Core
         }
 
 
-        public async Task<ChargeResponse> ChargeTransactionAsync(ChargeRequest request, string requestId = null)
+        public async Task<ChargeResponse> ChargeTransactionAsync(ChargeRequest request, string requestId)
         {
+            if (string.IsNullOrEmpty(requestId))
+                throw new ArgumentNullException(nameof(requestId));
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, "/api/v1/Transactions/charges")
             {
                 Content = new StringContent(JsonSerializer.Serialize(ChargeRequestv2.Map(request)), Encoding.UTF8, "application/json")
             };
 
-            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+            requestMessage.Headers.Add("RequestId", requestId);
 
             var response = await _httpClient.SendAsync(requestMessage);
             response.EnsureSuccessStatusCode();
