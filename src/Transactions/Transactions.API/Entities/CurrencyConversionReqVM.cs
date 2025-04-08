@@ -26,6 +26,6 @@
         ///  Amount
         /// </summary>
 
-        public string transactionAmount { get; set; }
+        public decimal transactionAmount { get; set; }
     }
 }

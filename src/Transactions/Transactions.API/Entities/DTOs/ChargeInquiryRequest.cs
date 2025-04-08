@@ -9,5 +9,12 @@
         public string eventType { get; set; }
     }
 
-    
+    public class PerformChargeInquiryDto
+    {
+        public string AccountId { get; set; }
+        public decimal TranAmt { get; set; }
+        public string EventId { get; set; }
+        public string EventType { get; set; }
+    }
+
 }

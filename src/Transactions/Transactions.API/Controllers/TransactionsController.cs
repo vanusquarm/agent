@@ -11,16 +11,16 @@ namespace Transactions.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-
+//[Authorize]
 public class TransactionsController : ControllerBase
 {
     private readonly ITransactionClient _transactionClient;
-    private readonly FinacleClient _finacleClient;
+    private readonly TransferValidator _transferValidator;
 
-    public TransactionsController(ITransactionClient transactionClient, FinacleClient finacleClient)
+    public TransactionsController(ITransactionClient transactionClient, TransferValidator transferValidator)
     {
         _transactionClient = transactionClient;
-        _finacleClient = finacleClient;
+        _transferValidator = transferValidator;
     }
 
     /// <summary>
@@ -159,19 +159,32 @@ public class TransactionsController : ControllerBase
     /// <param name="accountTransferRequest"></param>
     /// <returns></returns>
     [HttpPost("transfer")]
-    public async Task<IActionResult> PerformIntraBankTransfer([FromBody] Entities.DTOs.AccountTransferRequest accountTransferRequest)
+    public async Task<IActionResult> PerformIntraBankTransfer([FromBody] AccountTransferRequest accountTransferRequest)
     {
         try
         {
-            if (accountTransferRequest == null)
+            // Validate the request
+            accountTransferRequest.Trim();
+            var validationResult = await _transferValidator.ValidateAsync(accountTransferRequest);
+
+            if (!validationResult.IsValid)
             {
-                Log.Information("Invalid request data.: {@Request}", accountTransferRequest);
-                return BadRequest("Invalid request data.");
+                Log.Warning("Transfer validation failed: {Error}", validationResult.ErrorMessage);
+                return BadRequest(new { validationResult.ErrorMessage });
+            }
+
+            if (validationResult.RequiresAdditionalVerification)
+            {
+                return Accepted(new
+                {
+                    Message = "Additional verification required",
+                    Methods = validationResult.AvailableVerificationMethods
+                });
             }
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
             var request = IntraBankTransferRequestFactory.Create(accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
-                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId);
+                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId);
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 
             Log.Information("About to PerformIntraBankTransfer with request: {@Request}", request);
@@ -249,6 +262,11 @@ public class TransactionsController : ControllerBase
     public async Task<IActionResult> PerformCharge([FromBody] PerformChargeRequestDto chargeRequest)
     {
         Log.Information("Recieved Request at PerformCharge: {@Request}", chargeRequest);
+        if (!_transferValidator.isValid(chargeRequest, out List<string> Errors))
+        {
+            Log.Warning("Perform charge validation failed: {Error}", chargeRequest);
+            return BadRequest(Errors);
+        }
         try
         {
             var request = new ChargeDetailsDto
@@ -279,10 +297,23 @@ public class TransactionsController : ControllerBase
     }
 
     [HttpPost("chargeinquiry")]
-    public async Task<IActionResult> PerformChargeInquiry([FromBody] ChargeInquiryRequest request)
+    public async Task<IActionResult> PerformChargeInquiry([FromBody] PerformChargeInquiryDto chargeInquiryRequest)
     {
+        if (!_transferValidator.isValid(chargeInquiryRequest, out List<string> Errors))
+        {
+            Log.Warning("Perform charge validation failed: {Error}", chargeInquiryRequest);
+            return BadRequest(Errors);
+        }
         try
         {
+            var request = new ChargeInquiryRequest
+            {
+                accountId = chargeInquiryRequest.AccountId,
+                tranAmt = chargeInquiryRequest.TranAmt.ToString(),
+                eventId = chargeInquiryRequest.EventId,
+                eventType = chargeInquiryRequest.EventType
+            };
+
             var response = await _transactionClient.ChargeInquiry(request);
 
             return Ok(response);
@@ -304,13 +335,13 @@ public class TransactionsController : ControllerBase
         {
             var request = new
             {
-                transactionIdentification=new 
+                transactionIdentification = new
                 {
                     transactionDate = reversalRequest.TransactionDate,
                     transactionReference = reversalRequest.TransactionReference,
                     remarks = reversalRequest.Remarks
                 }
-               
+
             };
 
             var response = await _transactionClient.Reverse(reversalRequest.TransactionReference, request);

@@ -10,7 +10,7 @@ using Transactions.API.Entities;
 public interface ITransactionClient
 {
     [Post("/v2/transactiondetails/gettransactiondetails")]
-    Task<object> GetTransactionDetails(object request);
+    Task<GetTransactionsResponse> GetTransactionDetails(object request);
 
     [Post("/v2/eodStatusDtls/geteodStatusDtls")]
     Task<EodStatusResponse> GetEodStatusDetails(EodStatusRequest request);
@@ -68,6 +68,10 @@ public interface ITransactionClient
 
     [Post("/v2/eventIdchargeDtls/geteventIdchargeDtls")]
     Task<object> ChargeInquiry(ChargeInquiryRequest request);
+
+    //Do currency conversion
+    [Post("/v2/currencies/CONVERT")]
+    Task<object> ConvertCurrency(object request);
 
     //"GetFxSaleRates": "v2/FXRateDtls/getFXRateDtlss",
     //"CurrencyConversion": "v2/currencies/CONVERT",

@@ -4,6 +4,7 @@ using Finacle.Infrastructure.Auth.BasicJwt;
 using Finacle.Infrastructure.Auth.OpenId;
 using Serilog;
 using Finacle.Core;
+using Transactions.API.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -19,21 +20,23 @@ var encryptedClientSecret = configuration["JwtSettings:ClientSecret"];
 var decryptedClientSecret = EncryptionHelper.Decrypt(encryptedClientSecret);
 configuration["JwtSettings:ClientSecret"] = decryptedClientSecret;
 
+var finacleGateway = configuration["FinacleGateway:BaseUrl"] ?? throw new ArgumentNullException("FinacleGateway:BaseUrl");
+
 // Add services to the container.
-builder.Services.AddSingleton<FinacleClient>(sp =>
+builder.Services.AddHttpClient<FinacleClient>(client =>
 {
-    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
-    var client = httpClientFactory.CreateClient("FinacleClient");
-    var channelId = configuration["AppName"];
-    return new FinacleClient(client, channelId);
+    client.BaseAddress = new Uri(finacleGateway);
+    client.DefaultRequestHeaders.Add("ChannelId", configuration["FinacleGateway:ChannelId"]?.ToUpper());
 });
+builder.Services.AddScoped<TransferValidator>();
+builder.Services.AddScoped<ValidateModelFilter>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtMiddleware<ITransactionClient>(configuration);
-//builder.Services.AddOpenIdAuth(builder.Configuration, null); // Add Token Validation
+builder.Services.AddOpenIdAuth(builder.Configuration, null); // Add Token Validation
 
 var app = builder.Build();
 
@@ -47,9 +50,9 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 // Use CORS policy
-//app.UseCors("CorsPolicy");
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseCors("CorsPolicy");
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

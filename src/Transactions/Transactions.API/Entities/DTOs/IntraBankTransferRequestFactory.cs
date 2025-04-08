@@ -4,7 +4,7 @@ namespace Transactions.API.Entities.DTOs;
 
 public class IntraBankTransferRequestFactory
 {
-    public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? docNum, string? chargeEventId)
+    public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? docNum, string? chargeEventId,string? batchId)
     {
         //DateTime transactionDate = DateTime.ParseExact("2025-02-21", "yyyy-MM-dd", CultureInfo.InvariantCulture);
         DateTime transactionDate = DateTime.ParseExact(
@@ -38,7 +38,7 @@ public class IntraBankTransferRequestFactory
                             MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
                             {
                                 DocumentNumber = docNum,
-                                //Freetxt2 = "000013241218110101000037132501",
+                                Freetxt2 = batchId??null,
                                 Freetxt3 = partTransactionRemarks.Split(50, 4),
                                 Freetxt4 = partTransactionRemarks.Split(50, 5)
                             }
@@ -60,7 +60,7 @@ public class IntraBankTransferRequestFactory
                             MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
                             {
                                 DocumentNumber = docNum,
-                                //Freetxt2 = "000013241218110101000037132501",
+                                Freetxt2 = batchId??null,
                                 Freetxt3 = partTransactionRemarks.Split(50, 4),
                                 Freetxt4 = partTransactionRemarks.Split(50, 5)
                             }

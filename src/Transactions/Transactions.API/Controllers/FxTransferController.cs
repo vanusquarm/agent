@@ -8,7 +8,7 @@ namespace Transactions.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-
+    [Authorize]
     public class FxTransferController : ControllerBase
     {
 
@@ -69,12 +69,18 @@ namespace Transactions.API.Controllers
         [HttpPost, Route("Convert")]
         public async Task<ActionResult<dynamic>> ConvertCurrency(CurrencyConversionReqVM request)
         {
+            try
+            {
+                //HttpContext.Items.Add("RequestPayload", JsonSerializer.Serialize(request));
+                var response = await _fxSalesTransferService.ConvertCurrency(request);
+
+                return Ok(response);
+            }
+            catch (Refit.ApiException apiEx) { 
+                return StatusCode((int)apiEx.StatusCode,new { apiEx.Message }); 
+            }
 
 
-            //HttpContext.Items.Add("RequestPayload", JsonSerializer.Serialize(request));
-            //var response = await _fxSalesTransferService.ConvertCurrency(request);
-            //return StatusCode(response.StatusCode, response.Response);
-            return Ok("Not Implemented");
         }
 
     }
