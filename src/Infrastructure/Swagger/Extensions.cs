@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace Finacle.Infrastructure.Swagger
 {
-    public static class Extensions
+    public static class Extensions2
     {
         public static void UseSwaggerExtension(this IApplicationBuilder app, IWebHostEnvironment env, IConfiguration configuration)
         {

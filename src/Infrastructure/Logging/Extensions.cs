@@ -27,29 +27,34 @@ namespace Finacle.Infrastructure.Logging
                 {
                     RequestId = requestId ?? Guid.NewGuid().ToString(),
                     Channel = context.Request.Headers["Channel"].FirstOrDefault()?.Split(50, 1),
-                    RequestParam = context.Request.QueryString.Value?.Split(200, 1),
+                    RequestParam = context.Request.QueryString.Value?.Split(4000, 1),
                     IpAddress = context.Connection.RemoteIpAddress?.ToString().Split(50, 1),
                     Controller = context.Request.RouteValues["controller"]?.ToString().Split(50, 1),
-                    EndPoint = context.Request.Path.Value?.Split(200, 1),
+                    EndPoint = context.Request.Path.Value?.Split(4000, 1),
                     RequestDate = DateTime.UtcNow,
                     UserAgent = context.Request.Headers["User-Agent"].FirstOrDefault()?.Split(200, 1),
-                    Userid = context.User.Identity?.Name?.Split(50, 1),
+                    Userid = context.User.Identity?.Name?.Split(15, 1),
                     TraceId = context.TraceIdentifier.Split(50, 1)
                 };
 
                 try
                 {
-                    if (!context.Request.Path.ToString().StartsWith("/swagger"))
+                    if (context.Request.Path.ToString().StartsWith("/api/v1/transactions"))
                     {
                         Log.Information("About to insert into ApiCall table with parameters: {@Request}", apiCall);
                         var dbContext = context.RequestServices.GetRequiredService<FinacleDbContext>();
                         dbContext.ApiCalls.Add(apiCall);
                         await dbContext.SaveChangesAsync();
+                        Log.Information("Back from inserting into ApiCall table");
                     }
                 }
                 catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 2627) // SQL Server error code for unique constraint violation
                 {
                     Log.Warning("Duplicate requestId detected: {RequestId}", requestId);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error inserting ApiCall log");
                 }
 
                 // Capture the response body

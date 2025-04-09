@@ -1,5 +1,4 @@
-﻿
-namespace Finacle.Infrastructure.Swagger
+﻿namespace Finacle.Infrastructure.Swagger
 {
     public class ReverseProxyOptions
     {
