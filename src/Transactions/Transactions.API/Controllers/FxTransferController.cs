@@ -8,7 +8,7 @@ namespace Transactions.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class FxTransferController : ControllerBase
     {
 
