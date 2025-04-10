@@ -87,6 +87,7 @@ namespace Finacle.Infrastructure.Logging
                         Log.Error("Error updating ApiCall log", ex.Message, ex.StackTrace);
                     }
                 }
+                await next();
             });
         }
 
