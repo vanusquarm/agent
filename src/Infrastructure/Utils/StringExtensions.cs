@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +19,17 @@ namespace Finacle.Infrastructure.Utils
         public static string Split(this string input, int chunkSize, int chunkIndex)
         {
             return input.Split(chunkSize).Skip(chunkIndex - 1).FirstOrDefault() ?? string.Empty;
+        }
+
+        public static string ToHash(this string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
+
+            using var md5 = MD5.Create();
+            var inputBytes = Encoding.UTF8.GetBytes(input);
+            var hashBytes = md5.ComputeHash(inputBytes);
+            return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
         }
     }
 }
