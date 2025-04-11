@@ -20,7 +20,7 @@ namespace Transactions.API.Controllers;
 
 [ApiController]
 [Route("api/v2/transactions")]
-[Authorize]
+
 public class TransactionsV2Controller : ControllerBase
 {
     private readonly ITransactionClient _transactionClient;
@@ -69,7 +69,7 @@ public class TransactionsV2Controller : ControllerBase
 
                 return BadRequest(ResponseManager.ReturnFailedValidations(null, firstError!.ErrorMessage));
             }
-        
+
 
             // Validate the request
             var validationResult = await _transferValidator.ValidateAsync(accountTransferRequest);
@@ -95,13 +95,13 @@ public class TransactionsV2Controller : ControllerBase
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
             var request = IntraBankTransferRequestFactory.Create(accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
-                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId,accountTransferRequest.BatchId);
+                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId);
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 
             Log.Information("About to PerformIntraBankTransfer with request: {@Request}", request);
             dynamic apiResponse = await _transactionClient.PerformIntraBankTransfer(accountTransferRequest.ChannelReference, request);
 
-            response=apiResponse;
+            response = apiResponse;
 
 
             Log.Information("Back from Performing IntraBankTransfer with response: {@Response}", response);
@@ -112,7 +112,7 @@ public class TransactionsV2Controller : ControllerBase
                 return BadRequest(ResponseManager.ReturnFailed(null, "Failed to process the intra - bank transfer."));
             }
 
-  
+
             if (response.TryGetProperty("errorDetails", out _))
             {
                 return BadRequest(ResponseManager.ReturnFailedValidations(null, null));
@@ -135,14 +135,14 @@ public class TransactionsV2Controller : ControllerBase
             if (apiEx.Content != null)
             {
 
-               errorCode = ((int)apiEx.StatusCode).ToString();
-               errorMessage = apiEx.Content;
+                errorCode = ((int)apiEx.StatusCode).ToString();
+                errorMessage = apiEx.Content;
             }
 
             if (errorCode == "W0205")
                 return BadRequest(ResponseManager.ReturnInsufficientBalance(null, regex.Replace(errorMessage, "").Trim()));
             else
-                return StatusCode(500,ResponseManager.ReturnFailed(null, regex.Replace(errorMessage, "").Trim()));
+                return StatusCode(500, ResponseManager.ReturnFailed(null, regex.Replace(errorMessage, "").Trim()));
         }
         catch (Exception ex)
         {

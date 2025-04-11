@@ -11,7 +11,7 @@ namespace Transactions.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-//[Authorize]
+
 public class TransactionsController : ControllerBase
 {
     private readonly ITransactionClient _transactionClient;
@@ -184,7 +184,7 @@ public class TransactionsController : ControllerBase
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
             var request = IntraBankTransferRequestFactory.Create(accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
-                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId);
+                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId);
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 
             Log.Information("About to PerformIntraBankTransfer with request: {@Request}", request);

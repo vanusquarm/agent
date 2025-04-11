@@ -4,7 +4,7 @@ namespace Transactions.API.Entities.DTOs;
 
 public class IntraBankTransferRequestFactory
 {
-    public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? docNum, string? chargeEventId,string? batchId)
+    public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? currency, string? docNum, string? chargeEventId, string? batchId)
     {
         //DateTime transactionDate = DateTime.ParseExact("2025-02-21", "yyyy-MM-dd", CultureInfo.InvariantCulture);
         DateTime transactionDate = DateTime.ParseExact(
@@ -26,7 +26,7 @@ public class IntraBankTransferRequestFactory
                             PartTransactionType = IntraBankTransferConstants.PartTransactionTypeDebit,
                             AccountIdentification = debitAccount,
                             TransactionAmount = amount,
-                            TransactionCurrency = IntraBankTransferConstants.TransactionCurrency,
+                            TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
                             TransactionValueDate = transactionDate,
                             TransactionParticulars = partTransactionRemarks.Split(50, 1),
                             Rate = IntraBankTransferConstants.Rate,
@@ -49,7 +49,7 @@ public class IntraBankTransferRequestFactory
                             PartTransactionType = IntraBankTransferConstants.PartTransactionTypeCredit,
                             AccountIdentification = creditAccount,
                             TransactionAmount = amount,
-                            TransactionCurrency = IntraBankTransferConstants.TransactionCurrency,
+                            TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
                             TransactionValueDate = transactionDate,
                             TransactionParticulars = partTransactionRemarks.Split(50, 1),
                             Rate = IntraBankTransferConstants.Rate,
