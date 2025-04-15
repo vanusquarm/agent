@@ -22,10 +22,10 @@ namespace Finacle.Infrastructure.Logging
             // Middleware to log ApiCall
             app.Use(async (context, next) =>
             {
-                var requestId = context.Request.Headers["requestId"].FirstOrDefault();
+                var requestId = await GetRequestId(context.Request) ?? context.Request.Headers["requestId"].FirstOrDefault();
                 var apiCall = new ApiCall
                 {
-                    RequestId = await GetRequestId(context.Request),
+                    RequestId = requestId,
                     Channel = context.Request.Headers["Channel"].FirstOrDefault()?.Split(50, 1),
                     RequestParam = await ReadBodyFromRequest(context.Request),
                     IpAddress = context.Connection.RemoteIpAddress?.ToString().Split(50, 1) ?? "No IP address found",
@@ -33,29 +33,48 @@ namespace Finacle.Infrastructure.Logging
                     EndPoint = context.Request.Path.Value?.Split(4000, 1),
                     RequestDate = DateTime.UtcNow,
                     UserAgent = context.Request.Headers["User-Agent"].FirstOrDefault()?.Split(200, 1),
-                    Userid = context.User.Identity?.Name?.Split(15, 1),
+                    Userid = context.Request.Headers["requestId"].FirstOrDefault()?.Split(15, 1),
                     TraceId = context.TraceIdentifier.Split(50, 1),
                     Apiservice = "TransactionService"
                 };
 
-                if (context.Request.Path.ToString().StartsWith("/api/v1/transactions"))
+                if (context.Request.Path.ToString().StartsWith("/api/v1/transactions") && HttpMethods.IsPost(context.Request.Method))
                 {
+                    var dbContext = context.RequestServices.GetRequiredService<FinacleDbContext>();
                     try
                     {
                         Log.Information("About to insert into ApiCall table with parameters: {@Request}", apiCall);
-                        var dbContext = context.RequestServices.GetRequiredService<FinacleDbContext>();
                         dbContext.ApiCalls.Add(apiCall);
                         await dbContext.SaveChangesAsync();
                         Log.Information("Back from inserting into ApiCall table");
 
                     }
-                    catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 2627) // SQL Server error code for unique constraint violation
+                    catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 2601) // SQL Server error code for unique constraint violation
                     {
                         Log.Warning("Duplicate requestId detected: {@RequestId}", requestId);
+                        dbContext.ChangeTracker.Clear();
+
+                        apiCall = dbContext.ApiCalls.FirstOrDefault(item => item.RequestId == requestId);
+                        if (apiCall?.ResponseCode == StatusCodes.Status200OK.ToString())
+                        {
+                            Log.Information("Cannot reprocess successful transaction parameters: {@Request}", apiCall);
+                            return;
+                        }
+                        else
+                        {
+                            var apiCallDup = ApiCallDup.Map(apiCall);
+                            Log.Information("About to insert into ApiCallDup table with parameters: {@Request}", apiCallDup);
+                            dbContext.ApiCallDuplicates.Add(apiCallDup);
+                            await dbContext.SaveChangesAsync();
+                            Log.Information("Back from inserting into ApiCallDup table");
+
+                            Log.Information("About to reprocess transaction with parameters: {@Request}", apiCall);
+                        }
                     }
                     catch (Exception ex)
                     {
-                        Log.Error("Error inserting ApiCall log");
+                        Log.Error("Error inserting to either ApiCall or ApiCallDup log");
+                        return;
                     }
 
                     // Capture the response body
@@ -78,7 +97,7 @@ namespace Finacle.Infrastructure.Logging
 
                     try
                     {
-                        var dbContext = context.RequestServices.GetRequiredService<FinacleDbContext>();
+                        Log.Information("About to update ApiCall log with parameters: {@Request}", apiCall);
                         dbContext.ApiCalls.Update(apiCall);
                         await dbContext.SaveChangesAsync();
                     }

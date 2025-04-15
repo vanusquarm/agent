@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Finacle.Infrastructure.Persistence
 {
@@ -7,6 +8,7 @@ namespace Finacle.Infrastructure.Persistence
         public FinacleDbContext(DbContextOptions<FinacleDbContext> options) : base(options) { }
         //public DbSet<Translog> Translogs { get; set; } = null!;
         public DbSet<ApiCall> ApiCalls { get; set; } = null!;
+        public DbSet<ApiCallDup> ApiCallDuplicates { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,7 +33,7 @@ namespace Finacle.Infrastructure.Persistence
                     .IsUnicode(false);
 
                 entity.Property(e => e.EndPoint)
-                    .HasMaxLength(50)
+                    .HasMaxLength(4000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.IpAddress)
@@ -68,13 +70,70 @@ namespace Finacle.Infrastructure.Persistence
                     .IsUnicode(false);
             });
 
-        }    
+            //modelBuilder.Entity<ApiCallDup>(entity =>
+            //{
+
+            //    entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+
+            //    entity.Property(e => e.Apiservice)
+            //        .HasMaxLength(100)
+            //        .IsUnicode(false)
+            //        .HasColumnName("APIService");
+
+            //    entity.Property(e => e.Channel)
+            //        .HasMaxLength(30)
+            //        .IsUnicode(false);
+
+            //    entity.Property(e => e.Controller)
+            //        .HasMaxLength(50)
+            //        .IsUnicode(false);
+
+            //    entity.Property(e => e.EndPoint)
+            //        .HasMaxLength(4000)
+            //        .IsUnicode(false);
+
+            //    entity.Property(e => e.IpAddress)
+            //        .HasMaxLength(50)
+            //        .IsUnicode(false);
+
+            //    entity.Property(e => e.ReponseTime).HasColumnType("datetime");
+
+            //    entity.Property(e => e.RequestDate).HasColumnType("datetime");
+
+            //    entity.Property(e => e.RequestId)
+            //        .HasMaxLength(500)
+            //        .IsUnicode(false)
+            //        .HasColumnName("RequestID");
+
+            //    entity.Property(e => e.RequestParam)
+            //        .HasMaxLength(4000)
+            //        .IsUnicode(false);
+
+            //    entity.Property(e => e.ResponseCode)
+            //        .HasMaxLength(5)
+            //        .IsUnicode(false);
+
+            //    entity.Property(e => e.ResponseParam)
+            //        .HasMaxLength(4000)
+            //        .IsUnicode(false);
+
+            //    entity.Property(e => e.UserAgent)
+            //        .HasMaxLength(1000)
+            //        .IsUnicode(false);
+
+            //    entity.Property(e => e.Userid)
+            //        .HasMaxLength(15)
+            //        .IsUnicode(false);
+            //});
+
+        }
 
     }
 
     public class ApiCall
     {
-        public int Id { get; set; }
+        [Key]
+        public int Id { get; private set; }
         public string? Channel { get; set; }
         public string? RequestParam { get; set; }
         public string? IpAddress { get; set; }
@@ -90,6 +149,49 @@ namespace Finacle.Infrastructure.Persistence
         public string? UserAgent { get; set; }
         public string? Userid { get; set; }
         public string? TraceId { get; set; }
+    }
+
+    public class ApiCallDup
+    {
+        [Key]
+        public int Id { get; private set; }
+        public string? Channel { get; set; }
+        public string? RequestParam { get; set; }
+        public string? IpAddress { get; set; }
+        public string? Controller { get; set; }
+        public string? EndPoint { get; set; }
+        public DateTime? RequestDate { get; set; }
+        public string? ResponseCode { get; set; }
+        public string? ResponseParam { get; set; }
+        public DateTime? ReponseTime { get; set; }
+        public string? RequestId { get; set; }
+        public string? Apiservice { get; set; }
+        public decimal? Amount { get; set; }
+        public string? UserAgent { get; set; }
+        public string? Userid { get; set; }
+        public string? TraceId { get; set; }
+
+        public static ApiCallDup Map(ApiCall apiCall)
+        {
+            return new ApiCallDup
+            {
+                Channel = apiCall.Channel,
+                RequestParam = apiCall.RequestParam,
+                IpAddress = apiCall.IpAddress,
+                Controller = apiCall.Controller,
+                EndPoint = apiCall.EndPoint,
+                RequestDate = apiCall.RequestDate,
+                ResponseCode = apiCall.ResponseCode,
+                ResponseParam = apiCall.ResponseParam,
+                ReponseTime = apiCall.ReponseTime,
+                RequestId = apiCall.RequestId,
+                Apiservice = apiCall.Apiservice,
+                Amount = apiCall.Amount,
+                UserAgent = apiCall.UserAgent,
+                Userid = apiCall.Userid,
+                TraceId = apiCall.TraceId
+            };
+        }
     }
 
     public partial class Translog
