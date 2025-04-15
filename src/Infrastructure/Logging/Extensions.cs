@@ -26,7 +26,7 @@ namespace Finacle.Infrastructure.Logging
                 var apiCall = new ApiCall
                 {
                     RequestId = requestId,
-                    Channel = context.Request.Headers["Channel"].FirstOrDefault()?.Split(50, 1),
+                    Channel = context.Request.Headers["ChannelId"].FirstOrDefault()?.Split(50, 1),
                     RequestParam = await ReadBodyFromRequest(context.Request),
                     IpAddress = context.Connection.RemoteIpAddress?.ToString().Split(50, 1) ?? "No IP address found",
                     Controller = context.Request.RouteValues["controller"]?.ToString().Split(50, 1),
