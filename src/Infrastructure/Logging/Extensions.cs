@@ -38,7 +38,7 @@ namespace Finacle.Infrastructure.Logging
                     Apiservice = "TransactionService"
                 };
 
-                if (context.Request.Path.ToString().StartsWith("/api/v1/transactions") && HttpMethods.IsPost(context.Request.Method))
+                if (context.Request.Path.ToString().ToLower().Contains("/api/v1/transactions") && HttpMethods.IsPost(context.Request.Method))
                 {
                     var dbContext = context.RequestServices.GetRequiredService<FinacleDbContext>();
                     try
