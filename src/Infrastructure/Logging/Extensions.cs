@@ -23,12 +23,15 @@ namespace Finacle.Infrastructure.Logging
             app.Use(async (context, next) =>
             {
                 var requestId = await GetRequestId(context.Request) ?? context.Request.Headers["requestId"].FirstOrDefault();
+                var localIpAddress = context.Connection.LocalIpAddress?.ToString().Split(50, 1) ?? "No Local IP";
+                var remoteIpAddress = context.Connection.RemoteIpAddress?.ToString().Split(50, 1) ?? "No Remote IP";
+
                 var apiCall = new ApiCall
                 {
                     RequestId = requestId,
                     Channel = context.Request.Headers["ChannelId"].FirstOrDefault()?.Split(50, 1),
                     RequestParam = await ReadBodyFromRequest(context.Request),
-                    IpAddress = context.Connection.RemoteIpAddress?.ToString().Split(50, 1) ?? "No IP address found",
+                    IpAddress = $"{remoteIpAddress}, {localIpAddress}",
                     Controller = context.Request.RouteValues["controller"]?.ToString().Split(50, 1),
                     EndPoint = context.Request.Path.Value?.Split(4000, 1),
                     RequestDate = DateTime.UtcNow,
