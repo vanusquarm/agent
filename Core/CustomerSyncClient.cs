@@ -80,7 +80,7 @@ namespace Finacle.Core
             var content = response.Content.ReadAsStringAsync().Result;
             var customer = JsonSerializer.Deserialize<GetRetailCustomerResponse>(content);
 
-            return customer.CustomerIdentifier != null;
+            return customer?.CustomerIdentifier != null;
         }
 
         public bool IsCustomerEmail(string customerId, string email, string requestId = null)

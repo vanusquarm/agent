@@ -137,18 +137,18 @@ namespace Finacle.Core
         // Check if account is frozen
         public bool IsAccountFrozen(string accountId, string requestId = null)
         {
-            return GetAccount(accountId, requestId).AccountStatus == "Frozen";
+            return GetAccount(accountId, requestId)?.AccountStatus == "Frozen";
         }
 
         public bool IsNotRestricted(string accountId, string requestId = null)
         {
-            return GetAccount(accountId, requestId).AccountStatus != "Frozen";
+            return GetAccount(accountId, requestId)?.AccountStatus != "Frozen";
         }
 
         // Check if account exists
         public bool IsAccountExist(string accountId, string requestId = null)
         {
-            return GetAccount(accountId, requestId).AccountIdentification == accountId;
+            return GetAccount(accountId, requestId)?.AccountIdentification == accountId;
         }
 
         // Get customer details by accountId
@@ -166,7 +166,7 @@ namespace Finacle.Core
         public bool IsStaff(string accountId, string requestId = null)
         {
             var (_, customerDetail) = GetAccountCustomers(accountId, requestId);
-            return customerDetail.RELATIONSHIPMANAGERID == "GH001800";
+            return customerDetail?.RELATIONSHIPMANAGERID == "GH001800";
         }
 
         public CustomerDetail GetCustomerByAccountId(string accountId, string requestId = null)

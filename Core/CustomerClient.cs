@@ -27,7 +27,7 @@ namespace Finacle.Core
         public bool IsCustomerStaff(string customerId, string requestId = null)
         {
             var customer = GetCustomer<GetRetailCustomerResponse>(customerId, requestId);
-            return customer.RelationshipManagerDetails[0].RelationshipManagerId == "GH001800";
+            return customer.RelationshipManagerDetails[0]?.RelationshipManagerId == "GH001800";
         }
 
         public async Task<string> GetCustomerDataAsync(string customerId, string route, string requestId = null)
