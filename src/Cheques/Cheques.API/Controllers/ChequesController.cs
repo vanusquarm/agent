@@ -10,14 +10,62 @@ namespace Cheques.API.Controllers
     [ApiController]
     [Route("api/v1/[controller]")]
     //[Authorize]
-    public class ChequesController (IChequesClient chequesClient) : ControllerBase
+    public class ChequesController (IChequeClient chequesClient) : ControllerBase
     {
+        /// <summary>
+        /// Method to Get Cheque Transactions
+        /// </summary>
+        /// <param name="chequeTransactionsRequest"></param>
+        /// <returns></returns>
+        [HttpGet("{chequeNumber}/transactions")]
+        public async Task<IActionResult> GetChequeTransactions(string chequeNumber, string amount, string date)
+        {
+            Log.Information("Received Request at GetChequeTransactions: {@Request}", new { chequeNumber, amount, date });
+            try
+            {
+                var chequeTransactionsRequest = new ChequeTransactionsRequest
+                {
+                    ChqSrlNum = chequeNumber,
+                    TranAmount = amount,
+                    TranDate = date ?? DateTime.UtcNow.ToString("yyyy-MM-dd")
+                };
+
+                Log.Information("About to GetChequeTransactions with request: {@Request}", chequeTransactionsRequest);
+
+                ChequeTransactionsResponse responseDto = await chequesClient.GetChequeTransactionsAsync(chequeTransactionsRequest);
+
+                Log.Information("Back from GetChequeTransactions with response: {@Response}", responseDto);
+
+                if (responseDto == null)
+                {
+                    return NotFound("No transaction available");
+                }
+
+                return Ok(responseDto);
+            }
+            catch (ApiException apiEx) when (apiEx.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                Log.Error("Remote server returned 500 Internal Server Error. Response: {ResponseContent}", apiEx.Content);
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    Message = "The remote server encountered an error while processing your request.",
+                    Details = apiEx.Content
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Error("An exception occurred at GetChequeTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
+
         /// <summary>
         /// Method to Issue Cheque Book
         /// </summary>
         /// <param name="chequeBookIssueRequestDto"></param>
         /// <returns></returns>
-        [HttpPost("{accountIdentification}/issueChequeBook")]
+        [HttpPost("issueChequeBook")]
         public async Task<IActionResult> IssueChequeBook( [FromBody] ChequeBookIssueRequestDto chequeBookIssueRequestDto)
         {
             Log.Information("Recieved Request at IssueChequeBook: {@Request}", chequeBookIssueRequestDto);
@@ -42,8 +90,8 @@ namespace Cheques.API.Controllers
         /// <param name="accountIdentification"></param>
         /// <param name="chequeNumber"></param>
         /// <returns></returns>
-        [HttpGet("{accountIdentification}/checkStatus")]
-        public async Task<IActionResult> GetAccountChequeStatus(string accountIdentification, string chequeNumber)
+        [HttpGet("{chequeNumber}/checkStatus")]
+        public async Task<IActionResult> GetAccountChequeStatus(string accountIdentification, [FromRoute] string chequeNumber)
         {
             Log.Information("Recieved Request at GetAccountChequeStatus: {@Request}", (accountIdentification, chequeNumber));
             try
@@ -66,7 +114,7 @@ namespace Cheques.API.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpGet("{accountIdentification}/status")]
+        [HttpPost("status")]
         public async Task<IActionResult> ValidateCheque(ChequeConfirmationRequest request)
         {
             Log.Information("Recieved Request at ValidateCheque: {@Request}", request);
@@ -91,7 +139,7 @@ namespace Cheques.API.Controllers
         /// <param name="accountIdentification"></param>
         /// <param name="stopCheque"></param>
         /// <returns></returns>
-        [HttpPost("{accountIdentification}/stopCheque")]
+        [HttpPost("stopCheque")]
         public async Task<IActionResult> StopChequeBookAsync([AliasAs("accountIdentification")]string accountIdentification, [FromBody] StopChequeRequestDto stopCheque)
         {
             Log.Information("Recieved Request at StopChequeBookAsync: {@Request}", (accountIdentification, stopCheque));
@@ -117,7 +165,7 @@ namespace Cheques.API.Controllers
         /// <param name="accountIdentification"></param>
         /// <param name="revokeCheque"></param>
         /// <returns></returns>
-        [HttpPost("{accountIdentification}/revokeStopCheque")]
+        [HttpPost("revokeStopCheque")]
         public async Task<IActionResult> RevokeStopChequeBook([AliasAs("accountIdentification")]string accountIdentification ,[FromBody] RevokeChequeRequestDto revokeCheque)
         {
             Log.Information("Recieved Request at RevokeStopChequeBook: {@Request}", (accountIdentification, revokeCheque));

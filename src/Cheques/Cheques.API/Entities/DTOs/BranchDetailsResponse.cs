@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Todo.API.Entities.DTOs;
+namespace Cheques.API.Entities.DTOs;
 
 public class BranchDetailsResponse
 {

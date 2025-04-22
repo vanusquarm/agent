@@ -5,7 +5,7 @@ using Refit;
 
 namespace Cheques.API.Services
 {
-    public interface IChequesClient
+    public interface IChequeClient
     {
         [Post("/v2/corporate-current-accounts/{accountIdentification}/:issueChequeBook")]
         Task<CheckBookIssueResponseDto> IssueChequeBookAsync( ChequeBookIssueRequestDto accountIdentification);
@@ -23,6 +23,10 @@ namespace Cheques.API.Services
 
         [Post("/v2/chqconfirmation/getchqconfirmation")]
         Task<dynamic> ConfirmChequeAsync([Body] ChequeConfirmationRequest requestDto);
+
+        // Get cheque transactions
+        [Post("/v2/getChq/getChqDtls")]
+        Task<ChequeTransactionsResponse> GetChequeTransactionsAsync([Body] ChequeTransactionsRequest requestDto);
 
     }
 }
