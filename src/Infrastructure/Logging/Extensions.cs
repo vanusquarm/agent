@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
+using System.Net.Sockets;
+using System.Net;
 using System.Text.Json;
 
 
@@ -31,7 +33,7 @@ namespace Finacle.Infrastructure.Logging
                     RequestId = requestId,
                     Channel = context.Request.Headers["ChannelId"].FirstOrDefault()?.Split(50, 1),
                     RequestParam = await ReadBodyFromRequest(context.Request),
-                    IpAddress = $"{remoteIpAddress}, {localIpAddress}",
+                    IpAddress = GetIPAddress(context),
                     Controller = context.Request.RouteValues["controller"]?.ToString().Split(50, 1),
                     EndPoint = context.Request.Path.Value?.Split(4000, 1),
                     RequestDate = DateTime.UtcNow,
@@ -133,6 +135,48 @@ namespace Finacle.Infrastructure.Logging
 
             // Request Payload integrity checks
             return requestPayloadString.ToHash();
+        }
+
+        private static string GetIPAddress(HttpContext httpContext)
+        {
+            var IpAddress = string.Empty;
+
+            var xForwardedIp = string.Empty;
+
+
+            var forwardedHeader = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(forwardedHeader))
+            {
+                xForwardedIp = forwardedHeader.Split(',')[0];
+            }
+
+            string hostName = Dns.GetHostName();
+            var hostEntry = Dns.GetHostEntry(hostName);
+
+            var ipAddress = hostEntry.AddressList
+                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+
+
+
+            if (!string.IsNullOrEmpty(ipAddress?.ToString()) && !string.IsNullOrEmpty(xForwardedIp))
+            {
+                IpAddress = $"{xForwardedIp} , {ipAddress?.ToString()}";
+
+            }
+            else if (!string.IsNullOrEmpty(ipAddress?.ToString()) && string.IsNullOrEmpty(xForwardedIp))
+            {
+                IpAddress = ipAddress?.ToString();
+            }
+            else if (string.IsNullOrEmpty(ipAddress?.ToString()) && !string.IsNullOrEmpty(xForwardedIp))
+            {
+                IpAddress = xForwardedIp;
+            }
+            else
+            {
+                IpAddress = httpContext.Connection.RemoteIpAddress?.ToString() ?? "No IP address found";
+            }
+
+            return IpAddress;
         }
     }
 }
