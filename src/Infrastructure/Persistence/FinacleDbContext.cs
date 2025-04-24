@@ -70,61 +70,61 @@ namespace Finacle.Infrastructure.Persistence
                     .IsUnicode(false);
             });
 
-            //modelBuilder.Entity<ApiCallDup>(entity =>
-            //{
+            modelBuilder.Entity<ApiCallDup>(entity =>
+            {
 
-            //    entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
 
-            //    entity.Property(e => e.Apiservice)
-            //        .HasMaxLength(100)
-            //        .IsUnicode(false)
-            //        .HasColumnName("APIService");
+                entity.Property(e => e.Apiservice)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("APIService");
 
-            //    entity.Property(e => e.Channel)
-            //        .HasMaxLength(30)
-            //        .IsUnicode(false);
+                entity.Property(e => e.Channel)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
 
-            //    entity.Property(e => e.Controller)
-            //        .HasMaxLength(50)
-            //        .IsUnicode(false);
+                entity.Property(e => e.Controller)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-            //    entity.Property(e => e.EndPoint)
-            //        .HasMaxLength(4000)
-            //        .IsUnicode(false);
+                entity.Property(e => e.EndPoint)
+                    .HasMaxLength(4000)
+                    .IsUnicode(false);
 
-            //    entity.Property(e => e.IpAddress)
-            //        .HasMaxLength(50)
-            //        .IsUnicode(false);
+                entity.Property(e => e.IpAddress)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-            //    entity.Property(e => e.ReponseTime).HasColumnType("datetime");
+                entity.Property(e => e.ReponseTime).HasColumnType("datetime");
 
-            //    entity.Property(e => e.RequestDate).HasColumnType("datetime");
+                entity.Property(e => e.RequestDate).HasColumnType("datetime");
 
-            //    entity.Property(e => e.RequestId)
-            //        .HasMaxLength(500)
-            //        .IsUnicode(false)
-            //        .HasColumnName("RequestID");
+                entity.Property(e => e.RequestId)
+                    .HasMaxLength(500)
+                    .IsUnicode(false)
+                    .HasColumnName("RequestID");
 
-            //    entity.Property(e => e.RequestParam)
-            //        .HasMaxLength(4000)
-            //        .IsUnicode(false);
+                entity.Property(e => e.RequestParam)
+                    .HasMaxLength(4000)
+                    .IsUnicode(false);
 
-            //    entity.Property(e => e.ResponseCode)
-            //        .HasMaxLength(5)
-            //        .IsUnicode(false);
+                entity.Property(e => e.ResponseCode)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
 
-            //    entity.Property(e => e.ResponseParam)
-            //        .HasMaxLength(4000)
-            //        .IsUnicode(false);
+                entity.Property(e => e.ResponseParam)
+                    .HasMaxLength(4000)
+                    .IsUnicode(false);
 
-            //    entity.Property(e => e.UserAgent)
-            //        .HasMaxLength(1000)
-            //        .IsUnicode(false);
+                entity.Property(e => e.UserAgent)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
 
-            //    entity.Property(e => e.Userid)
-            //        .HasMaxLength(15)
-            //        .IsUnicode(false);
-            //});
+                entity.Property(e => e.Userid)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+            });
 
         }
 

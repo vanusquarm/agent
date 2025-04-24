@@ -87,6 +87,7 @@ app.Use(async (context, next) =>
 
 
 app.UseRouting();
+app.UseHttpLogging();
 //app.UseAuthentication();
 //app.UseAuthorization();
 app.UseSerilogRequestLogging(); // Add Serilog request logging

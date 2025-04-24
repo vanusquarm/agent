@@ -19,20 +19,17 @@ namespace Finacle.Infrastructure.Logging
     {
         public static void UseRequestResponseLoggerMiddleware(this IApplicationBuilder app)
         {
-            app.UseHttpLogging(); // Add this line to enable HTTP logging
-
             // Middleware to log ApiCall
             app.Use(async (context, next) =>
             {
-                var requestId = await GetRequestId(context.Request) ?? context.Request.Headers["requestId"].FirstOrDefault();
-                var localIpAddress = context.Connection.LocalIpAddress?.ToString().Split(50, 1) ?? "No Local IP";
-                var remoteIpAddress = context.Connection.RemoteIpAddress?.ToString().Split(50, 1) ?? "No Remote IP";
+                var requestBody = await ReadBodyFromRequest(context.Request);              
+                var requestId = requestBody.ToHash() ?? context.Request.Headers["requestId"].FirstOrDefault();
 
                 var apiCall = new ApiCall
                 {
                     RequestId = requestId,
                     Channel = context.Request.Headers["ChannelId"].FirstOrDefault()?.Split(50, 1),
-                    RequestParam = await ReadBodyFromRequest(context.Request),
+                    RequestParam = requestBody,
                     IpAddress = GetIPAddress(context),
                     Controller = context.Request.RouteValues["controller"]?.ToString().Split(50, 1),
                     EndPoint = context.Request.Path.Value?.Split(4000, 1),
@@ -87,8 +84,6 @@ namespace Finacle.Infrastructure.Logging
                     using var responseBody = new MemoryStream();
                     context.Response.Body = responseBody;
 
-                    await next();
-
                     // Update the response details after the request has been processed
                     apiCall.ResponseCode = context.Response.StatusCode.ToString().Split(50, 1);
                     responseBody.Seek(0, SeekOrigin.Begin);
@@ -110,8 +105,13 @@ namespace Finacle.Infrastructure.Logging
                     {
                         Log.Error("Error updating ApiCall log", ex.Message, ex.StackTrace);
                     }
+
+                    await next();
                 }
-                await next();
+                else 
+                {
+                    await next();
+                }
             });
         }
 
