@@ -111,7 +111,8 @@ public class TransferValidator //: ITransferValidator
             return result;
         }
 
-        if (availableBalance < (double)request.Amount)
+        // Exclude office or internal accounts. These accounts are allowed to run into overdraft.
+        if (availableBalance < (double)request.Amount && !senderAccount.AccountIdentification.StartsWith("0"))
         {
             result.ErrorMessage = "Insufficient funds";
             return result;
