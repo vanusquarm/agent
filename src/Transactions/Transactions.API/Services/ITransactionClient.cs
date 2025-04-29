@@ -41,20 +41,17 @@ public interface ITransactionClient
         [Header("requestreference")] string requestReference,
         [Body] IntraBankTransferRequest intraBankTransferRequest);
 
-
     [Post("/v2/createCustomCharge/createCustomChargeDtls")]
     Task<object> PerformCharge(
         [Body] ChargeDetailsDto intraBankTransferRequest);
-
-
 
     [Headers(
         "delivery_channel: API",
         "duptranchkreqd: Y",
         "requesttype: SRV"
     )]
-    [Post("/v2/savings-accounts:fundsTransferReversal")]
-    Task<object> Reverse([Header("requestreference")] string requestReference,[Body] object reversalTransferRequest);
+    [Post("/v2/current-accounts:fundsTransferReversal")]
+    Task<ReversalTransferResponse> Reverse([Header("requestreference")] string requestReference,[Body] ReversalTransferRequest reversalTransferRequest);
 
     [Post("/v2/bankBranchBodDateDtls/getbankBranchBodDateDtls")]
     Task<BankDateDto> GetTransactionBankDate([Body] Dictionary<string, string> request);

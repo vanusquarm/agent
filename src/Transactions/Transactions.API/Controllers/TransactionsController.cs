@@ -1,11 +1,10 @@
-using Finacle.Core;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
-using EodStatusRequest = Transactions.API.Entities.DTOs.EodStatusRequest;
-using TransactionRequest = Transactions.API.Entities.DTOs.TransactionRequest;
 using Microsoft.AspNetCore.Authorization;
+using Finacle.Infrastructure.Utils;
+using System.Text.Json;
 
 namespace Transactions.API.Controllers;
 
@@ -182,28 +181,34 @@ public class TransactionsController : ControllerBase
                 });
             }
 
+            var requestId = JsonSerializer.Serialize(accountTransferRequest).ToHash();
+
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
             var request = IntraBankTransferRequestFactory.Create(accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
                     accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId);
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 
-            Log.Information("About to PerformIntraBankTransfer with request: {@Request}", request);
-            var response = await _transactionClient.PerformIntraBankTransfer(accountTransferRequest.ChannelReference, request);
+            Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}", requestId, request);
+            var response = await _transactionClient.PerformIntraBankTransfer(requestId, request);
 
             Log.Information("Back from Performing IntraBankTransfer with response: {@Response}", response);
 
-            if (response == null)
+            if (response.TransactionReference == null)
             {
                 Log.Information("An error occurred while processing the transaction: {@Request}", request);
-                return StatusCode(500, "Failed to process the intra-bank transfer.");
+                return StatusCode(500, $"Failed to process the intra-bank transfer with Response: {response}");
             }
 
             return Ok(response);
         }
         catch (Refit.ApiException apiEx)
         {
-            Log.Error("An exception has occured at PerformIntraBankTransfer with message: {Message} and stack trace: {StackTrace}", apiEx.Message, apiEx.StackTrace);
-            return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            Log.Error("Finacle remote server encountered an error while processing your request. Response: {ResponseContent}", apiEx.Content);
+            return StatusCode((int)apiEx.StatusCode, new
+            {
+                Message = apiEx.Message,
+                Details = apiEx.Content
+            });
         }
         catch (Exception ex)
         {
@@ -296,9 +301,11 @@ public class TransactionsController : ControllerBase
         }
     }
 
-    [HttpPost("chargeinquiry")]
-    public async Task<IActionResult> PerformChargeInquiry([FromBody] PerformChargeInquiryDto chargeInquiryRequest)
+    [HttpGet("charges")]
+    public async Task<IActionResult> PerformChargeInquiry([FromQuery] PerformChargeInquiryDto chargeInquiryRequest)
     {
+        Log.Information("Recieved Request at PerformChargeInquiry: {@Request}", chargeInquiryRequest);
+
         if (!_transferValidator.isValid(chargeInquiryRequest, out List<string> Errors))
         {
             Log.Warning("Perform charge validation failed: {Error}", chargeInquiryRequest);
@@ -314,46 +321,63 @@ public class TransactionsController : ControllerBase
                 eventType = chargeInquiryRequest.EventType
             };
 
+            Log.Information("About to PerformChargeInquiry with request: {@Request}", request);
             var response = await _transactionClient.ChargeInquiry(request);
+            Log.Information("Back from PerformChargeInquiry with response: {@Response}", response);
 
             return Ok(response);
         }
         catch (Refit.ApiException apiEx)
         {
-            return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            Log.Error("Remote server returned 500 Internal Server Error. Response: {ResponseContent}", apiEx?.Content);
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                Message = "The remote server encountered an error while processing your request.",
+                Details = apiEx.Content
+            });
         }
         catch (Exception ex)
         {
+            Log.Error("An exception has occured at PerformChargeInquiry with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
             return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
         }
     }
 
     [HttpPost("reverse")]
-    public async Task<IActionResult> PerformReverse([FromBody] ReversalTransferRequestDto reversalRequest)
+    public async Task<IActionResult> PerformReversal([FromBody] TransactionIdentification reversalRequest)
     {
+        Log.Information("Recieved Request at PerformReversal: {@Request}", reversalRequest);
         try
         {
-            var request = new
+            var request = new ReversalTransferRequest
             {
-                transactionIdentification = new
+                TransactionIdentification = new TransactionIdentification
                 {
-                    transactionDate = reversalRequest.TransactionDate,
-                    transactionReference = reversalRequest.TransactionReference,
-                    remarks = reversalRequest.Remarks
+                    TransactionDate = reversalRequest?.TransactionDate,
+                    TransactionReference = reversalRequest.TransactionReference,
+                    Remarks = reversalRequest?.Remarks
                 }
-
             };
 
+
+            Log.Information("About to PerformReversal with request: {@Request}", request);
             var response = await _transactionClient.Reverse(reversalRequest.TransactionReference, request);
+            Log.Information("Back from PerformReversal with response: {@Response}", response);
 
             return Ok(response);
         }
         catch (Refit.ApiException apiEx)
         {
-            return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            Log.Error("Remote server returned 500 Internal Server Error. Response: {ResponseContent}", apiEx.Content);
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                Message = "The remote server encountered an error while processing your request.",
+                Details = apiEx.Content
+            });
         }
         catch (Exception ex)
         {
+            Log.Error("An exception has occured at PerformReversal with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
             return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
         }
     }
@@ -367,17 +391,16 @@ public class TransactionsController : ControllerBase
                     {
                         { "solId", $"{ branchCode }" }
                     };
-            Entities.DTOs.BankDateDto date = await _transactionClient.GetTransactionBankDate(request);
-            //var contentx = result.Content.ReadAsStringAsync().Result;
 
+            Log.Information("About to GetTransactionBankDate with request: {@Request}", request);
+            BankDateDto date = await _transactionClient.GetTransactionBankDate(request);
+            Log.Information("Back from GetTransactionBankDate with response: {@Response}", date);
 
             return Ok(date);
-
-
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            Log.Error("An exception has occured at GetTransactionBankDate with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
             return NotFound();
         }
 

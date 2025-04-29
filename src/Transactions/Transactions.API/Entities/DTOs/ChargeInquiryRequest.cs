@@ -11,10 +11,10 @@
 
     public class PerformChargeInquiryDto
     {
-        public string AccountId { get; set; }
-        public decimal TranAmt { get; set; }
-        public string EventId { get; set; }
-        public string EventType { get; set; }
+        public required string AccountId { get; set; }
+        public required decimal TranAmt { get; set; }
+        public required string EventId { get; set; }
+        public required string EventType { get; set; }
     }
 
 }
