@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using System;
 using System.Net.Sockets;
 using System.Net;
 using System.Text.Json;
+
 
 
 namespace Finacle.Infrastructure.Logging
@@ -22,7 +22,7 @@ namespace Finacle.Infrastructure.Logging
             // Middleware to log ApiCall
             app.Use(async (context, next) =>
             {
-                var requestBody = await ReadBodyFromRequest(context.Request);              
+                var requestBody = await ReadBodyFromRequest(context.Request);
                 var requestId = requestBody.ToHash() ?? context.Request.Headers["requestId"].FirstOrDefault();
 
                 var apiCall = new ApiCall
@@ -49,9 +49,8 @@ namespace Finacle.Infrastructure.Logging
                         dbContext.ApiCalls.Add(apiCall);
                         await dbContext.SaveChangesAsync();
                         Log.Information("Back from inserting into ApiCall table");
-
                     }
-                    catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 2601) // SQL Server error code for unique constraint violation
+                    catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 2601)
                     {
                         Log.Warning("Duplicate requestId detected: {@RequestId}", requestId);
                         dbContext.ChangeTracker.Clear();
@@ -60,6 +59,10 @@ namespace Finacle.Infrastructure.Logging
                         if (apiCall?.ResponseCode == StatusCodes.Status200OK.ToString())
                         {
                             Log.Information("Cannot reprocess successful transaction parameters: {@Request}", apiCall);
+                            var errordetails = CustomProblemDetails.FailureResponse(detail: "Duplicate Transaction", ResponseCode: ResponseManager.DuplicateRecord.Item1, title: ResponseManager.FinacleFailure.Item2, status: (int)HttpStatusCode.BadRequest);
+                            string response = JsonSerializer.Serialize(errordetails);
+                            context.Response.StatusCode = (int)errordetails.Status;
+                            await context.Response.WriteAsync(response);
                             return;
                         }
                         else
@@ -84,10 +87,13 @@ namespace Finacle.Infrastructure.Logging
                     using var responseBody = new MemoryStream();
                     context.Response.Body = responseBody;
 
+                    // Process the request and allow the response to be written
+                    await next();
+
                     // Update the response details after the request has been processed
-                    apiCall.ResponseCode = context.Response.StatusCode.ToString().Split(50, 1);
                     responseBody.Seek(0, SeekOrigin.Begin);
                     var responseText = await new StreamReader(responseBody).ReadToEndAsync();
+                    apiCall.ResponseCode = context.Response.StatusCode.ToString().Split(50, 1);
                     apiCall.ResponseParam = responseText.Split(200, 1);
                     apiCall.ReponseTime = DateTime.UtcNow;
 
@@ -105,14 +111,13 @@ namespace Finacle.Infrastructure.Logging
                     {
                         Log.Error("Error updating ApiCall log", ex.Message, ex.StackTrace);
                     }
-
-                    await next();
                 }
-                else 
+                else
                 {
                     await next();
                 }
             });
+
         }
 
         private static async Task<string> ReadBodyFromRequest(HttpRequest request)
