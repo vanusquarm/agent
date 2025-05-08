@@ -10,6 +10,7 @@ using Finacle.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -66,6 +67,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear(); 
+    options.KnownProxies.Clear();
+});
+
 
 var app = builder.Build();
 
@@ -85,7 +93,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-
+app.UseForwardedHeaders();
 app.UseRouting();
 app.UseHttpLogging();
 //app.UseAuthentication();
