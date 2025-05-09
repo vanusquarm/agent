@@ -239,8 +239,7 @@ namespace Customers.API.Controllers
             catch (Exception ex)
             {
                 Log.Error("An exception has occured at GetCustomerAccounts with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while fetching customer accounts: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return NotFound();
             }
         }
 
