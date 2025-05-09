@@ -1,54 +1,105 @@
+using System.Text.Json.Serialization;
+
 namespace Transactions.API.Entities.DTOs;
 
 public class CashWithdrawalRequest
 {
-    public string TransactionType { get; set; }
-    public string TransactionSubType { get; set; }
-    public List<CashWithdrawalTransactionSummary> TransactionSummary { get; set; }
-    public string UserTransactionCode { get; set; }
-    public string TransactionRemarks { get; set; }
-    public string EntererId { get; set; }
+    [JsonPropertyName("transactionType")]
+    public required string TransactionType { get; set; } = "C";
+
+    [JsonPropertyName("transactionSubType")]
+    public required string TransactionSubType { get; set; } = "PI";
+
+    [JsonPropertyName("transactionSummary")]
+    public List<TransactionSummary>? TransactionSummary { get; set; }
+
+    [JsonPropertyName("denominationDetails")]
+    public List<DenominationDetail>? DenominationDetails { get; set; }
+
+    [JsonPropertyName("userTransactionCode")]
+    public string? UserTransactionCode { get; set; } = "102";
+
+    [JsonPropertyName("transactionRemarks")]
+    public string? TransactionRemarks { get; set; }
+
+    [JsonPropertyName("entererId")]
+    public string? EntererId { get; set; }
 }
 
-public class CashWithdrawalTransactionSummary
+public class TransactionSummary
 {
-    public string SerialNumber { get; set; }
-    public string PartTransactionType { get; set; }
-    public string AccountIdentification { get; set; }
-    public decimal TransactionAmount { get; set; }
-    public string TransactionCurrency { get; set; }
-    public string RateCode { get; set; }
-    public decimal Rate { get; set; }
-    public string TreasuryReferenceNumber { get; set; }
-    public decimal TreasuryRate { get; set; }
-    public DateTime ValuedDate { get; set; }
-    public string PrintAdvice { get; set; }
-    public InstrumentDetails InstrumentDetails { get; set; }
-    public string TransactionParticulars { get; set; }
-    public string TransactionParticularsCode { get; set; }
-    public MiscellaneousDetailsType MiscellaneousDetailsType { get; set; }
-    public string ChargeEventId { get; set; }
-    public List<ChargeDetails> ChargeDetails { get; set; }
+    [JsonPropertyName("serialNumber")]
+    public string? SerialNumber { get; set; } = "001";
+
+    [JsonPropertyName("partTransactionType")]
+    public string? PartTransactionType { get; set; } = "D";
+
+    [JsonPropertyName("accountIdentification")]
+    public string? AccountIdentification { get; set; }
+
+    [JsonPropertyName("transactionAmount")]
+    public int TransactionAmount { get; set; }
+
+    [JsonPropertyName("transactionCurrency")]
+    public string? TransactionCurrency { get; set; } = "GHS";
+
+    [JsonPropertyName("valuedDate")]
+    public string? ValuedDate { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
+
+    [JsonPropertyName("printAdvice")]
+    public string? PrintAdvice { get; set; }
+
+    [JsonPropertyName("transactionParticulars")]
+    public string? TransactionParticulars { get; set; } = "02";
 }
 
-public class InstrumentDetails
+public class DenominationDetail
 {
-    public DateTime InstrumentDate { get; set; }
-    public string InstrumentAlpha { get; set; }
-    public string InstrumentNumber { get; set; }
-    public string InstrumentType { get; set; }
+    [JsonPropertyName("denominationDetailsCurrencyType")]
+    public List<DenominationDetailsCurrencyType>? DenominationDetailsCurrencyType { get; set; } 
+
+    [JsonPropertyName("roundOffIndicator")]
+    public string? RoundOffIndicator { get; set; } = "C";
+
+    [JsonPropertyName("roundOffAmount")]
+    public RoundOffAmount? RoundOffAmount { get; set; } 
+
+    [JsonPropertyName("denominationRemarks")]
+    public string? DenominationRemarks { get; set; } = "ok";
 }
 
-public class MiscellaneousDetailsType
+public class DenominationDetailsCurrencyType
 {
-    public string UserAdditionalFreeField1 { get; set; }
-    public string UserAdditionalFreeField2 { get; set; }
-    public string UserAdditionalFreeField3 { get; set; }
-    public string UserAdditionalFreeField4 { get; set; }
-    public string UserPartTransactionCode { get; set; }
-    public string ReportCode { get; set; }
-    public string ReferenceNumber { get; set; }
-    public string TransactionRemarks1 { get; set; }
-    public string TransactionRemarks2 { get; set; }
+    [JsonPropertyName("denominationCurrency")]
+    public string? DenominationCurrency { get; set; } = "GHS";
+
+    [JsonPropertyName("denomination")]
+    public int Denomination { get; set; } = 100;
+
+    [JsonPropertyName("denominationType")]
+    public string? DenominationType { get; set; } = "N";
+
+    [JsonPropertyName("strapOrBundleSize")]
+    public int StrapOrBundleSize { get; set; } = 100;
+
+    [JsonPropertyName("numberOfNotesOrCoins")]
+    public int NumberOfNotesOrCoins { get; set; } = 2;
+
+    [JsonPropertyName("numberOfStrapsOrBundles")]
+    public int NumberOfStrapsOrBundles { get; set; } = 0;
+
+    [JsonPropertyName("numberOfNotesOrCoinsPaybackOrGetback")]
+    public int NumberOfNotesOrCoinsPaybackOrGetback { get; set; } = 0;
+
+    [JsonPropertyName("numberOfStrapsOrBundlesPaybackOrGetback")]
+    public int NumberOfStrapsOrBundlesPaybackOrGetback { get; set; } = 0;
 }
 
+public class RoundOffAmount
+{
+    [JsonPropertyName("value")]
+    public int Value { get; set; } = 0;
+
+    [JsonPropertyName("currency")]
+    public string? Currency { get; set; } = "GHS";
+}

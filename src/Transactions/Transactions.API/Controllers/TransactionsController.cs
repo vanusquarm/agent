@@ -135,7 +135,7 @@ public class TransactionsController : ControllerBase
             if (response == null || string.IsNullOrEmpty(response.TransactionIdentification))
             {
                 Log.Information("An error occurred while processing the transaction: {@Request}", cashWithdrawalRequest);
-                return StatusCode(500, "Failed to process the cash withdrawal.");
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, "Failed to process the cash withdrawal.");
             }
 
             return Ok(response);
