@@ -17,19 +17,17 @@ public interface ITransactionClient
 
     [Headers(
         "context_sol_id: 201",
-        "delivery_channel: COR",
-        "context_user_id: GTBGH2"
+        "delivery_channel: COR"
     )]
     [Post("/v2/transactions/cash-deposit")]
-    Task<CashDepositResponse> PerformCashDeposit(CashDepositRequest cashDepositRequest);
+    Task<CashTransferResponse> PerformCashDeposit(CashTransferRequest cashDepositRequest, [Header("context_user_id")] string tellerID);
 
     [Headers(
         "context_sol_id: 201",
-        "delivery_channel: COR",
-        "context_user_id: GTBGH2"
+        "delivery_channel: COR"
     )]
     [Post("/v2/transactions/cash-withdrawal")]
-    Task<CashWithdrawalResponse> PerformCashWithdrawal(CashWithdrawalRequest cashWithdrawalRequest);
+    Task<CashTransferResponse> PerformCashWithdrawal(CashTransferRequest cashWithdrawalRequest, [Header("context_user_id")] string tellerID);
 
     [Headers(
         "delivery_channel: API",

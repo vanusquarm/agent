@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
-using Microsoft.AspNetCore.Authorization;
 using Finacle.Infrastructure.Utils;
 using System.Text.Json;
 
@@ -88,13 +87,18 @@ public class TransactionsController : ControllerBase
             }
 
             Log.Information("About to PerformCashDeposit with request: {@Request}", cashDepositRequest);
-            var response = await _transactionClient.PerformCashDeposit(cashDepositRequest);
+            var request = CashTransferRequestFactory.Create(cashDepositRequest.TellerID, cashDepositRequest.DebitAccount, cashDepositRequest.Amount, cashDepositRequest.Remarks,
+                cashDepositRequest.ChannelReference, "C", cashDepositRequest.Currency, cashDepositRequest.DenomDetails);
+            var requeststring = JsonSerializer.Serialize(request);
+            var response = await _transactionClient.PerformCashDeposit(request, cashDepositRequest.TellerID);
             Log.Information("Back from Performing CashDeposit with response: {@Response}", response);
+            response.TranMessage = "SUCCESSFUL";
 
-            if (response == null || response.Status != "Success")
+            if (response == null || string.IsNullOrEmpty(response.TransactionIdentification))
             {
-                Log.Information("An error occurred while processing the transaction: {@Request}", cashDepositRequest);
-                return StatusCode(500, response?.Message ?? "An error occurred while processing the transaction.");
+                response.TranMessage = "FAILED";
+                Log.Information("An error occurred while processing the transaction: {@Request}", request);
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, "Failed to process the cash withdrawal.");
             }
 
             return Ok(response);
@@ -102,7 +106,20 @@ public class TransactionsController : ControllerBase
         catch (Refit.ApiException apiEx)
         {
             Log.Error("An exception has occured at PerformCashDeposit with message: {Message} and stack trace: {StackTrace}", apiEx.Message, apiEx.StackTrace);
-            return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            if (apiEx.StatusCode == System.Net.HttpStatusCode.UnprocessableContent)
+            {
+                return Ok(new CashTransferResponse
+                {
+                    TranMessage = apiEx.Message,
+                    TransactionIdentification = "",
+                    TransactionDate = DateTime.UtcNow.ToString("yyyy-MM-dd"),
+                    TransactionStatus = "N"
+                });
+            }
+            else
+            {
+                return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            }
         }
         catch (Exception ex)
         {
@@ -129,12 +146,17 @@ public class TransactionsController : ControllerBase
             }
 
             Log.Information("About to PerformCashWithdrawal with request: {@Request}", cashWithdrawalRequest);
-            var response = await _transactionClient.PerformCashWithdrawal(cashWithdrawalRequest);
+            var request = CashTransferRequestFactory.Create(cashWithdrawalRequest.TellerID, cashWithdrawalRequest.CreditAccount, cashWithdrawalRequest.Amount, cashWithdrawalRequest.Remarks, 
+                cashWithdrawalRequest.ChannelReference, "D", cashWithdrawalRequest.Currency, cashWithdrawalRequest.DenomDetails);
+            var requeststring = JsonSerializer.Serialize(request);
+            var response = await _transactionClient.PerformCashWithdrawal(request, cashWithdrawalRequest.TellerID);
             Log.Information("Back from Performing CashWithdrawal with response: {@Response}", response);
+            response.TranMessage = "SUCCESSFUL";
 
             if (response == null || string.IsNullOrEmpty(response.TransactionIdentification))
             {
-                Log.Information("An error occurred while processing the transaction: {@Request}", cashWithdrawalRequest);
+                response.TranMessage = "FAILED";
+                Log.Information("An error occurred while processing the transaction: {@Request}", request);
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, "Failed to process the cash withdrawal.");
             }
 
@@ -143,7 +165,20 @@ public class TransactionsController : ControllerBase
         catch (Refit.ApiException apiEx)
         {
             Log.Error("An exception has occured at PerformCashDeposit with message: {Message} and stack trace: {StackTrace}", apiEx.Message, apiEx.StackTrace);
-            return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            if (apiEx.StatusCode == System.Net.HttpStatusCode.UnprocessableContent)
+            {
+                return Ok(new CashTransferResponse
+                {
+                    TranMessage = apiEx.Message,
+                    TransactionIdentification = "",
+                    TransactionDate = DateTime.UtcNow.ToString("yyyy-MM-dd"),
+                    TransactionStatus = "N"
+                });
+            }
+            else
+            {
+                return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            }
         }
         catch (Exception ex)
         {
