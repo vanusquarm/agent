@@ -30,7 +30,7 @@ namespace Acccounts.API.Services
         // Get Account Details - Example of a Savings Account is 1205001000000471 
 
         [Post("/v2/accntdetails/getaccntdetails")]
-        Task<AccountDetailsDto> GetAccountDetails(object accountId);
+        Task<object> GetAccountDetails(object accountId);
 
         [Get("/v2/savings-accounts/{accountId}/account-details")]
         Task<object> GetSavingsAccount(string accountId);
@@ -58,10 +58,10 @@ namespace Acccounts.API.Services
 
         // Account Statements
         [Post("/v2/acctstmnt/statementDetails")]
-        Task<object> GetAccountStatements(AccountStatementRequest request);
+        Task<object> GetAccountStatements(object request);
 
         [Post("/v2/accountstatement/getaccountstatement")]
-        Task<object> GetAccountStatement(AccountStatementRequest request);
+        Task<object> GetAccountStatement(object request);
 
 
         [Post("/v2/TerminalOfficeAcct/getTerminalOfficeAcct")]

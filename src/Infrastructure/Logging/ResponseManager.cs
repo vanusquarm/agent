@@ -66,22 +66,18 @@ namespace Finacle.Infrastructure.Logging
         /// <param name="exception">the message to return in the Data of the API response.</param>
         /// <param name="message">the message to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        //public static ResponseWithStatusCode ReturnFinacleCallUnsuccessful(dynamic? exception = null, dynamic? FinacleData = null, string? message = null)
-        //{
-        //    return new ResponseWithStatusCode()
-        //    {
-        //        StatusCode = (int)HttpStatusCode.UnprocessableEntity,
-        //        Response = new CustomProblemDetails()
-        //        {
-        //            ResponseCode = FinacleFailure.Item1,
-        //            IsSuccess = false,
-        //            Title = message ?? FinacleFailure.Item2,
-        //            Status = (int)HttpStatusCode.UnprocessableEntity,
-        //            Extensions = new Dictionary<string, object?> { { "errors", exception } },
-        //            FinacleData = FinacleData
-        //        }
-        //    };
-        //}
+        public static CustomProblemDetails ReturnFinacleCallUnsuccessful(dynamic? exception = null, dynamic? FinacleData = null, string? message = null)
+        {
+            return new CustomProblemDetails()
+            {
+                ResponseCode = FinacleFailure.Item1,
+                IsSuccess = false,
+                Title = message ?? FinacleFailure.Item2,
+                Status = (int)HttpStatusCode.UnprocessableEntity,
+                Extensions = new Dictionary<string, object?> { { "errors", exception } },
+                FinacleData = FinacleData
+            };
+        }
 
         /// <summary>
         /// Formats the response for a "Feature Unavailable" API call 
@@ -130,21 +126,17 @@ namespace Finacle.Infrastructure.Logging
         /// </summary>
         /// <param name="validationErrors">the serialized validation errors to return.</param>
         /// <returns>ApiResponse</returns>
-        //public static ResponseWithStatusCode ReturnFailedValidations(string validationErrors)
-        //{
-        //    return new ResponseWithStatusCode()
-        //    {
-        //        StatusCode = (int)HttpStatusCode.BadRequest,
-        //        Response = new CustomProblemDetails()
-        //        {
-        //            ResponseCode = FailedValidation.Item1,
-        //            IsSuccess = false,
-        //            Title = FailedValidation.Item2,
-        //            Status = (int)HttpStatusCode.BadRequest,
-        //            Extensions = new Dictionary<string, object?> { { "errors", validationErrors } }
-        //        }
-        //    };
-        //}
+        public static CustomProblemDetails ReturnFailedValidations(string validationErrors)
+        {
+            return new CustomProblemDetails()
+            {
+                ResponseCode = FailedValidation.Item1,
+                IsSuccess = false,
+                Title = FailedValidation.Item2,
+                Status = (int)HttpStatusCode.BadRequest,
+                Extensions = new Dictionary<string, object?> { { "errors", validationErrors } }
+            };
+        }
 
         /// <summary>
         /// Formats the response for an Unauthrized entity API call 
@@ -407,5 +399,5 @@ namespace Finacle.Infrastructure.Logging
     {
         readonly public static Tuple<string, string> DuplicateRequestId = new Tuple<string, string>("E0202", "Unable to insert record in UTT (bufman error = [-1])");
     }
-    
+
 }
