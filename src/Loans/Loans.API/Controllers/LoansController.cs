@@ -10,7 +10,7 @@ namespace Loan.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-
+    [Authorize]
     public class LoansController(ILoanClient loanClient) : ControllerBase
     {
         /// <summary>
@@ -25,10 +25,10 @@ namespace Loan.API.Controllers
             Log.Information("Recieved Request at CreateLoan: {@Request}", createUnsecuredLoanRequest);
             try
             {
-                if (createUnsecuredLoanRequest!=null)
+                if (createUnsecuredLoanRequest != null)
                 {
                     Log.Information("About to CreateSecureLoan with request: {@Request}", createUnsecuredLoanRequest);
-                    var loan = isSecured ?  await loanClient.CreateSecureLoan((CreateUnsecuredLoanRequest)createUnsecuredLoanRequest) : await loanClient.CreateUnsecureLoan((CreateUnsecuredLoanRequest)createUnsecuredLoanRequest);
+                    var loan = isSecured ? await loanClient.CreateSecureLoan((CreateUnsecuredLoanRequest)createUnsecuredLoanRequest) : await loanClient.CreateUnsecureLoan((CreateUnsecuredLoanRequest)createUnsecuredLoanRequest);
                     Log.Information("Back from Creating SecureLoan with response: {@Response}", loan);
                     return Ok(loan);
                 }
@@ -53,7 +53,7 @@ namespace Loan.API.Controllers
         /// <param name="isSecured"></param>
         /// <returns></returns>
         [HttpPut("{accountId}")]
-        public async Task<IActionResult> UpdateLoan(string accountId , UpdateLoanFeesRequestDto updateLoanFeesRequestDto, bool isSecured = false)
+        public async Task<IActionResult> UpdateLoan(string accountId, UpdateLoanFeesRequestDto updateLoanFeesRequestDto, bool isSecured = false)
         {
             Log.Information("Recieved Request at UpdateLoan: {@Request}", updateLoanFeesRequestDto);
             try
@@ -94,7 +94,7 @@ namespace Loan.API.Controllers
                 if (disburseRequestDTO != null) // secured loan condition
                 {
                     Log.Information("About to DisburseLoan with request: {@Request}", (disburseRequestDTO, accountId));
-                    var result = isSecured ? null : await loanClient.DiburseLoan(accountId,disburseRequestDTO);
+                    var result = isSecured ? null : await loanClient.DiburseLoan(accountId, disburseRequestDTO);
                     Log.Information("Back from Disbursing Loan with response: {@Response}", result);
                     return Ok(result);
                 }
@@ -126,17 +126,17 @@ namespace Loan.API.Controllers
             {
                 if (payoffRequestDTO != null) // secured loan condition
                 {
-                    Log.Information("About to PayOff with request: {@Request}", (payoffRequestDTO, accountId));  
+                    Log.Information("About to PayOff with request: {@Request}", (payoffRequestDTO, accountId));
                     var paid = isSecured ? null : await loanClient.PayOffLoan(accountId, payoffRequestDTO);
                     Log.Information("Back from PayingOff with response: {@Response}", paid);
                     if (paid != null && !string.IsNullOrEmpty(paid.AccountIdentification))
                     {
-                        if(accountId.Length>3)
+                        if (accountId.Length > 3)
                         {
                             var branchCode = accountId.Substring(1, 3);
                             var res = await loanClient.CloseAccount(accountId, branchCode);
                         }
-                       
+
                         return Ok(paid);
                     }
 
@@ -161,18 +161,18 @@ namespace Loan.API.Controllers
         /// <param name="customerId"></param>
         /// <param name="isSecured"></param>
         /// <returns></returns>
-        [HttpGet("GetOutstandingInquiry/{customerId}")]
+        [HttpGet("outstanding-inquiry/{customerId}")]
         public async Task<IActionResult> GetOutstandingInquiry(string customerId, bool isSecured = false)
         {
-            Log.Information("Recieved Request at GetOutstandingInquiry: {Request}", customerId);
+            Log.Information("Recieved Request at outstanding-inquiry: {Request}", customerId);
             try
             {
-               
+
                 if (!string.IsNullOrEmpty(customerId)) // secured loan condition
                 {
-                    var request = new Dictionary<string, string> { { "customerId", $"{ customerId }" } };
-                    
-                    Log.Information("About to GetOutstandingInquiry with request: {@Request}", request);
+                    var request = new Dictionary<string, string> { { "customerId", $"{customerId}" } };
+
+                    Log.Information("About to outstanding-inquiry with request: {@Request}", request);
                     var result = isSecured ? null : await loanClient.GetOutStandingIniquiry(request);
                     Log.Information("Back from Getting OutstandingInquiry with response: {@Response}", result);
                     return Ok(result);
@@ -271,7 +271,7 @@ namespace Loan.API.Controllers
                 if (!string.IsNullOrEmpty(accountId)) // secured loan condition
                 {
                     Log.Information("About to ModifyUnsecuredLoanInterest with request: {@Request}", (accountId, unsecuredLoanInterestRateDto));
-                    var result = isSecured ? null : await loanClient.ModifyUnsecuredLoanInterest(accountId,unsecuredLoanInterestRateDto);
+                    var result = isSecured ? null : await loanClient.ModifyUnsecuredLoanInterest(accountId, unsecuredLoanInterestRateDto);
                     Log.Information("Back from Modifying UnsecuredLoanInterest with response: {@Response}", result);
                     return Ok(result);
                 }
@@ -348,7 +348,7 @@ namespace Loan.API.Controllers
         /// <param name="isSecured"></param>
         /// <returns></returns>
         [HttpPatch("{loanId}")]
-        public async Task<IActionResult> PayOffLoan(string loanId,PayoffRequestDTO payoffRequestDTO, bool isSecured = false)
+        public async Task<IActionResult> PayOffLoan(string loanId, PayoffRequestDTO payoffRequestDTO, bool isSecured = false)
         {
             try
             {
@@ -377,7 +377,7 @@ namespace Loan.API.Controllers
             Log.Information("Recieved Request at LoanInquiry: {@Request}", loanInquiry);
             try
             {
-                if (!string.IsNullOrEmpty(loanInquiry.CustomerId)) 
+                if (!string.IsNullOrEmpty(loanInquiry.CustomerId))
                 {
                     Log.Information("About to do LoanInquiry with request: {@Request}", loanInquiry);
                     var result = await loanClient.GetLoanInquiry(loanInquiry);
@@ -392,6 +392,6 @@ namespace Loan.API.Controllers
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
-       
+
     }
 }
