@@ -39,7 +39,7 @@ namespace Transactions.API.Entities.DTOs
         public string? AccountIdentification { get; set; }
 
         [JsonPropertyName("transactionAmount")]
-        public int TransactionAmount { get; set; }
+        public decimal TransactionAmount { get; set; }
 
         [JsonPropertyName("transactionCurrency")]
         public string? TransactionCurrency { get; set; }
@@ -99,7 +99,7 @@ namespace Transactions.API.Entities.DTOs
     public class RoundOffAmount
     {
         [JsonPropertyName("value")]
-        public int Value { get; set; }
+        public decimal Value { get; set; }
 
         [JsonPropertyName("currency")]
         public string? Currency { get; set; }

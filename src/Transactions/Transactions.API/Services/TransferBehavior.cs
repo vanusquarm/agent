@@ -88,6 +88,12 @@ public class TransferValidator //: ITransferValidator
             return false;
         }
 
+        if (request.SourceAccountId == request.DestinationAccountId)
+        {
+            errorMessage = "Source and destination account numbers must not be the same.";
+            return false;
+        }
+
         return true;
     }
 

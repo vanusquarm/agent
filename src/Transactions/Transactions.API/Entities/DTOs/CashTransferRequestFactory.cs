@@ -4,14 +4,9 @@ namespace Transactions.API.Entities.DTOs;
 
 public class CashTransferRequestFactory
 {
-    public static CashTransferRequest Create(string debitAccount, string creditAccount, int amount, string partTransactionRemarks, string referenceNumber, string transType, string? currency, List<DenominationDetailsCurrencyType>? denomDetails)
+    public static CashTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string transType, string? currency, List<DenominationDetailsCurrencyType>? denomDetails)
     {
-        DateTime transactionDate = DateTime.ParseExact("2025-04-27", "yyyy-MM-dd", CultureInfo.InvariantCulture);
-        //DateTime transactionDate = DateTime.ParseExact(
-        //    DateTime.Now.ToString("yyyy-MM-dd"),
-        //    "yyyy-MM-dd",
-        //    CultureInfo.InvariantCulture
-        //);
+        string transactionDate = DateTime.Now.ToString("yyyy-MM-dd");
 
         return new CashTransferRequest
         {
@@ -26,7 +21,7 @@ public class CashTransferRequestFactory
                     AccountIdentification = creditAccount,
                     TransactionAmount = amount,
                     TransactionCurrency = currency ?? "GHS",
-                    ValuedDate = "2025-04-27",
+                    ValuedDate = transactionDate,
                     PrintAdvice = "O",
                     TransactionParticulars = referenceNumber
                 }
@@ -35,11 +30,11 @@ public class CashTransferRequestFactory
             {
                 new DenominationDetail
                 {
-                    DenominationDetailsCurrencyType = denomDetails ?? SplitAmount(amount),
+                    DenominationDetailsCurrencyType = denomDetails ?? SplitAmount(amount, currency),
                     RoundOffIndicator = "C",
                     RoundOffAmount = new RoundOffAmount
                     {
-                        Value = 0,
+                        Value = amount - Math.Truncate(amount),
                         Currency = "GHS"
                     },
                     DenominationRemarks = "ok"
@@ -51,19 +46,19 @@ public class CashTransferRequestFactory
         };
     }
 
-    public static List<DenominationDetailsCurrencyType> SplitAmount(int amount)
+    public static List<DenominationDetailsCurrencyType> SplitAmount(decimal amount, string? currency)
     {
-        int[] denominations = { 100, 50, 20, 10, 5 };
+        int[] denominations = { 100, 50, 20, 10, 5, 2, 1 };
         var result = new List<DenominationDetailsCurrencyType>();
 
-        foreach (var note in denominations)
+        foreach (var note in denominations.OrderByDescending(d => d))
         {
-            int count = amount / note;
+            int count = (int)(amount / note);
             if (count > 0)
             {
                 result.Add(new DenominationDetailsCurrencyType
                 {
-                    DenominationCurrency = "GHS", // statically set
+                    DenominationCurrency = currency ?? "GHS",
                     Denomination = note,
                     DenominationType = "N",
                     StrapOrBundleSize = 100,
