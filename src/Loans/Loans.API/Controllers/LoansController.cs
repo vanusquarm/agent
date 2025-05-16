@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Loans.API.Entities.DTOs;
 using Loans.API.Services;
 using Serilog;
+using Finacle.Infrastructure.Logging;
 
 
 namespace Loan.API.Controllers
@@ -39,16 +40,8 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at CreateLoan with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                var errorContent = await ex.GetContentAsAsync<LoanError>();
-                foreach (var error in errorContent.ErrorDetails)
-                {
-                    Console.Error.WriteLine($"Error occurred while creating a loan: {error.ErrorMessage}");
-                    Console.Error.WriteLine($"Error occurred while creating a loan: {error.ErrorCode}");
-                }
-                //var errmessage = $"Error occurred while creating a loan: {errorContent}";
-                Console.Error.WriteLine($"Error occurred while creating a loan: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -78,11 +71,10 @@ namespace Loan.API.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at UpdateLoan with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while updating a loan: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -112,11 +104,10 @@ namespace Loan.API.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at DisburseLoan with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while disbursing a loan: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -157,11 +148,10 @@ namespace Loan.API.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at PayOff with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while disbursing a loan: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -193,11 +183,10 @@ namespace Loan.API.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetOutstandingInquiry with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while getting an inquiry: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -227,11 +216,10 @@ namespace Loan.API.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at SchedulePayment with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while disbursing a loan: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -260,11 +248,10 @@ namespace Loan.API.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetInterestDetails with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while getting an interest: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -294,11 +281,10 @@ namespace Loan.API.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at ModifyLoanInterestDetails with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while getting an interest: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -311,13 +297,21 @@ namespace Loan.API.Controllers
         [HttpGet("{loanId}")]
         public async Task<IActionResult> GetLoanDetails(string loanId, bool isSecured = false)
         {
-            Log.Information("Recieved Request at GetLoanDetails: {Request}", loanId);
-            if (string.IsNullOrEmpty(loanId)) { Log.Information("No record found for request: {Request}", loanId); return NotFound(); }
+            try
+            {
+                Log.Information("Recieved Request at GetLoanDetails: {Request}", loanId);
+                if (string.IsNullOrEmpty(loanId)) { Log.Information("No record found for request: {Request}", loanId); return NotFound(); }
 
-            Log.Information("About to GetLoanDetails with request: {Request}", loanId);
-            var loans = isSecured ? await loanClient.GetSecuredLoanDetails(loanId) : await loanClient.GetLoanDetails(loanId);
-            Log.Information("Back from Getting LoanDetails with response: {@Response}", loans);
-            return Ok(loans);
+                Log.Information("About to GetLoanDetails with request: {Request}", loanId);
+                var loans = isSecured ? await loanClient.GetSecuredLoanDetails(loanId) : await loanClient.GetLoanDetails(loanId);
+                Log.Information("Back from Getting LoanDetails with response: {@Response}", loans);
+                return Ok(loans);
+            }
+            catch (Refit.ApiException ex)
+            {
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+            }
         }
 
         /// <summary>
@@ -329,13 +323,21 @@ namespace Loan.API.Controllers
         [HttpGet("unsecuredLoan/{loanId}")]
         public async Task<IActionResult> GetUnsecuredLoanDetails(string loanId, bool isSecured = false)
         {
-            Log.Information("Recieved Request at GetUnsecuredLoanDetails: {Request}", loanId);
-            if (string.IsNullOrEmpty(loanId)) { Log.Information("No record found for request: {Request}", loanId);  return NotFound(); }
+            try
+            {
+                Log.Information("Recieved Request at GetUnsecuredLoanDetails: {Request}", loanId);
+                if (string.IsNullOrEmpty(loanId)) { Log.Information("No record found for request: {Request}", loanId); return NotFound(); }
 
-            Log.Information("About to GetUnsecuredLoanDetails with request: {Request}", loanId);
-            var loans = await loanClient.GetLoanDetails(loanId);
-            Log.Information("Back from Getting UnsecuredLoanDetails with response: {@Response}", loans);
-            return Ok(loans);
+                Log.Information("About to GetUnsecuredLoanDetails with request: {Request}", loanId);
+                var loans = await loanClient.GetLoanDetails(loanId);
+                Log.Information("Back from Getting UnsecuredLoanDetails with response: {@Response}", loans);
+                return Ok(loans);
+            }
+            catch (Refit.ApiException ex)
+            {
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+            }
         }
 
         /// <summary>
@@ -348,12 +350,20 @@ namespace Loan.API.Controllers
         [HttpPatch("{loanId}")]
         public async Task<IActionResult> PayOffLoan(string loanId,PayoffRequestDTO payoffRequestDTO, bool isSecured = false)
         {
-            Log.Information("Recieved Request at PayOffLoan: {@Request}", (payoffRequestDTO, loanId));
+            try
+            {
+                Log.Information("Recieved Request at PayOffLoan: {@Request}", (payoffRequestDTO, loanId));
 
-            Log.Information("About to PayOffLoan with request: {@Request}", (payoffRequestDTO, loanId));
-            var loans = isSecured ? await loanClient.PayOffSecuredLoan(loanId) : await loanClient.PayOffLoan(loanId , payoffRequestDTO);
-            Log.Information("Back from PayingOff Loan with response: {@Response}", loans);
-            return Ok(loans);
+                Log.Information("About to PayOffLoan with request: {@Request}", (payoffRequestDTO, loanId));
+                var loans = isSecured ? await loanClient.PayOffSecuredLoan(loanId) : await loanClient.PayOffLoan(loanId, payoffRequestDTO);
+                Log.Information("Back from PayingOff Loan with response: {@Response}", loans);
+                return Ok(loans);
+            }
+            catch (Refit.ApiException ex)
+            {
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+            }
         }
 
         /// <summary>
@@ -376,11 +386,10 @@ namespace Loan.API.Controllers
                 }
                 else { Log.Information("No record found for request: {Request}", loanInquiry.CustomerId); return NotFound(); }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at LoanInquiry with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace); 
-                Console.Error.WriteLine($"Error occurred while getting an interest: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
        
