@@ -1,4 +1,5 @@
 using System.Globalization;
+using Finacle.Infrastructure.Utils;
 
 namespace Transactions.API.Entities.DTOs;
 
@@ -7,6 +8,7 @@ public class CashTransferRequestFactory
     public static CashTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string transType, string? currency, List<DenominationDetailsCurrencyType>? denomDetails)
     {
         string transactionDate = DateTime.Now.ToString("yyyy-MM-dd");
+        string inferredCurrency = Utils.ParseAccountNumber(creditAccount).Currency;
 
         return new CashTransferRequest
         {
@@ -20,7 +22,7 @@ public class CashTransferRequestFactory
                     PartTransactionType = transType,
                     AccountIdentification = creditAccount,
                     TransactionAmount = amount,
-                    TransactionCurrency = currency ?? "GHS",
+                    TransactionCurrency = currency ?? inferredCurrency,
                     ValuedDate = transactionDate,
                     PrintAdvice = "O",
                     TransactionParticulars = referenceNumber
@@ -30,12 +32,12 @@ public class CashTransferRequestFactory
             {
                 new DenominationDetail
                 {
-                    DenominationDetailsCurrencyType = denomDetails ?? SplitAmount(amount, currency),
+                    DenominationDetailsCurrencyType = denomDetails ?? SplitAmount(amount, currency ?? inferredCurrency),
                     RoundOffIndicator = "C",
                     RoundOffAmount = new RoundOffAmount
                     {
                         Value = amount - Math.Truncate(amount),
-                        Currency = "GHS"
+                        Currency = inferredCurrency
                     },
                     DenominationRemarks = "ok"
                 }
@@ -46,7 +48,7 @@ public class CashTransferRequestFactory
         };
     }
 
-    public static List<DenominationDetailsCurrencyType> SplitAmount(decimal amount, string? currency)
+    private static List<DenominationDetailsCurrencyType> SplitAmount(decimal amount, string currency)
     {
         int[] denominations = { 100, 50, 20, 10, 5, 2, 1 };
         var result = new List<DenominationDetailsCurrencyType>();
@@ -58,7 +60,7 @@ public class CashTransferRequestFactory
             {
                 result.Add(new DenominationDetailsCurrencyType
                 {
-                    DenominationCurrency = currency ?? "GHS",
+                    DenominationCurrency = currency,
                     Denomination = note,
                     DenominationType = "N",
                     StrapOrBundleSize = 100,
