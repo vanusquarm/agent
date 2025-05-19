@@ -4,12 +4,13 @@ using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
 using Finacle.Infrastructure.Utils;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Transactions.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-
+[Authorize]
 public class TransactionsController : ControllerBase
 {
     private readonly ITransactionClient _transactionClient;
