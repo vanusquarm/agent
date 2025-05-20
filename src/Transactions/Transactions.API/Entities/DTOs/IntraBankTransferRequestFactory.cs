@@ -4,9 +4,8 @@ namespace Transactions.API.Entities.DTOs;
 
 public class IntraBankTransferRequestFactory
 {
-    public static IntraBankTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? currency, string? docNum, string? chargeEventId, string? batchId)
+    public static IntraBankTransferRequest Create(string requestReference, string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? currency, string? docNum, string? chargeEventId, string? batchId)
     {
-        //DateTime transactionDate = DateTime.ParseExact("2025-02-21", "yyyy-MM-dd", CultureInfo.InvariantCulture);
         DateTime transactionDate = DateTime.ParseExact(
             DateTime.Now.ToString("yyyy-MM-dd"),
             "yyyy-MM-dd",
@@ -38,9 +37,9 @@ public class IntraBankTransferRequestFactory
                             MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
                             {
                                 DocumentNumber = docNum,
-                                Freetxt2 = batchId??null,
-                                Freetxt3 = partTransactionRemarks.Split(50, 4),
-                                Freetxt4 = partTransactionRemarks.Split(50, 5)
+                                Freetxt2 = batchId,
+                                Freetxt3 = requestReference,
+                                Freetxt4 = partTransactionRemarks.Split(50, 4)
                             }
                         },
                         new IntraBankTransferTransactionDetail
@@ -60,29 +59,13 @@ public class IntraBankTransferRequestFactory
                             MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
                             {
                                 DocumentNumber = docNum,
-                                Freetxt2 = batchId??null,
-                                Freetxt3 = partTransactionRemarks.Split(50, 4),
-                                Freetxt4 = partTransactionRemarks.Split(50, 5)
+                                Freetxt2 = batchId,
+                                Freetxt3 = requestReference,
+                                Freetxt4 = partTransactionRemarks.Split(50, 4)
                             }
                         }
                     }
         };
-    }
-
-    private static (string?, string?, string?, string?, string?) SplitTransactionRemarks(string partTransactionRemarks)
-    {
-        // Ensure the string is not null or empty
-        if (string.IsNullOrEmpty(partTransactionRemarks))
-            return (null, null, null, null, null);
-
-        // Split into chunks of up to 50 characters each
-        string part1 = partTransactionRemarks.Length > 0 ? partTransactionRemarks.Substring(0, Math.Min(50, partTransactionRemarks.Length)) : "";
-        string part2 = partTransactionRemarks.Length > 50 ? partTransactionRemarks.Substring(50, Math.Min(50, partTransactionRemarks.Length - 50)) : "";
-        string part3 = partTransactionRemarks.Length > 100 ? partTransactionRemarks.Substring(100, Math.Min(50, partTransactionRemarks.Length - 100)) : "";
-        string part4 = partTransactionRemarks.Length > 150 ? partTransactionRemarks.Substring(150, Math.Min(50, partTransactionRemarks.Length - 150)) : "";
-        string part5 = partTransactionRemarks.Length > 200 ? partTransactionRemarks.Substring(200, Math.Min(50, partTransactionRemarks.Length - 200)) : "";
-
-        return (part1, part2, part3, part4, part5);
     }
 
     public static string MapService(string key)

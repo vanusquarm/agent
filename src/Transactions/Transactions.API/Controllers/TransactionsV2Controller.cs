@@ -15,6 +15,7 @@ using System.Text.Json;
 using System.Linq.Expressions;
 using Transactions.API.Validators;
 using static MassTransit.ValidationResultExtensions;
+using Finacle.Infrastructure.Utils;
 
 namespace Transactions.API.Controllers;
 
@@ -92,9 +93,10 @@ public class TransactionsV2Controller : ControllerBase
                 return BadRequest(ResponseManager.ReturnFailedValidations(null, validationResult.ErrorMessage));
 
             }
+            var requestId = System.Text.Json.JsonSerializer.Serialize(accountTransferRequest).ToHash();
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
-            var request = IntraBankTransferRequestFactory.Create(accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
+            var request = IntraBankTransferRequestFactory.Create(requestId, accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
                     accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId,accountTransferRequest.BatchId);
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 

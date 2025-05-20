@@ -8,7 +8,7 @@ public class CashTransferRequestFactory
     public static CashTransferRequest Create(string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string transType, string? currency, List<DenominationDetailsCurrencyType>? denomDetails)
     {
         string transactionDate = DateTime.Now.ToString("yyyy-MM-dd");
-        string inferredCurrency = Utils.ParseAccountNumber(creditAccount).Currency;
+        currency = currency ?? Utils.ParseAccountNumber(creditAccount).Currency;
 
         return new CashTransferRequest
         {
@@ -22,7 +22,7 @@ public class CashTransferRequestFactory
                     PartTransactionType = transType,
                     AccountIdentification = creditAccount,
                     TransactionAmount = amount,
-                    TransactionCurrency = currency ?? inferredCurrency,
+                    TransactionCurrency = currency,
                     ValuedDate = transactionDate,
                     PrintAdvice = "O",
                     TransactionParticulars = referenceNumber
@@ -32,12 +32,12 @@ public class CashTransferRequestFactory
             {
                 new DenominationDetail
                 {
-                    DenominationDetailsCurrencyType = denomDetails ?? SplitAmount(amount, currency ?? inferredCurrency),
+                    DenominationDetailsCurrencyType = denomDetails ?? SplitAmount(amount, currency),
                     RoundOffIndicator = "C",
                     RoundOffAmount = new RoundOffAmount
                     {
                         Value = amount - Math.Truncate(amount),
-                        Currency = inferredCurrency
+                        Currency = currency
                     },
                     DenominationRemarks = "ok"
                 }
