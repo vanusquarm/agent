@@ -111,7 +111,7 @@ public class TransactionsController : ControllerBase
             {
                 return Ok(new CashTransferResponse
                 {
-                    TranMessage = apiEx.Message,
+                    TranMessage = apiEx.Content,
                     TransactionIdentification = "",
                     TransactionDate = DateTime.UtcNow.ToString("yyyy-MM-dd"),
                     TransactionStatus = "N"
@@ -170,7 +170,7 @@ public class TransactionsController : ControllerBase
             {
                 return Ok(new CashTransferResponse
                 {
-                    TranMessage = apiEx.Message,
+                    TranMessage = apiEx.Content,
                     TransactionIdentification = "",
                     TransactionDate = DateTime.UtcNow.ToString("yyyy-MM-dd"),
                     TransactionStatus = "N"
