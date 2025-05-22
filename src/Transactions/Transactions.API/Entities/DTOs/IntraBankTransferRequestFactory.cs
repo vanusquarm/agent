@@ -27,7 +27,7 @@ public class IntraBankTransferRequestFactory
                             TransactionAmount = amount,
                             TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
                             TransactionValueDate = transactionDate,
-                            TransactionParticulars = partTransactionRemarks.Split(50, 1),
+                            TransactionParticulars = partTransactionRemarks.Split(80, 1),
                             Rate = IntraBankTransferConstants.Rate,
                             PartTransactionRemarks = partTransactionRemarks.Split(50, 2),
                             ReferenceNumber = referenceNumber.Split(20, 1),
@@ -36,10 +36,10 @@ public class IntraBankTransferRequestFactory
                             ChargeEventId = chargeEventId,
                             MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
                             {
-                                DocumentNumber = docNum,
-                                Freetxt2 = batchId,
+                                DocumentNumber = docNum ?? "DocNum",
+                                Freetxt2 = requestReference,
                                 Freetxt3 = requestReference,
-                                Freetxt4 = partTransactionRemarks.Split(50, 4)
+                                Freetxt4 = batchId
                             }
                         },
                         new IntraBankTransferTransactionDetail
@@ -50,19 +50,12 @@ public class IntraBankTransferRequestFactory
                             TransactionAmount = amount,
                             TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
                             TransactionValueDate = transactionDate,
-                            TransactionParticulars = partTransactionRemarks.Split(50, 1),
+                            TransactionParticulars = partTransactionRemarks.Split(80, 1),
                             Rate = IntraBankTransferConstants.Rate,
                             PartTransactionRemarks = partTransactionRemarks.Split(50, 2),
                             ReferenceNumber = referenceNumber.Split(20, 1),
                             PartTransactionRemarks2 = partTransactionRemarks.Split(50, 3),
-                            LienDetailsList = new List<LienDetails>(),
-                            MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
-                            {
-                                DocumentNumber = docNum,
-                                Freetxt2 = batchId,
-                                Freetxt3 = requestReference,
-                                Freetxt4 = partTransactionRemarks.Split(50, 4)
-                            }
+                            LienDetailsList = new List<LienDetails>()
                         }
                     }
         };
