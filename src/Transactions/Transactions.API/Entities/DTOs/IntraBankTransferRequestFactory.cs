@@ -11,6 +11,9 @@ public class IntraBankTransferRequestFactory
             "yyyy-MM-dd",
             CultureInfo.InvariantCulture
         );
+
+        var(remarksPart1, remarksPart2, remarksPart3) = SplitTransactionRemarks(partTransactionRemarks);
+
         return new IntraBankTransferRequest
         {
             TransactionType = IntraBankTransferConstants.TransactionType,
@@ -27,11 +30,11 @@ public class IntraBankTransferRequestFactory
                             TransactionAmount = amount,
                             TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
                             TransactionValueDate = transactionDate,
-                            TransactionParticulars = partTransactionRemarks.Split(80, 1),
+                            TransactionParticulars = remarksPart1,
                             Rate = IntraBankTransferConstants.Rate,
-                            PartTransactionRemarks = partTransactionRemarks.Split(50, 2),
+                            PartTransactionRemarks = remarksPart2,
                             ReferenceNumber = referenceNumber.Split(20, 1),
-                            PartTransactionRemarks2 = partTransactionRemarks.Split(50, 3),
+                            PartTransactionRemarks2 = remarksPart3,
                             LienDetailsList = new List<LienDetails>(),
                             ChargeEventId = chargeEventId,
                             MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
@@ -50,11 +53,11 @@ public class IntraBankTransferRequestFactory
                             TransactionAmount = amount,
                             TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
                             TransactionValueDate = transactionDate,
-                            TransactionParticulars = partTransactionRemarks.Split(80, 1),
+                            TransactionParticulars = remarksPart1,
                             Rate = IntraBankTransferConstants.Rate,
-                            PartTransactionRemarks = partTransactionRemarks.Split(50, 2),
+                            PartTransactionRemarks = remarksPart2,
                             ReferenceNumber = referenceNumber.Split(20, 1),
-                            PartTransactionRemarks2 = partTransactionRemarks.Split(50, 3),
+                            PartTransactionRemarks2 = remarksPart3,
                             LienDetailsList = new List<LienDetails>()
                         }
                     }
@@ -81,6 +84,21 @@ public class IntraBankTransferRequestFactory
         };
         return serviceMap.TryGetValue(key.ToUpper(), out string value) ? value : "GTBGH100";
     }
+
+    private static (string, string, string) SplitTransactionRemarks(string partTransactionRemarks)
+    {
+        // Ensure the string is not null or empty
+        if (string.IsNullOrEmpty(partTransactionRemarks))
+            return ("", "", "");
+
+        // Split into chunks: 80, 50, 50
+        string part1 = partTransactionRemarks.Length > 0 ? partTransactionRemarks.Substring(0, Math.Min(80, partTransactionRemarks.Length)) : "";
+        string part2 = partTransactionRemarks.Length > 80 ? partTransactionRemarks.Substring(80, Math.Min(50, partTransactionRemarks.Length - 80)) : "";
+        string part3 = partTransactionRemarks.Length > 130 ? partTransactionRemarks.Substring(130, Math.Min(50, partTransactionRemarks.Length - 130)) : "";
+
+        return (part1, part2, part3);
+    }
+
 }
 
 public static class StringExtensions
