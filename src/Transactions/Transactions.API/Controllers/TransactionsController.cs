@@ -5,6 +5,8 @@ using Transactions.API.Services;
 using Finacle.Infrastructure.Utils;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using Transactions.API.Entities;
 
 namespace Transactions.API.Controllers;
 
@@ -15,11 +17,13 @@ public class TransactionsController : ControllerBase
 {
     private readonly ITransactionClient _transactionClient;
     private readonly TransferValidator _transferValidator;
+    private readonly Dictionary<string, string> _serviceMap;
 
-    public TransactionsController(ITransactionClient transactionClient, TransferValidator transferValidator)
+    public TransactionsController(ITransactionClient transactionClient, TransferValidator transferValidator, IOptions<ServiceMapOptions> options)
     {
         _transactionClient = transactionClient;
         _transferValidator = transferValidator;
+        _serviceMap = options.Value.ServiceMap ?? new Dictionary<string, string>();
     }
 
     /// <summary>
@@ -221,10 +225,10 @@ public class TransactionsController : ControllerBase
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
             var request = IntraBankTransferRequestFactory.Create(requestId, accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
-                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId);
+                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, MapService(accountTransferRequest.ChannelId), accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId);
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 
-            Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}", requestId, request);
+            Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Header());
             var response = await _transactionClient.PerformIntraBankTransfer(requestId, request);
 
             Log.Information("Back from Performing IntraBankTransfer with response: {@Response}", response);
@@ -440,6 +444,11 @@ public class TransactionsController : ControllerBase
             return NotFound();
         }
 
+    }
+
+    private string MapService(string key)
+    {
+        return _serviceMap.TryGetValue(key.ToUpper(), out string value) ? value : "GTBGH100";
     }
 
 }

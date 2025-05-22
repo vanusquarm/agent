@@ -5,8 +5,10 @@ using Finacle.Infrastructure.Auth.OpenId;
 using Serilog;
 using Finacle.Core;
 using Transactions.API.Filters;
+using Transactions.API.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile("appsettings.Channels.json", optional: true, reloadOnChange: true);
 var configuration = builder.Configuration;
 
 Log.Logger = new LoggerConfiguration()
@@ -36,7 +38,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtMiddleware<ITransactionClient>(configuration);
-builder.Services.AddOpenIdAuth(builder.Configuration, null); // Add Token Validation
+builder.Services.AddOpenIdAuth(builder.Configuration, null);
+builder.Services.Configure<ServiceMapOptions>(builder.Configuration.GetSection("Channels"));
 
 var app = builder.Build();
 

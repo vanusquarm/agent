@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using System.Globalization;
 
 namespace Transactions.API.Entities.DTOs;
@@ -19,70 +20,49 @@ public class IntraBankTransferRequestFactory
             TransactionType = IntraBankTransferConstants.TransactionType,
             TransactionSubType = IntraBankTransferConstants.TransactionSubType,
             ChannelIdentification = (channel.Length >= 3) ? channel.Substring(0, 3).ToUpper() : IntraBankTransferConstants.ChannelIdentification,
-            EntererId = MapService(channel),
+            EntererId = channel.Split(10, 1),
             TransferTransactionDetail = new List<IntraBankTransferTransactionDetail>
+            {
+                new IntraBankTransferTransactionDetail
+                {
+                    SerialNumber = IntraBankTransferConstants.SerialNumberDebit,
+                    PartTransactionType = IntraBankTransferConstants.PartTransactionTypeDebit,
+                    AccountIdentification = debitAccount,
+                    TransactionAmount = amount,
+                    TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
+                    TransactionValueDate = transactionDate,
+                    TransactionParticulars = remarksPart1,
+                    Rate = IntraBankTransferConstants.Rate,
+                    PartTransactionRemarks = remarksPart2,
+                    ReferenceNumber = referenceNumber.Split(20, 1),
+                    PartTransactionRemarks2 = remarksPart3,
+                    LienDetailsList = new List<LienDetails>(),
+                    ChargeEventId = chargeEventId,
+                    MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
                     {
-                        new IntraBankTransferTransactionDetail
-                        {
-                            SerialNumber = IntraBankTransferConstants.SerialNumberDebit,
-                            PartTransactionType = IntraBankTransferConstants.PartTransactionTypeDebit,
-                            AccountIdentification = debitAccount,
-                            TransactionAmount = amount,
-                            TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
-                            TransactionValueDate = transactionDate,
-                            TransactionParticulars = remarksPart1,
-                            Rate = IntraBankTransferConstants.Rate,
-                            PartTransactionRemarks = remarksPart2,
-                            ReferenceNumber = referenceNumber.Split(20, 1),
-                            PartTransactionRemarks2 = remarksPart3,
-                            LienDetailsList = new List<LienDetails>(),
-                            ChargeEventId = chargeEventId,
-                            MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
-                            {
-                                DocumentNumber = docNum ?? "DocNum",
-                                Freetxt2 = requestReference,
-                                Freetxt3 = requestReference,
-                                Freetxt4 = batchId
-                            }
-                        },
-                        new IntraBankTransferTransactionDetail
-                        {
-                            SerialNumber = IntraBankTransferConstants.SerialNumberCredit,
-                            PartTransactionType = IntraBankTransferConstants.PartTransactionTypeCredit,
-                            AccountIdentification = creditAccount,
-                            TransactionAmount = amount,
-                            TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
-                            TransactionValueDate = transactionDate,
-                            TransactionParticulars = remarksPart1,
-                            Rate = IntraBankTransferConstants.Rate,
-                            PartTransactionRemarks = remarksPart2,
-                            ReferenceNumber = referenceNumber.Split(20, 1),
-                            PartTransactionRemarks2 = remarksPart3,
-                            LienDetailsList = new List<LienDetails>()
-                        }
+                        DocumentNumber = docNum ?? "DocNum",
+                        Freetxt2 = requestReference,
+                        Freetxt3 = requestReference,
+                        Freetxt4 = batchId
                     }
+                },
+                new IntraBankTransferTransactionDetail
+                {
+                    SerialNumber = IntraBankTransferConstants.SerialNumberCredit,
+                    PartTransactionType = IntraBankTransferConstants.PartTransactionTypeCredit,
+                    AccountIdentification = creditAccount,
+                    TransactionAmount = amount,
+                    TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
+                    TransactionValueDate = transactionDate,
+                    TransactionParticulars = remarksPart1,
+                    Rate = IntraBankTransferConstants.Rate,
+                    PartTransactionRemarks = remarksPart2,
+                    ReferenceNumber = referenceNumber.Split(20, 1),
+                    PartTransactionRemarks2 = remarksPart3,
+                    LienDetailsList = new List<LienDetails>()
+                }
+            }
         };
-    }
-
-    public static string MapService(string key)
-    {
-        // List of services and their corresponding channel IDs
-        Dictionary<string, string> serviceMap = new Dictionary<string, string>
-        {
-            { "GAPS", "GTBGH1" },
-            { "737", "GTBGH2" },
-            { "GTWORLD", "GTBGH3" },
-            { "MYGHPAY", "GTBGH4" },
-            { "GTCOLLECT", "GTBGH5" },
-            { "IPAY", "GTBGH6" },
-            { "EWALLET", "GTBGH7" },
-            { "AIRTELTIGO", "GTBGH8" },
-            { "VODAFONE", "GTBGH9" },
-            { "EXPRESSPAY", "GTBGH10" },
-            { "APIHUB", "GTBGH11" },
-            { "APISWITCH", "GTBGH12" }
-        };
-        return serviceMap.TryGetValue(key.ToUpper(), out string value) ? value : "GTBGH100";
     }
 
     private static (string, string, string) SplitTransactionRemarks(string partTransactionRemarks)
