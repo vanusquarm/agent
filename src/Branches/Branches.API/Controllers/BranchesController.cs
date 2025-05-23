@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.Net.Http;
 using Branches.API.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Branches.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
+[Authorize]
 public class BranchesController : ControllerBase
 {
     private readonly IBranchesClient _branchesClient;
