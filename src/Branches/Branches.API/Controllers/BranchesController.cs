@@ -3,6 +3,7 @@ using Serilog;
 using System.Net.Http;
 using Branches.API.Services;
 using Microsoft.AspNetCore.Authorization;
+using Finacle.Infrastructure.Persistence;
 
 namespace Branches.API.Controllers;
 
@@ -12,10 +13,12 @@ namespace Branches.API.Controllers;
 public class BranchesController : ControllerBase
 {
     private readonly IBranchesClient _branchesClient;
+    private readonly FinacleDbContext _finacleDbContext;
 
-    public BranchesController(IBranchesClient branchesClient)
+    public BranchesController(IBranchesClient branchesClient, FinacleDbContext finacleDbContext)
     {
         _branchesClient = branchesClient;
+        _finacleDbContext = finacleDbContext;
     }
 
     /// <summary>
@@ -150,5 +153,15 @@ public class BranchesController : ControllerBase
             });
         }
     }
-        
+
+    [HttpGet("holidays/is-holiday")]
+    public IActionResult IsHoliday([FromQuery] DateTime date)
+    {
+        // Compare only date part ignoring time
+        var holiday = _finacleDbContext.Holidays
+            .FirstOrDefault(x => x.Date.Date == date.Date);
+
+        return Ok(holiday != null);
+    }
+
 }

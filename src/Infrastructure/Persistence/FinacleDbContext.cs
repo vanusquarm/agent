@@ -9,6 +9,7 @@ namespace Finacle.Infrastructure.Persistence
         //public DbSet<Translog> Translogs { get; set; } = null!;
         public DbSet<ApiCall> ApiCalls { get; set; } = null!;
         public DbSet<ApiCallDup> ApiCallDuplicates { get; set; } = null!;
+        public DbSet<Holiday> Holidays { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -221,5 +222,14 @@ namespace Finacle.Infrastructure.Persistence
         public string? ServiceChargeEventId { get; set; }
         public decimal? ServiceCharge { get; set; }
         public bool IsReversed { get; set; }
+    }
+
+    public class Holiday
+    {
+        [Key]
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public DateTime Date { get; set; }
     }
 }

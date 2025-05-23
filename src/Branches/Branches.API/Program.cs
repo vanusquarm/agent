@@ -2,6 +2,8 @@ using Branches.API.Services;
 using Finacle.Infrastructure.Auth;
 using Finacle.Infrastructure.Auth.BasicJwt;
 using Finacle.Infrastructure.Auth.OpenId;
+using Finacle.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 
@@ -18,6 +20,10 @@ builder.Host.UseSerilog(Log.Logger, true);
 var encryptedClientSecret = configuration["JwtSettings:ClientSecret"];
 var decryptedClientSecret = EncryptionHelper.Decrypt(encryptedClientSecret);
 configuration["JwtSettings:ClientSecret"] = decryptedClientSecret;
+
+// Register DbContext
+builder.Services.AddDbContext<FinacleDbContext>(options =>
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -39,9 +45,9 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 // Use CORS policy
-//app.UseCors("CorsPolicy");
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseCors("CorsPolicy");
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
