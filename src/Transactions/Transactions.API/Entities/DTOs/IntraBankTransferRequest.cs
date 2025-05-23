@@ -27,6 +27,10 @@ public class IntraBankTransferRequest
  
     [JsonPropertyName("entererId")]
     public string EntererId { get; set; }
+
+    [JsonPropertyName("userTransactionCode")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string UserTransactionCode { get; set; }
 }
  
 public class IntraBankTransferTransactionDetail
@@ -75,6 +79,10 @@ public class IntraBankTransferTransactionDetail
     [JsonPropertyName("chargeEventId")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string ChargeEventId { get; set; }
+
+    [JsonPropertyName("userPartTransactionCode")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string UserPartTransactionCode { get; set; }
 }
  
 public class TransferMiscellaneousDetailsType

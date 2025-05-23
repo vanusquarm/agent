@@ -225,7 +225,7 @@ public class TransactionsController : ControllerBase
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
             var request = IntraBankTransferRequestFactory.Create(requestId, accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
-                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, MapService(accountTransferRequest.ChannelId), accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId);
+                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, MapService(accountTransferRequest.ChannelId), accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId, userPartTransactionCode: accountTransferRequest.UserPartTransactionCode);
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 
             Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Header());

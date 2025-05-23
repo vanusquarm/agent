@@ -5,7 +5,7 @@ namespace Transactions.API.Entities.DTOs;
 
 public class IntraBankTransferRequestFactory
 {
-    public static IntraBankTransferRequest Create(string requestReference, string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? currency, string? docNum, string? chargeEventId, string? batchId)
+    public static IntraBankTransferRequest Create(string requestReference, string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? currency, string? docNum, string? chargeEventId, string? batchId, string? userPartTransactionCode)
     {
         DateTime transactionDate = DateTime.ParseExact(
             DateTime.Now.ToString("yyyy-MM-dd"),
@@ -21,6 +21,7 @@ public class IntraBankTransferRequestFactory
             TransactionSubType = IntraBankTransferConstants.TransactionSubType,
             ChannelIdentification = (channel.Length >= 3) ? channel.Substring(0, 3).ToUpper() : IntraBankTransferConstants.ChannelIdentification,
             EntererId = channel.Split(10, 1),
+            UserTransactionCode = userPartTransactionCode ?? IntraBankTransferConstants.UserTransactionCode,
             TransferTransactionDetail = new List<IntraBankTransferTransactionDetail>
             {
                 new IntraBankTransferTransactionDetail
@@ -44,7 +45,8 @@ public class IntraBankTransferRequestFactory
                         Freetxt2 = requestReference,
                         Freetxt3 = requestReference,
                         Freetxt4 = batchId
-                    }
+                    },
+                    UserPartTransactionCode = userPartTransactionCode ?? IntraBankTransferConstants.UserTransactionCode,
                 },
                 new IntraBankTransferTransactionDetail
                 {
@@ -59,7 +61,8 @@ public class IntraBankTransferRequestFactory
                     PartTransactionRemarks = remarksPart2,
                     ReferenceNumber = referenceNumber.Split(20, 1),
                     PartTransactionRemarks2 = remarksPart3,
-                    LienDetailsList = new List<LienDetails>()
+                    LienDetailsList = new List<LienDetails>(),
+                    UserPartTransactionCode = userPartTransactionCode ?? IntraBankTransferConstants.UserTransactionCode,
                 }
             }
         };

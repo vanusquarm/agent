@@ -12,4 +12,5 @@ public class IntraBankTransferConstants
     public const string TransactionCurrency = "GHS";
     public const decimal Rate = 0.0m;
     public static readonly string TransactionValueDate = DateTime.Now.ToString("yyyy-MM-dd");
+    public static string? UserTransactionCode { get; set; } = "102";
 }
