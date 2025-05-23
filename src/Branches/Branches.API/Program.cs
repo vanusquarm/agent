@@ -31,7 +31,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtMiddleware<IBranchesClient>(configuration);
-//builder.Services.AddOpenIdAuth(builder.Configuration, null); // Add Token Validation
+builder.Services.AddOpenIdAuth(builder.Configuration, null); // Add Token Validation
 
 var app = builder.Build();
 
