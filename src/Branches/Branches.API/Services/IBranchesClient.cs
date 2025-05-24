@@ -17,5 +17,6 @@ public interface IBranchesClient
         [Query] int maximumRecords
     );
 
-
+    [Post("/v2/getChq/getHolidayStatusDtls")]
+    Task<HolidayStatusResponse> GetHoliday(object date);
 }

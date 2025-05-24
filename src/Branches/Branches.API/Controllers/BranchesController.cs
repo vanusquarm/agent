@@ -4,6 +4,7 @@ using System.Net.Http;
 using Branches.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Finacle.Infrastructure.Persistence;
+using System.Security.Cryptography;
 
 namespace Branches.API.Controllers;
 
@@ -155,13 +156,37 @@ public class BranchesController : ControllerBase
     }
 
     [HttpGet("holidays/is-holiday")]
-    public IActionResult IsHoliday([FromQuery] DateTime date)
+    public async Task<IActionResult> IsHoliday([FromQuery] DateTime date)
     {
-        // Compare only date part ignoring time
-        var holiday = _finacleDbContext.Holidays
-            .FirstOrDefault(x => x.Date.Date == date.Date);
+        Log.Information("Recieved Request at IsHoliday: {@Request}", date);
+        try
+        {
+            var userAgent = Request.Headers["User-Agent"].ToString();
+            var request = new Dictionary<string, string>
+            {
+                { "solId", "201" },
+                { "tranDate", date.ToString("yyyy-MM-dd") }
+            };
 
-        return Ok(holiday != null);
+            Log.Information("About to check if the date is a holiday with request: {@Request}", request);
+
+
+            var response = _branchesClient.GetHoliday(request).Result;
+            return Ok(bool.Parse(response?.HolidayStatus?.Status)); 
+
+
+            // Failover to using Database
+            //var holiday = _finacleDbContext.Holidays
+            //    .FirstOrDefault(x => x.Date.Date == date.Date);
+            //Log.Information("Back from checking if the date is a holiday with response: {@Response}", holiday);
+
+            //return Ok(holiday != null);
+        }
+        catch (Exception)
+        {
+            Log.Error("An exception has occured at IsHoliday with message: {Message} and stack trace: {StackTrace}", "An error occurred while checking if the date is a holiday.", "StackTrace");
+            return Ok(false);
+        }
     }
 
 }
