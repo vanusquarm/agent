@@ -46,7 +46,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            Log.Error("Back from Getting Transactions with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
     }
@@ -70,7 +70,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            Log.Error("Back from searching Transactions with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
     }
@@ -111,7 +111,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException apiEx)
         {
-            Log.Error("An exception has occured at PerformCashDeposit with message: {Message} and stack trace: {StackTrace}", apiEx.Message, apiEx.StackTrace);
+            Log.Error("Back from Performing CashDeposit with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: apiEx.Content));
             if (apiEx.StatusCode == System.Net.HttpStatusCode.UnprocessableContent)
             {
                 return Ok(new CashTransferResponse
@@ -170,7 +170,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException apiEx)
         {
-            Log.Error("An exception has occured at PerformCashDeposit with message: {Message} and stack trace: {StackTrace}", apiEx.Message, apiEx.StackTrace);
+            Log.Error("Back from Performing CashWithdrawal with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: apiEx.Content));
             if (apiEx.StatusCode == System.Net.HttpStatusCode.UnprocessableContent)
             {
                 return Ok(new CashTransferResponse
@@ -244,7 +244,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            Log.Error("Back from Performing IntraBankTransfer with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
         catch (Exception ex)
@@ -285,7 +285,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            Log.Error("Back from getting EodStatus with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
         catch (Exception ex)
@@ -328,7 +328,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            Log.Error("Back from Performing Charge with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
         catch (Exception ex)
@@ -366,7 +366,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            Log.Error("Back from PerformChargeInquiry with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
         catch (Exception ex)
@@ -401,7 +401,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            Log.Error("Back from PerformReversal with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
         catch (Exception ex)
@@ -417,9 +417,9 @@ public class TransactionsController : ControllerBase
         try
         {
             var request = new Dictionary<string, string>
-                    {
-                        { "solId", $"{ branchCode }" }
-                    };
+            {
+                { "solId", $"{ branchCode }" }
+            };
 
             Log.Information("About to GetTransactionBankDate with request: {@Request}", request);
             BankDateDto date = await _transactionClient.GetTransactionBankDate(request);
@@ -429,7 +429,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            Log.Information("Back from GetTransactionBankDate with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
 
