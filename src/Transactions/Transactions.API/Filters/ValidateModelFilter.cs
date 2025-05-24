@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Refit;
-using Transactions.API.Entities;
+using Finacle.Infrastructure.Logging;
 
 namespace Transactions.API.Filters
 {

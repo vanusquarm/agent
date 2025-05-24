@@ -3,6 +3,7 @@ using Serilog;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
 using Finacle.Infrastructure.Utils;
+using Finacle.Infrastructure.Logging;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
@@ -43,10 +44,10 @@ public class TransactionsController : ControllerBase
 
             return Ok(transactions);
         }
-        catch (Exception ex)
+        catch (Refit.ApiException ex)
         {
             Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
     }
 
@@ -67,10 +68,10 @@ public class TransactionsController : ControllerBase
 
             return Ok(transactions);
         }
-        catch (Exception ex)
+        catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at SearchTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
     }
 
@@ -88,7 +89,7 @@ public class TransactionsController : ControllerBase
             if (cashDepositRequest == null)
             {
                 Log.Information("Invalid request data.: {@Request}", cashDepositRequest);
-                return BadRequest("Invalid request data.");
+                return BadRequest(ResponseManager.ReturnFailedValidations("Invalid request data."));
             }
 
             Log.Information("About to PerformCashDeposit with request: {@Request}", cashDepositRequest);
@@ -147,7 +148,7 @@ public class TransactionsController : ControllerBase
             if (cashWithdrawalRequest == null)
             {
                 Log.Information("Invalid request data.: {@Request}", cashWithdrawalRequest);
-                return BadRequest("Invalid request data.");
+                return BadRequest(ResponseManager.ReturnFailedValidations("Invalid request data."));
             }
 
             Log.Information("About to PerformCashWithdrawal with request: {@Request}", cashWithdrawalRequest);
@@ -209,7 +210,7 @@ public class TransactionsController : ControllerBase
             if (!validationResult.IsValid)
             {
                 Log.Warning("Transfer validation failed: {Error}", validationResult.ErrorMessage);
-                return BadRequest(new { validationResult.ErrorMessage });
+                return BadRequest(ResponseManager.ReturnFailedValidations(validationResult.ErrorMessage));
             }
 
             if (validationResult.RequiresAdditionalVerification)
@@ -241,14 +242,10 @@ public class TransactionsController : ControllerBase
 
             return Ok(response);
         }
-        catch (Refit.ApiException apiEx)
+        catch (Refit.ApiException ex)
         {
-            Log.Error("Finacle remote server encountered an error while processing your request. Response: {ResponseContent}", apiEx.Content);
-            return StatusCode((int)apiEx.StatusCode, new
-            {
-                Message = apiEx.Message,
-                Details = apiEx.Content
-            });
+            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
         catch (Exception ex)
         {
@@ -271,7 +268,7 @@ public class TransactionsController : ControllerBase
             if (request == null)
             {
                 Log.Information("Invalid request data.: {@Request}", request);
-                return BadRequest("Invalid request data.");
+                return BadRequest(ResponseManager.ReturnFailedValidations("Invalid request data."));
             }
 
             Log.Information("About to GetEodStatus with request: {@Request}", request);
@@ -286,10 +283,10 @@ public class TransactionsController : ControllerBase
 
             return Ok(response);
         }
-        catch (Refit.ApiException apiEx)
+        catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at GetEodStatus with message: {Message} and stack trace: {StackTrace}", apiEx.Message, apiEx.StackTrace);
-            return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
         catch (Exception ex)
         {
@@ -329,10 +326,10 @@ public class TransactionsController : ControllerBase
 
             return Ok(response);
         }
-        catch (Refit.ApiException apiEx)
+        catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at PerformCharge with message: {Message} and stack trace: {StackTrace}", apiEx.Message, apiEx.StackTrace);
-            return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
         catch (Exception ex)
         {
@@ -349,7 +346,7 @@ public class TransactionsController : ControllerBase
         if (!_transferValidator.isValid(chargeInquiryRequest, out List<string> Errors))
         {
             Log.Warning("Perform charge validation failed: {Error}", chargeInquiryRequest);
-            return BadRequest(Errors);
+            return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", Errors)));
         }
         try
         {
@@ -367,14 +364,10 @@ public class TransactionsController : ControllerBase
 
             return Ok(response);
         }
-        catch (Refit.ApiException apiEx)
+        catch (Refit.ApiException ex)
         {
-            Log.Error("Remote server returned 500 Internal Server Error. Response: {ResponseContent}", apiEx?.Content);
-            return StatusCode(StatusCodes.Status500InternalServerError, new
-            {
-                Message = "The remote server encountered an error while processing your request.",
-                Details = apiEx.Content
-            });
+            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
         catch (Exception ex)
         {
@@ -406,14 +399,10 @@ public class TransactionsController : ControllerBase
 
             return Ok(response);
         }
-        catch (Refit.ApiException apiEx)
+        catch (Refit.ApiException ex)
         {
-            Log.Error("Remote server returned 500 Internal Server Error. Response: {ResponseContent}", apiEx.Content);
-            return StatusCode(StatusCodes.Status500InternalServerError, new
-            {
-                Message = "The remote server encountered an error while processing your request.",
-                Details = apiEx.Content
-            });
+            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
         catch (Exception ex)
         {
@@ -438,10 +427,10 @@ public class TransactionsController : ControllerBase
 
             return Ok(date);
         }
-        catch (Exception ex)
+        catch (Refit.ApiException ex)
         {
-            Log.Error("An exception has occured at GetTransactionBankDate with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-            return NotFound();
+            Log.Error("An exception has occured at GetTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
         }
 
     }

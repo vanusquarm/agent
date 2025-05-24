@@ -16,6 +16,7 @@ using System.Linq.Expressions;
 using Transactions.API.Validators;
 using static MassTransit.ValidationResultExtensions;
 using Finacle.Infrastructure.Utils;
+using Finacle.Infrastructure.Logging;
 
 namespace Transactions.API.Controllers;
 

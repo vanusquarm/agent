@@ -31,7 +31,7 @@ namespace Finacle.Infrastructure.Logging
         readonly public static Tuple<string, string> InvalidTransactionCode = new Tuple<string, string>("55", "Invalid transaction code or wrong token used. Please retry after 3 minutes or dial *737*7# on your registered phone number to generate a new token code.");
         readonly public static Tuple<string, string> FeatureUnavailable = new Tuple<string, string>("40", "This feature is unavailable for the specified request");
         readonly public static Tuple<string, string> SameAccountTransferNotAllowed = new Tuple<string, string>("01", "Cannot transfer between same account number.");
-        readonly public static Tuple<string, string> FinacleFailure = new Tuple<string, string>("97", "Unexpected Reponse from Data Source");
+        readonly public static Tuple<string, string> FinacleFailure = new Tuple<string, string>("97", "Unexpected Response from Finacle Data Source");
         readonly public static Tuple<string, string> TokenNotFound = new Tuple<string, string>("01", "Invalid Token Serial");
         readonly public static Tuple<string, string> WrongToken = new Tuple<string, string>("01", "Invalid transaction code or wrong token used. Please retry after 3 minutes or dial *737*7# on your registered phone number to generate a new token code.");
         readonly public static Tuple<string, string> IdentificationError = new Tuple<string, string>("01", "Identification Error Threshold Reached");
@@ -391,6 +391,268 @@ namespace Finacle.Infrastructure.Logging
         //    return data;
 
         //}
+
+        /// <summary>
+        /// Formats the response for a Success API call 
+        /// </summary>
+        /// <param name="Data">the object to return in the Data of the API response.</param>
+        /// <returns>ApiResponse</returns>
+        public static GenericBaseResponse ReturnSuccess(object Data, string? Message = null)
+        {
+
+            return new GenericBaseResponse()
+            {
+                IsSuccess = true,
+                ResponseCode = Success.Item1,
+                ResponseDescription = Success.Item2,
+                Data = Data
+            };
+
+        }
+
+        /// <summary>
+        /// Formats the response for an unsuccessful Finacle API call
+        /// </summary>
+        /// <param name="exception">the message to return in the Data of the API response.</param>
+        /// <param name="message">the message to return in the Data of the API response.</param>
+        /// <returns>ApiResponse</returns>
+        public static GenericBaseResponse ReturnFinacleCallUnsuccessful(object Data, string? Message = null)
+        {
+
+            return new GenericBaseResponse()
+            {
+                ResponseCode = FinacleFailure.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? FinacleFailure.Item2,
+                Data = Data
+            };
+
+        }
+
+        /// <summary>
+        /// Formats the response for a "Feature Unavailable" API call 
+        /// </summary>
+        /// <param name="message">the object to return in the Data of the API response.</param>
+        /// <returns>ApiResponse</returns>
+        public static GenericBaseResponse ReturnFeatureUnavailable(object Data, string? Message = null)
+        {
+
+            return new GenericBaseResponse()
+            {
+                ResponseCode = FeatureUnavailable.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? FinacleFailure.Item2,
+                Data = Data
+            };
+
+        }
+
+        /// <summary>
+        /// Formats the response for an Exception API call 
+        /// </summary>
+        /// <param name="exception">the message to return in the Data of the API response.</param>
+        /// <returns>ApiResponse</returns>
+        public static GenericBaseResponse ReturnException(object Data, string? Message = null)
+        {
+
+            return new GenericBaseResponse()
+            {
+                ResponseCode = Exception.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? Exception.Item2,
+                Data = Data
+            };
+
+        }
+
+        /// <summary>
+        /// Formats the response for a FailedValidations API call 
+        /// </summary>
+        /// <param name="validationErrors">the serialized validation errors to return.</param>
+        /// <returns>ApiResponse</returns>
+        public static GenericBaseResponse ReturnFailedValidations(object? Data, string? Message = null)
+        {
+
+            return new GenericBaseResponse()
+            {
+                ResponseCode = FailedValidation.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? FailedValidation.Item2,
+                Data = Data,
+            };
+
+        }
+
+        /// <summary>
+        /// Formats the response for an Unauthrized entity API call 
+        /// </summary>
+        /// <param name="errors">the serialized errors to return.</param>
+        /// <returns>ApiResponse</returns>
+        public static GenericBaseResponse ReturnUnauthorized(object Data, string Message = "Invalid or Incorrect Credentials")
+        {
+
+            return new GenericBaseResponse()
+            {
+                ResponseCode = Unauthorized.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? Unauthorized.Item2,
+                Data = Data
+            };
+
+        }
+
+
+        /// <summary>
+        /// Formats the response for a Required Session to Transfer API call 
+        /// </summary>
+        /// <param name="Data">the object to return in the Data of the API response.</param>
+        /// <returns>ApiResponse</returns>
+        public static GenericBaseResponse ReturnFraudResponse(object Data, string? Message)
+        {
+
+            return new GenericBaseResponse
+            {
+                ResponseCode = SuspectedFraud.Item1,
+                IsSuccess = false,
+                ResponseDescription = (Message ?? SuspectedFraud.Item2) + " | " + "Fraud Detected",
+                Data = Data
+            };
+        }
+
+
+
+        /// <summary>
+        /// Formats the response for a duplicate Call to Transfer API call 
+        /// </summary>
+        /// <param name="Data">the object to return in the Data of the API response.</param>
+        /// <returns>ApiResponse</returns>
+        public static GenericBaseResponse ReturnFinacleDuplicateRecord(object? Data, string? Message)
+        {
+
+            return new GenericBaseResponse()
+            {
+                ResponseCode = DuplicateRecord.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? DuplicateRecord.Item2,
+                Data = Data
+            };
+
+        }
+        /// <summary>
+        /// Formats the response for Generic Failed Vlidation to Transfer API call 
+        /// </summary>
+        /// <param name="Data">the object to return in the Data of the API response.</param>
+        /// <returns>ApiResponse</returns>
+        public static GenericBaseResponse ReturnFailed(object? Data, string? Message)
+        {
+
+            return new GenericBaseResponse()
+            {
+                ResponseCode = FailedTransaction.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? FailedTransaction.Item2,
+                Data = Data
+            };
+
+        }
+
+        /// <summary>
+        /// Formats the response for No record Found to Transfer API call 
+        /// </summary>
+        /// <param name="Data">the object to return in the Data of the API response.</param>
+        /// <returns>ApiResponse</returns>
+        public static GenericBaseResponse ReturnNoRecordFound(object Data, string? Message)
+        {
+
+            return new GenericBaseResponse()
+            {
+                ResponseCode = NoRecordReturned.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? NoRecordReturned.Item2,
+                Data = Data
+            };
+
+        }
+
+        /// <summary>
+        /// Formats the response for Insufficient Balance to Transfer API call 
+        /// </summary>
+        /// <param name="Data">the object to return in the Data of the API response.</param>
+        /// <returns>ApiResponse</returns>
+        public static GenericBaseResponse ReturnInsufficientBalance(object Data, string? Message)
+        {
+
+            return new GenericBaseResponse()
+            {
+                ResponseCode = InsufficientBalance.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? InsufficientBalance.Item2,
+                Data = Data
+            };
+
+        }
+
+        /// <summary>
+        /// Returns a response for unexpected Finacle Responses like 500
+        /// </summary>
+        /// <param name="exception">the message to return in the Data of the API response.</param>
+        /// <param name="message">the message to return in the Data of the API response.</param>
+        /// <returns>ResponseWithStatusCode</returns>
+        public static GenericBaseResponse ReturnFinacleFailure(object Data, string? Message = null)
+        {
+
+            return new GenericBaseResponse()
+            {
+                ResponseCode = FinacleFailure.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? FinacleFailure.Item2,
+                Data = Data
+            };
+
+        }
+
+        /// <summary>
+        /// Formats the response for a No Record Found API call 
+        /// </summary>
+        /// <param name="message">A Customized message to send </param>
+        /// <returns>ResponseWithStatusCode</returns>
+        public static GenericBaseResponse ReturnNoRecordsFound(object Data, string? Message = null)
+        {
+
+            return new GenericBaseResponse()
+            {
+                ResponseCode = NoRecordReturned.Item1,
+                IsSuccess = false,
+                ResponseDescription = Message ?? NoRecordReturned.Item2,
+                Data = Data
+            };
+
+        }
+
+
+        //public static TokenValidationDto ValidateTokenWithAmountResponse(string tokenValidateRes)
+        //{
+        //    var xmlDoc = new XmlDocument();
+        //    xmlDoc.LoadXml(tokenValidateRes);
+        //    var xData = JsonConvert.SerializeXmlNode(xmlDoc);
+        //    var data = JsonConvert.DeserializeObject<TokenValidationDto>(xData);
+        //    return data;
+
+        //}
+
+        public class ResponseWithStatusCode
+        {
+            public int StatusCode { get; set; }
+            public object? Response { get; set; }
+        }
+
+        public class GenericBaseResponse
+        {
+            public string ResponseCode { get; set; }
+            public string ResponseDescription { get; set; }
+            public bool IsSuccess { get; set; }
+            public object? Data { get; set; }
+        }
 
     }
 

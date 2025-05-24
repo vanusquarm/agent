@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using Transactions.API.Entities;
-using static Transactions.API.Entities.ResponseManager;
+using Finacle.Infrastructure.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Transactions.API.Services
 {
@@ -98,7 +99,7 @@ namespace Transactions.API.Services
         //    return ResponseManager.ReturnSuccess(createTransferResponse);
         //}
 
-        public async Task<ResponseWithStatusCode> GetFxRates(RatesRequestModel model)
+        public async Task<IActionResult> GetFxRates(RatesRequestModel model)
         {
             // Get header information
             //var getheaders = GenericRequestMapper.getHeaderInformation();
