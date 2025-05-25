@@ -70,8 +70,7 @@ namespace Acccounts.API.Controllers
                         }
                         catch (Refit.ApiException exiii)
                         {
-                            Log.Error("An exception has occured trying to get Corporate Current account with message: {Message} and stack trace: {StackTrace}", exiii.Message, exiii.StackTrace);
-                            Console.Error.WriteLine($"Error occurred while fetching account details: {ex.Message}");
+                            Log.Error("Back from getting account details with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: exiii.Content));
                             return StatusCode((int)exiii.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: exiii.Content));
                         }
                     }
@@ -98,6 +97,7 @@ namespace Acccounts.API.Controllers
             {
                 Log.Information("Account statement request payload is invalid: {@Request}", request);
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                Log.Error("Back from getting account statements with response: {@Response}", ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
                 return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
             }
 
@@ -120,7 +120,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from getting account statements with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
             catch (Exception ex)
@@ -146,6 +146,7 @@ namespace Acccounts.API.Controllers
             {
                 Log.Information("Account statement request payload is invalid: {Request}", request);
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                Log.Error("Back from getting account statements with response: {@Response}", ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
                 return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
             }
             try
@@ -183,6 +184,7 @@ namespace Acccounts.API.Controllers
             {
                 Log.Information("Account restriction request payload is invalid: {@Request}", request);
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                Log.Error("Back from Adding Account Restriction with response: {@Response}", ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
                 return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
             }
             try
@@ -190,7 +192,7 @@ namespace Acccounts.API.Controllers
                 Log.Information("Recieved Request: {@Request}", request);
                 Log.Information("About to Add Account Restriction with request: {@Request}", request);
                 var accountDetails = await accountClient.AddAccountRestriction(request);
-                Log.Information("Back from Adding Account Restriction with request: {@Request}", request);
+                Log.Information("Back from Adding Account Restriction with response: {@Response}", accountDetails);
 
                 if (accountDetails == null)
                 {
@@ -201,7 +203,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured trying to adding account restriction with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from Adding Account Restriction with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -221,6 +223,7 @@ namespace Acccounts.API.Controllers
             {
                 Log.Information("Account restriction removal request payload is invalid: {@Request}", request);
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                Log.Error("Back from Removing Account Restriction with response: {@Response}", ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
                 return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
             }
             try
@@ -228,7 +231,7 @@ namespace Acccounts.API.Controllers
                 Log.Information("Recieved Request: {@Request}", request);
                 Log.Information("About to Remove Account Restriction with request: {@Request}", request);
                 var accountDetails = await accountClient.RemoveAccountRestriction(request);
-                Log.Information("Back from Removing Account Restriction with request: {@Request}", request);
+                Log.Information("Back from Removing Account Restriction with response: {@Response}", accountDetails);
 
                 if (accountDetails == null)
                 {
@@ -239,7 +242,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured trying to Remove account restriction with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from Removing Account Restriction with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -259,6 +262,7 @@ namespace Acccounts.API.Controllers
             {
                 Log.Information("Account number is invalid: {Request}", accountId);
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                Log.Error("Back from Getting Customers Details By AccountId  with response: {@Response}", ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
                 return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
             }
             try
@@ -266,7 +270,7 @@ namespace Acccounts.API.Controllers
                 Log.Information("Recieved Request: {Request}", accountId);
                 Log.Information("About to Get Customers Details By AccountId with request: {Request}", accountId);
                 var customerDetails = await accountClient.GetCustomersDetailsByAccountIdAsync(new { accountId });
-                Log.Information("Back from Getting Customers Details By AccountId  with request: {@Request}", customerDetails);
+                Log.Information("Back from Getting Customers Details By AccountId  with response: {@Response}", customerDetails);
 
                 if (customerDetails == null)
                 {
@@ -278,7 +282,8 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured trying to Get Customers Details By AccountId with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from Getting Customers Details By AccountId  with response: {@Response}", 
+                    ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -298,6 +303,7 @@ namespace Acccounts.API.Controllers
             {
                 Log.Information("Account number is invalid: {Request}", accountId);
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                Log.Error("Back from Getting Customer Details By AccountId  with response: {@Response}", ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
                 return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
             }
             try
@@ -305,7 +311,7 @@ namespace Acccounts.API.Controllers
                 Log.Information("Recieved Request: {Request}", accountId);
                 Log.Information("About to Get Customer Details By AccountId with request: {Request}", accountId);
                 var customerDetails = await accountClient.GetCustomerDetailsByAccountIdAsync(new { accountNumber = accountId });
-                Log.Information("Back from Getting Customer Details By AccountId  with request: {@Request}", customerDetails);
+                Log.Information("Back from Getting Customer Details By AccountId  with response: {@Response}", customerDetails);
 
                 if (customerDetails == null)
                 {
@@ -316,7 +322,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured trying to Get Customer Details By AccountId with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from Getting Customer Details By AccountId  with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -337,6 +343,7 @@ namespace Acccounts.API.Controllers
             {
                 Log.Information("Account number is invalid: {Request}", accountId);
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                Log.Error("Back from Getting AccountBalances with response: {@Response}", ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
                 return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
             }
             try
@@ -348,7 +355,8 @@ namespace Acccounts.API.Controllers
                 {
                     if (!Enum.IsDefined(typeof(AccountType), accountType))
                     {
-                        Log.Information("Invalid account type for: {Request}", accountId);
+                        Log.Error("Back from Getting AccountBalances with response: {@Response}", ResponseManager.ReturnFailedValidations(
+                            $"Invalid account type: {accountType}. Please provide a valid account type."));
                         return BadRequest(ResponseManager.ReturnFailedValidations($"Invalid account type: {accountType}. Please provide a valid account type."));
                     }
                 }
@@ -374,7 +382,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetAccountBalances with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from Getting AccountBalances with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -395,6 +403,7 @@ namespace Acccounts.API.Controllers
             {
                 Log.Information("Account number is invalid: {Request}", accountId);
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                Log.Error("Back from Getting AccountBalance with response: {@Response}", ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
                 return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
             }
             try
@@ -415,7 +424,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetAccountBalance with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from Getting AccountBalance with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -461,7 +470,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at CreateSavingsAccount with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from Creating SavingsAccount with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -484,7 +493,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at CreateCorpCurrentAccount with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Information("Back from Creating CorpCurrentAccount with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -504,6 +513,7 @@ namespace Acccounts.API.Controllers
             {
                 Log.Information("Terminal office account request payload is invalid: {@Request}", request);
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                Log.Error("Back from Getting TerminalOfficeAcct with response: {@Response}", ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
                 return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
             }
             try
@@ -514,7 +524,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from Getting TerminalOfficeAcct with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
             catch (Exception ex)
@@ -536,8 +546,6 @@ namespace Acccounts.API.Controllers
             Log.Information("Recieved Request at GetAccountLiensAsync: {@Request}", (accountId, lienType));
             try
             {
-                // Ensure the route parameter is mapped to the request model
-                Log.Information("Recieved Request: {Request}", accountId);
                 Log.Information("About to GetAccountLiens with request: {Request}", accountId);
                 var accountDetails = await accountClient.GetAccountLiens(accountId, lienType);
                 Log.Information("Back from Getting AccountLiens with response: {@Response}", accountDetails);
@@ -552,7 +560,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetAccountLiensAsync with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from Getting AccountLiens with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -569,8 +577,6 @@ namespace Acccounts.API.Controllers
             Log.Information("Recieved Request at CreateAccountLiensAsync: {@Request}", (accountId, request));
             try
             {
-                // Ensure the route parameter is mapped to the request model
-                Log.Information("Recieved Request: {@Request}", request);
                 Log.Information("About to CreateAccountLiens with request: {@Request}", request);
                 var accountDetails = await accountClient.CreateAccountLiens(accountId, request);
                 Log.Information("Back from Creating AccountLiens with response: {@Response}", accountDetails);
@@ -585,7 +591,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at CreateAccountLiensAsync with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from Creating AccountLiens with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
