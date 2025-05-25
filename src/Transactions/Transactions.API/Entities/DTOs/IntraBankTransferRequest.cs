@@ -26,6 +26,7 @@ public class IntraBankTransferRequest
     public List<IntraBankTransferTransactionDetail> TransferTransactionDetail { get; set; }
  
     [JsonPropertyName("entererId")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string EntererId { get; set; }
 
     [JsonPropertyName("userTransactionCode")]

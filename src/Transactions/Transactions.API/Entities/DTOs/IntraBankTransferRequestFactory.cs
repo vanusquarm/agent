@@ -20,7 +20,7 @@ public class IntraBankTransferRequestFactory
             TransactionType = IntraBankTransferConstants.TransactionType,
             TransactionSubType = IntraBankTransferConstants.TransactionSubType,
             ChannelIdentification = (channel.Length >= 3) ? channel.Substring(0, 3).ToUpper() : IntraBankTransferConstants.ChannelIdentification,
-            EntererId = channel.Split(10, 1),
+            EntererId = null,
             UserTransactionCode = userPartTransactionCode ?? IntraBankTransferConstants.UserTransactionCode,
             TransferTransactionDetail = new List<IntraBankTransferTransactionDetail>
             {
