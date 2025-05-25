@@ -437,7 +437,7 @@ public class TransactionsController : ControllerBase
 
     private string MapService(string key)
     {
-        return _serviceMap.TryGetValue(key.ToUpper(), out string value) ? value : "GTBGH100";
+        return _serviceMap.TryGetValue(key.ToUpper(), out string value) ? value : _serviceMap["DEFAULT"];
     }
 
 }

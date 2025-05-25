@@ -282,7 +282,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Back from Getting Customers Details By AccountId  with response: {@Response}", 
+                Log.Error("Back from Getting Customers Details By AccountId  with response: {@Response}",
                     ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
@@ -493,7 +493,7 @@ namespace Acccounts.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Information("Back from Creating CorpCurrentAccount with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                Log.Error("Back from Creating CorpCurrentAccount with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
