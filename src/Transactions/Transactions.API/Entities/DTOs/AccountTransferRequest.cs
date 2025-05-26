@@ -17,7 +17,14 @@ public class AccountTransferRequest
     {
         SourceAccountId = SourceAccountId?.Trim();
         DestinationAccountId = DestinationAccountId?.Trim();
-        Remarks = Remarks?.Trim();
+        if (Remarks != null)
+        {
+            Remarks = Remarks.Trim()
+                .Replace("\\", "-")
+                .Replace("&", "-")
+                .Replace("“", "-")
+                .Replace("|", "-");
+        }
         ChannelReference = ChannelReference?.Trim();
         ChannelId = ChannelId?.Trim();
         DocNum = DocNum?.Trim();

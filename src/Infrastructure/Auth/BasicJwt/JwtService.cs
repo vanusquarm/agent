@@ -1,6 +1,7 @@
 ﻿using Finacle.Infrastructure.Auth.OpenId;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -108,11 +109,13 @@ namespace Finacle.Infrastructure.Auth.BasicJwt
             var requestBody = new FormUrlEncodedContent(formData);
 
             // Send the POST request
+            Log.Information("About to get access token from Finacle with clientId: {ClientId}", _options.ClientId);
             var response = await client.PostAsync(tokenEndpoint, requestBody);
+            Log.Information("Back from getting access token from Finacle: {StatusCode}", response.StatusCode);
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception("Error refreshing token.");
+                throw new Exception("Error refreshing Apihub access token from Finacle.");
             }
 
             var responseContent = await response.Content.ReadAsStringAsync();
