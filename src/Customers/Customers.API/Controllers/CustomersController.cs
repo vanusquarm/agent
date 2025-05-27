@@ -2,6 +2,8 @@ using Customers.API.Entities;
 using Customers.API.Entities.DTOs;
 using Customers.API.Features;
 using Customers.API.Services;
+using Customers.API.Validators;
+using Finacle.Infrastructure.Logging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -67,13 +69,12 @@ namespace Customers.API.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetCustomer with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.WriteLine(ex.Message);
-                return NotFound();
+                Log.Error("Back from GetCustomer with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
-            
+
         }
 
         /* <summary>This is a generic endpoint to fetch specific details (properties) for a customer</summary>
@@ -90,6 +91,9 @@ namespace Customers.API.Controllers
 
             try
             {
+                if (!CustomerValidator.IsValid(customerId, out List<string> errors))
+                    return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
+
                 if (string.IsNullOrWhiteSpace(customerId))
                 {
                     Log.Information("The request is invalid as customer Id is null or empty: {Request}", customerId);
@@ -114,12 +118,10 @@ namespace Customers.API.Controllers
                 Log.Information("Invalid Customer ID format. Must start with 'C' or 'R': {Request}", customerId);
                 return BadRequest("Invalid Customer ID format. Must start with 'C' or 'R'.");
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                // Structured logging with exception details
-                Log.Error("An exception has occured at GetCustomerProps with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while fetching customer details: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Back from GetCustomerProps with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -154,11 +156,10 @@ namespace Customers.API.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at CreateCustomer with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while creating customer: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Back from CreateCustomer with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -193,11 +194,10 @@ namespace Customers.API.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at CreateCustomer2 with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while creating customer: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Back from CreateCustomer2 with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -236,10 +236,10 @@ namespace Customers.API.Controllers
 
                 return Ok(accounts);
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetCustomerAccounts with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                return NotFound();
+                Log.Error("Back from GetCustomerAccounts with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -253,16 +253,18 @@ namespace Customers.API.Controllers
         {
             try
             {
+               if (!CustomerValidator.IsValid(customerId, out List<string> errors))
+                    return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
+
                 Log.Information("About to GetCustomerAccountsBalances with request: {Request}", customerId);
                 var accountsBalances = await customerClient.GetCustomerAccountsBalances(customerId);
                 Log.Information("Back from Getting CustomerAccountsBalances with response: {@Response}", accountsBalances);
                 return Ok(accountsBalances);
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetCustomerAccountsBalances with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while fetching customer account balances: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Back from GetCustomerAccountsBalances with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -293,11 +295,10 @@ namespace Customers.API.Controllers
 
                 return Ok(accountsBalances);
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetCustomerAccountTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.Error.WriteLine($"Error occurred while fetching customer transactions: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                Log.Error("Back from GetCustomerAccountTransactions with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -312,6 +313,9 @@ namespace Customers.API.Controllers
             Log.Information("Recieved Request at GetCustomerStandingInstructions: {Request}", customerId);
             try
             {
+                if (!CustomerValidator.IsValid(customerId, out List<string> errors))
+                    return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
+
                 GetStandingInstructionsRequest payload = new GetStandingInstructionsRequest();
                 payload.cifId = customerId;
 
@@ -321,11 +325,10 @@ namespace Customers.API.Controllers
 
                 return Ok(standingOrders);
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetCustomerAccountTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.WriteLine(ex.Message);
-                return NotFound();
+                Log.Error("Back from GetCustomerAccountTransactions with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -346,11 +349,10 @@ namespace Customers.API.Controllers
 
                 return Ok(resp);
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at PostCustomerStandingInstructions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.WriteLine(ex.Message);
-                return NotFound();
+                Log.Error("Back from PostCustomerStandingInstructions with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -362,20 +364,19 @@ namespace Customers.API.Controllers
         [HttpDelete("standing-instructions")]
         public async Task<IActionResult> DeleteCustomerStandingInstruction([FromBody] CancelCustomerStandingInstructionRequest request)
         {
-            Log.Information("Recieved Request at PostCustomerStandingInstructions: {@Request}", request);
+            Log.Information("Recieved Request at DeleteCustomerStandingInstruction: {@Request}", request);
             try
             {
-                Log.Information("About to PostCustomerStandingInstructions with request: {@Request}", request);
+                Log.Information("About to DeleteCustomerStandingInstruction with request: {@Request}", request);
                 var resp = await customerClient.DeleteCustomerStandingInstruction(request);
                 Log.Information("Back from Posting CustomerStandingInstructions with response: {@Response}", resp);
 
                 return Ok(resp);
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at PostCustomerStandingInstructions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.WriteLine(ex.Message);
-                return NotFound();
+                Log.Error("Back from DeleteCustomerStandingInstruction with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
         /// <summary>
@@ -389,6 +390,9 @@ namespace Customers.API.Controllers
             Log.Information("Recieved Request at GetLoanDetails: {Request}", customerId);
             try
             {
+                if (!CustomerValidator.IsValid(customerId, out List<string> errors))
+                    return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
+
                 var request = new Dictionary<string, string> { { "customerId", customerId } };
 
                 Log.Information("About to GetLoanDetails with request: {@Request}", request);
@@ -396,11 +400,10 @@ namespace Customers.API.Controllers
                 Log.Information("Back from Getting LoanDetails with response: {@Response}", resp);
                 return Ok(resp);
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetLoanDetails with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.WriteLine(ex.Message);
-                return NotFound();
+                Log.Error("Back from GetLoanDetails with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -415,18 +418,20 @@ namespace Customers.API.Controllers
         {
             Log.Information("Recieved Request at GetTellerTransactions: {Request}", customerId);
             try
-            {   
+            {
+                if (!CustomerValidator.IsValid(customerId, out List<string> errors))
+                    return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
+
                 var request = new Dictionary<string, string> { { "tellerId", customerId }, { "tranDate", date ?? DateTime.UtcNow.ToString("yyyy-MM-dd") }  };
                 Log.Information("About to GetTellerTransactionDetails with request: {@Request}", request);
                 var resp = await customerClient.GetTellerTransactionDetails(request);
                 Log.Information("Back from Getting TellerTransactionDetails with response: {@Response}", resp);
                 return Ok(resp);
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetTellerTransactions with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.WriteLine(ex.Message);
-                return NotFound();
+                Log.Error("Back from GetTellerTransactions with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
 
@@ -441,6 +446,9 @@ namespace Customers.API.Controllers
             Log.Information("Recieved Request at GetTellerAccounts: {Request}", customerId);
             try
             {
+                if (!CustomerValidator.IsValid(customerId, out List<string> errors))
+                    return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
+
                 var request = new Dictionary<string, string> { { "userId", customerId } };
                 Log.Information("About to GetTellerAccountDetails with request: {@Request}", request);
                 var resp = await customerClient.GetTellerAccountDetails(request);
@@ -449,11 +457,10 @@ namespace Customers.API.Controllers
                 if(resp.ErrorFlg == "N") return Ok(resp);
                 else return NotFound();
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
-                Log.Error("An exception has occured at GetTellerAccounts with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-                Console.WriteLine(ex.Message);
-                return NotFound();
+                Log.Error("Back from GetTellerAccountDetails with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }   
     }
