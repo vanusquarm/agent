@@ -229,9 +229,15 @@ namespace Customers.API.Controllers
                         { "PhoneNumber", $"'{ localNumber }'" }
                     };
 
-                    Log.Information("About to GetCustomerDetailsByPhone with request: {Request}", request);
+                    Log.Information("About to GetCustomerDetailsByPhone with request: {@Request}", request);
                     var customer = await customerClient.GetCustomerDetailsByPhoneAsync(request);
                     Log.Information("Back from Getting CustomerDetailsByPhone with response: {@Response}", customer);
+
+                    if (customer.ErrorFlg == "Y")
+                    {
+                        Log.Information("There was an error retrieving GetCustomerAccounts by phone number: {@Response}", customer);
+                        return StatusCode((int)HttpStatusCode.UnprocessableEntity, ResponseManager.ReturnFeatureUnavailable($"{customer.ErrorFlg} : {customer.ErrorMsg}"));
+                    }
 
                     var retailCustomer = customer?.Transform();
                     Log.Information("Retail customers is: {@Response}", retailCustomer);
