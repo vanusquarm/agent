@@ -350,7 +350,10 @@ namespace Customers.API.Entities.DTOs
         public List<CustomerDetail> CustomerDetails { get; set; }
 
         [JsonPropertyName("errorFlg")]
-        public string ErrorFlg { get; set; }
+        public string? ErrorFlg { get; set; }
+
+        [JsonPropertyName("errorFlg")]
+        public string? ErrorMsg { get; set; }
 
         public GetRetailCustomerResponse Transform()
         {

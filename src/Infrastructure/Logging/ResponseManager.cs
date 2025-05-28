@@ -84,21 +84,21 @@ namespace Finacle.Infrastructure.Logging
         /// </summary>
         /// <param name="message">the object to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        //public static ResponseWithStatusCode ReturnFeatureUnavailable(string message = "")
-        //{
-        //    return new ResponseWithStatusCode()
-        //    {
-        //        StatusCode = (int)HttpStatusCode.UnprocessableEntity,
-        //        Response = new CustomProblemDetails()
-        //        {
-        //            ResponseCode = FeatureUnavailable.Item1,
-        //            IsSuccess = false,
-        //            Title = FeatureUnavailable.Item2,
-        //            Status = (int)HttpStatusCode.UnprocessableEntity,
-        //            Extensions = new Dictionary<string, object?> { { "errors", message } }
-        //        }
-        //    };
-        //}
+        public static ResponseWithStatusCode ReturnFeatureUnavailable(string message = "")
+        {
+            return new ResponseWithStatusCode()
+            {
+                StatusCode = (int)HttpStatusCode.UnprocessableEntity,
+                Response = new CustomProblemDetails()
+                {
+                    ResponseCode = FailedValidation.Item1,
+                    IsSuccess = false,
+                    Title = FailedValidation.Item2,
+                    Status = (int)HttpStatusCode.UnprocessableEntity,
+                    Extensions = new Dictionary<string, object?> { { "errors", message } }
+                }
+            };
+        }
 
         /// <summary>
         /// Formats the response for an Exception API call 
