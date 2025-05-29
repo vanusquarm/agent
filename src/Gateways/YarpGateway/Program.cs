@@ -45,6 +45,12 @@ builder.Host.UseSerilog(Log.Logger, true);
 //builder.Services.AddSwaggerExtension(configuration);
 
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+builder.Services.AddOutputCache(options =>
+{
+    double.TryParse(configuration["CachingOptions:AbsoluteExpirationInMinutes"], out double ttl);
+    options.AddPolicy("customPolicy", builder => builder.Expire(TimeSpan.FromMinutes(ttl)));
+});
+
 builder.Services.AddHttpLogging(logging =>
 {
     logging.LoggingFields = HttpLoggingFields.All;
@@ -99,6 +105,8 @@ app.UseHttpLogging();
 //app.UseAuthentication();
 //app.UseAuthorization();
 app.UseSerilogRequestLogging(); // Add Serilog request logging
+
+app.UseOutputCache();
 app.MapReverseProxy(config =>
 {
     config.Use(async (context, next) =>
