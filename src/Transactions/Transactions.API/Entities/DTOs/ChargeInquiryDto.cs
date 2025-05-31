@@ -64,3 +64,22 @@ public class PerformChargeRequestDto
     public decimal ChargeAmount { get; set; }  // Changed to decimal
     public string Currency { get; set; } = "GHS";  // Changed to decimal
 }
+
+public class StatementChargeRquest
+{
+    [JsonPropertyName("accountNumber")]
+    public string AccountNumber { get; set; }
+
+    [JsonPropertyName("eventId")]
+    public string EventId { get; set; }
+
+    [JsonPropertyName("noOfPages")]
+    public string NoOfPages { get; set; }
+
+    [JsonPropertyName("chrgCrncy")]
+    public string ChrgCrncy { get; set; }
+
+    [JsonPropertyName("remarks")]
+    public string Remarks { get; set; }
+}
+

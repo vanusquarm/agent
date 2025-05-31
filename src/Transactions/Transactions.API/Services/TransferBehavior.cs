@@ -50,6 +50,14 @@ public class TransferValidator //: ITransferValidator
         return validationResult.IsValid;
     }
 
+    public bool isValid(StatementChargeRquest request, out List<string> Errors)
+    {
+        StatementChargeRquestValidator chargeRequestValidator = new StatementChargeRquestValidator();
+        var validationResult = chargeRequestValidator.Validate(request);
+        Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+        return validationResult.IsValid;
+    }
+
     public bool isValid(PerformChargeRequestDto request, out List<string> Errors)
     {
         PerformChargeRequestDtoValidator accountValidator = new PerformChargeRequestDtoValidator();
@@ -137,6 +145,21 @@ public class TransferValidator //: ITransferValidator
 
         result.IsValid = true;
         return result;
+    }
+}
+
+internal class StatementChargeRquestValidator : AbstractValidator<StatementChargeRquest>
+{
+    public StatementChargeRquestValidator()
+    {
+        RuleFor(x => x.AccountNumber)
+            .NotEmpty().WithMessage("Account Number is required.")
+            .Matches(@"^\d{10,20}$").WithMessage("Account Number must be a numeric string between 10 and 20 characters.");
+        RuleFor(x => x.NoOfPages)
+            .NotEmpty().WithMessage("Number of pages is required.");
+        RuleFor(x => x.Remarks)
+            .MaximumLength(50).WithMessage("Remarks cannot exceed 50 characters.")
+            .When(x => !string.IsNullOrEmpty(x.Remarks));
     }
 }
 

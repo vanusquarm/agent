@@ -435,6 +435,40 @@ public class TransactionsController : ControllerBase
 
     }
 
+    /// <summary>
+    /// Method to Perform Charge
+    /// </summary>
+    /// <param name="StatementChargeRequest"></param>
+    /// <returns></returns>
+    [HttpGet("statement-charges")]
+    public async Task<IActionResult> PerformStatementCharge([FromQuery] StatementChargeRquest chargeRequest)
+    {
+        Log.Information("Recieved Request at PerformCharge: {@Request}", chargeRequest);
+        if (!_transferValidator.isValid(chargeRequest, out List<string> Errors))
+        {
+            Log.Warning("Perform charge validation failed: {Error}", chargeRequest);
+            return BadRequest(Errors);
+        }
+        try
+        {
+            Log.Information("About to PerformCharge with request: {@Request}", chargeRequest);
+            var response = await _transactionClient.PerformStatementCharge(chargeRequest);
+            Log.Information("Back from Performing Charge with response: {@Response}", response);
+
+            return Ok(response);
+        }
+        catch (Refit.ApiException ex)
+        {
+            Log.Error("Back from Performing Charge with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+        }
+        catch (Exception ex)
+        {
+            Log.Error("An exception has occured at PerformCharge with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
+    }
+
     private string MapService(string key)
     {
         return _serviceMap.TryGetValue(key.ToUpper(), out string value) ? value : _serviceMap["DEFAULT"];

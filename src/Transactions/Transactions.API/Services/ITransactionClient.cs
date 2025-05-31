@@ -68,6 +68,10 @@ public interface ITransactionClient
     [Post("/v2/currencies/CONVERT")]
     Task<object> ConvertCurrency(object request);
 
+    [Post("/v2/createStatementCharge/createStatementChargeDtls")]
+    Task<object> PerformStatementCharge(StatementChargeRquest chargeRequest);
+
+
     //"GetFxSaleRates": "v2/FXRateDtls/getFXRateDtlss",
     //"CurrencyConversion": "v2/currencies/CONVERT",
     //"TransactionStatusQuery": "v2/transactiondetails/gettransactiondetails",
