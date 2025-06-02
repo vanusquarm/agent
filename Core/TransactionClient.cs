@@ -14,8 +14,6 @@ namespace Finacle.Core
         {
             if (transferRequest == null)
                 throw new ArgumentNullException(nameof(transferRequest));
-            if (transferRequest == null)
-                throw new ArgumentNullException(nameof(transferRequest));
             if (transferRequest.Amount <= 0)
                 throw new ArgumentException("Transaction amount must be greater than zero.", nameof(transferRequest.Amount));
             if (string.IsNullOrWhiteSpace(transferRequest.SourceAccountId) || string.IsNullOrWhiteSpace(transferRequest.DestinationAccountId))
@@ -30,7 +28,7 @@ namespace Finacle.Core
             requestMessage.Headers.Add("RequestId", requestId);
 
             var response = await _httpClient.SendAsync(requestMessage);
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode) return null;
 
             var responseContent = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<IntraBankTransferResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -49,7 +47,7 @@ namespace Finacle.Core
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
             var response = await _httpClient.SendAsync(requestMessage);
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode) return null;
 
             var responseString = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<EodStatusResponse>(responseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -82,14 +80,14 @@ namespace Finacle.Core
 
             try
             {
-                var queryString = new FormUrlEncodedContent(queryParams).ReadAsStringAsync().Result;
+                var queryString = new FormUrlEncodedContent(queryParams).ReadAsStringAsync().GetAwaiter().GetResult();
                 var requestUrl = $"/api/v1/Transactions?{queryString}";
 
                 var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUrl);
                 requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
                 var response = await _httpClient.SendAsync(requestMessage);
-                response.EnsureSuccessStatusCode();
+                if (!response.IsSuccessStatusCode) return null;
 
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<TransactionResponse>(content);
@@ -104,7 +102,6 @@ namespace Finacle.Core
             }
         }
 
-
         public async Task<ChargeResponse> ChargeTransactionAsync(ChargeRequest request, string requestId)
         {
             if (string.IsNullOrEmpty(requestId))
@@ -117,10 +114,66 @@ namespace Finacle.Core
             requestMessage.Headers.Add("RequestId", requestId);
 
             var response = await _httpClient.SendAsync(requestMessage);
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode) return null;
 
             var responseStream = await response.Content.ReadAsStreamAsync();
             return await JsonSerializer.DeserializeAsync<ChargeResponse>(responseStream);
+        }
+
+        public async Task<CashTransferResponse> DepositCashAsync(CashTransferRequest cashTransferRequest, string requestId)
+        {
+            if (string.IsNullOrEmpty(requestId))
+                throw new ArgumentNullException(nameof(requestId));
+
+            var request = new Dictionary<string, string>
+            {
+                { "tellerID", cashTransferRequest.TellerId },
+                { "debitAccount", cashTransferRequest.CustomerAccountId },
+                { "amount", cashTransferRequest.Amount.ToString() },
+                { "remarks", cashTransferRequest.Remarks },
+                { "channelReference", cashTransferRequest.ChannelReference }
+            };
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "/api/v1/Transactions/cash-deposit")
+            {
+                Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
+            };
+
+            requestMessage.Headers.Add("RequestId", requestId);
+
+            var response = await _httpClient.SendAsync(requestMessage);
+            if (!response.IsSuccessStatusCode) return null;
+
+            var responseContent = await response.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<CashTransferResponse>(responseContent);
+        }
+
+        public async Task<CashTransferResponse> WithdrawCashAsync(CashTransferRequest cashTransferRequest, string requestId)
+        {
+            if (string.IsNullOrEmpty(requestId))
+                throw new ArgumentNullException(nameof(requestId));
+
+            var request = new Dictionary<string, string>
+            {
+                { "tellerID", cashTransferRequest.TellerId },
+                { "creditAccount", cashTransferRequest.CustomerAccountId },
+                { "amount", cashTransferRequest.Amount.ToString() },
+                { "remarks", cashTransferRequest.Remarks },
+                { "channelReference", cashTransferRequest.ChannelReference }
+            };
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "/api/v1/Transactions/cash-withdrawal")
+            {
+                Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
+            };
+
+            requestMessage.Headers.Add("RequestId", requestId);
+
+            var response = await _httpClient.SendAsync(requestMessage);
+            if (!response.IsSuccessStatusCode) return null;
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<CashTransferResponse>(responseContent);
         }
     }
 }

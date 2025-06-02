@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Finacle.Core
+namespace Finacle.Core.Domain
 {
     public class GetAcctBalancesResponse
     {
@@ -14,26 +14,26 @@ namespace Finacle.Core
         [JsonPropertyName("setNumber")]
         public int? SetNumber { get; set; }
     }
-    public class Amount
-    {
-        [JsonPropertyName("currency")]
-        public string Currency { get; set; }
+    //public class Amount
+    //{
+    //    [JsonPropertyName("currency")]
+    //    public string Currency { get; set; }
 
-        [JsonPropertyName("value")]
-        public double? Value { get; set; }
-    }
+    //    [JsonPropertyName("value")]
+    //    public double? Value { get; set; }
+    //}
 
-    public class Balance
-    {
-        [JsonPropertyName("amount")]
-        public Amount Amount { get; set; }
+    //public class Balance
+    //{
+    //    [JsonPropertyName("amount")]
+    //    public Amount Amount { get; set; }
 
-        [JsonPropertyName("creditDebitIndicator")]
-        public string CreditDebitIndicator { get; set; }
+    //    [JsonPropertyName("creditDebitIndicator")]
+    //    public string CreditDebitIndicator { get; set; }
 
-        [JsonPropertyName("balanceType")]
-        public string BalanceType { get; set; }
-    }
+    //    [JsonPropertyName("balanceType")]
+    //    public string BalanceType { get; set; }
+    //}
 
     public class CustomerAccountBalance
     {

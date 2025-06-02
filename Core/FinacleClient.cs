@@ -17,7 +17,7 @@ namespace Finacle.Core
             {
                 BaseAddress = new Uri(_baseUrl)
             };
-            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+            _httpClient.Timeout = TimeSpan.FromSeconds(60);
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId.ToUpper());
         }
@@ -25,7 +25,7 @@ namespace Finacle.Core
         public FinacleClient(HttpClient httpClient, string channelId = null)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+            _httpClient.Timeout = TimeSpan.FromSeconds(60);
             if (!string.IsNullOrEmpty(channelId)) _httpClient.DefaultRequestHeaders.Add("ChannelId", channelId.ToUpper());
         }
 

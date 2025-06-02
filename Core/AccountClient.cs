@@ -18,6 +18,7 @@ namespace Finacle.Core
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
             var response = await _httpClient.SendAsync(requestMessage);
+            if (!response.IsSuccessStatusCode) return null;
 
             var content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<Account>(content);
@@ -30,6 +31,7 @@ namespace Finacle.Core
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
             var response = await _httpClient.SendAsync(requestMessage);
+            if (!response.IsSuccessStatusCode) return null;
 
             var content = await response.Content.ReadAsStringAsync();
             var accountDetails = JsonSerializer.Deserialize<Account>(content);
@@ -42,7 +44,6 @@ namespace Finacle.Core
         {
             try
             {
-                // Ensure accountType is valid (non-null and non-empty). If invalid, set a default or handle appropriately
                 if (string.IsNullOrEmpty(date))
                 {
                     date = DateTime.UtcNow.ToString("yyyy-MM-dd");
@@ -52,6 +53,7 @@ namespace Finacle.Core
                 requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
                 var response = await _httpClient.SendAsync(requestMessage);
+                if (!response.IsSuccessStatusCode) return null;
 
                 var content = await response.Content.ReadAsStringAsync();
                 var accountsBalance = JsonSerializer.Deserialize<AccountBalance>(content);
@@ -64,7 +66,7 @@ namespace Finacle.Core
             }
         }
 
-        public async Task<List<Domain.Balance>> GetAccountBalancesAsync(string accountId, string balanceType, string requestId = null)
+        public async Task<List<Balance>> GetAccountBalancesAsync(string accountId, string balanceType, string requestId = null)
         {
             try
             {
@@ -72,6 +74,7 @@ namespace Finacle.Core
                 requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
                 var response = await _httpClient.SendAsync(requestMessage);
+                if (!response.IsSuccessStatusCode) return new List<Balance>();
 
                 var content = await response.Content.ReadAsStringAsync();
                 var accountsBalances = JsonSerializer.Deserialize<AccountBalanceDto>(content);
@@ -95,6 +98,7 @@ namespace Finacle.Core
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
             var response = await _httpClient.SendAsync(requestMessage);
+            if (!response.IsSuccessStatusCode) return null;
 
             var content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<List<Transaction>>(content);
@@ -114,6 +118,7 @@ namespace Finacle.Core
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
             var response = await _httpClient.SendAsync(requestMessage);
+            if (!response.IsSuccessStatusCode) return null;
 
             var content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<FreezeAccountResponse>(content);
@@ -133,6 +138,7 @@ namespace Finacle.Core
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
             var response = await _httpClient.SendAsync(requestMessage);
+            if (!response.IsSuccessStatusCode) return null;
 
             var content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<UnFreezeAccountResponse>(content);
@@ -142,6 +148,7 @@ namespace Finacle.Core
         public async Task<bool> IsAccountFrozenAsync(string accountId, string requestId = null)
         {
             var account = await GetAccountAsync(accountId, requestId);
+            if (account == null) return false;
             return account.AccountStatus == "Frozen";
         }
 
@@ -149,6 +156,7 @@ namespace Finacle.Core
         public async Task<bool> IsAccountExistAsync(string accountId, string requestId = null)
         {
             var account = await GetAccountAsync(accountId, requestId);
+            if (account == null) return false;
             return account.AccountIdentification == accountId;
         }
 
@@ -159,9 +167,15 @@ namespace Finacle.Core
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
             var response = await _httpClient.SendAsync(requestMessage);
+            if (!response.IsSuccessStatusCode) return (null, null);
 
             var content = await response.Content.ReadAsStringAsync();
             var deserializedResponse = JsonSerializer.Deserialize<AccountCustomersResponse>(content);
+
+            if (deserializedResponse?.AccountDetails == null || deserializedResponse.AccountDetails.Count == 0)
+                throw new InvalidOperationException("AccountDetails is missing or empty in the response.");
+            if (deserializedResponse.CustomerDetails == null || deserializedResponse.CustomerDetails.Count == 0)
+                throw new InvalidOperationException("CustomerDetails is missing or empty in the response.");
 
             return (deserializedResponse.AccountDetails[0], deserializedResponse.CustomerDetails[0]);
         }
@@ -187,7 +201,7 @@ namespace Finacle.Core
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
             var response = await _httpClient.SendAsync(requestMessage);
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode) return null;
 
             var content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<AcctStatementResponse>(content);
@@ -198,7 +212,6 @@ namespace Finacle.Core
         {
             var url = "/v1/Accounts/current-account"; // Replace with actual base URL
 
-            // Create the request body as JSON
             var json = $"{{\"customerReference\": \"{customerReference}\",\"productCode\": \"{productCode}\",\"glSubHeadCode\": \"{glSubHeadCode}\",\"accountCurrency\": \"{accountCurrency}\",\"branchReference\": \"{branchReference}\",\"accountOpeningDate\": \"{accountOpeningDate}\"}}";
 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -209,14 +222,47 @@ namespace Finacle.Core
             };
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
-            // Make the POST request
+            var response = await _httpClient.SendAsync(requestMessage);
+            if (!response.IsSuccessStatusCode) return null;
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        // Create Account
+        public async Task<string> CreateSavingsAccountAsync(CreateSavingsAcctRequest createSavingsAcctRequest, string requestId = null)
+        {
+            var url = "/v1/Accounts/savings-account"; // Replace with actual base URL
+
+            var json = JsonSerializer.Serialize(createSavingsAcctRequest);
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = content
+            };
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = await _httpClient.SendAsync(requestMessage);
+            if (!response.IsSuccessStatusCode) return null;
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<LienResponse> BlockFundsAsync(string accountId, LienRequest request, string requestId = null)
+        {
+            var json = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"/api/v1/Accounts/{accountId}/liens")
+            {
+                Content = json
+            };
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
             var response = await _httpClient.SendAsync(requestMessage);
 
-            // Ensure the request was successful
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode) return null;
 
-            // Return the response content as a string
-            return await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<LienResponse>(content);
         }
 
         public async Task<bool> HasSufficientFundsAsync(string AccountNumber, double amount)

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Finacle.Core.Domain
 {
-    public class AccountTransferRequest
+    public class TransferRequest
     {
         public string SourceAccountId { get; set; }
         public string DestinationAccountId { get; set; }
@@ -11,6 +11,9 @@ namespace Finacle.Core.Domain
         public string Remarks { get; set; }
         public string ChannelReference { get; set; }
         public string ChannelId { get; set; }
+        public string Currency { get; set; }
         public string DocNum { get; set; }
+        public string UserPartTransactionCode { get; set; }
+        public string ChargeEventId { get; set; }
     }
 }

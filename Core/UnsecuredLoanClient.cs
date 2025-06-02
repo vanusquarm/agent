@@ -21,11 +21,11 @@ namespace Finacle.Core
                 var jsonContent = JsonSerializer.Serialize(request);
                 var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                var response = _httpClient.PostAsync(url, httpContent).Result;
+                var response = _httpClient.PostAsync(url, httpContent).GetAwaiter().GetResult();
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var content = response.Content.ReadAsStringAsync().Result;
+                    var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                     return JsonSerializer.Deserialize<CreateUnsecuredLoanResponse>(content, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
@@ -33,7 +33,7 @@ namespace Finacle.Core
                 }
                 else
                 {
-                    var errorContent = response.Content.ReadAsStringAsync().Result;
+                    var errorContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                     throw new HttpRequestException($"Error creating LOAN. Status: {response.StatusCode}, Response: {errorContent}");
                 }
             }

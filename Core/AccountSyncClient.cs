@@ -1,6 +1,7 @@
 ﻿using Finacle.Core.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -15,21 +16,27 @@ namespace Finacle.Core
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Accounts/{accountId}");
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
-            var response = _httpClient.SendAsync(requestMessage).Result;
-            var content = response.Content.ReadAsStringAsync().Result;
+            var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode) return null;
+
+            var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             return JsonSerializer.Deserialize<Account>(content);
         }
 
         // Get account status
         public string GetAccountStatus(string accountId, string requestId = null)
         {
-            return GetAccount(accountId, requestId).AccountStatus;
+            var account = GetAccount(accountId, requestId);
+            if (account == null) return null;
+            return account.AccountStatus;
         }
 
         // Get account status
         public int IsAccountActive(string accountId, string requestId = null)
         {
-            return GetAccountStatus(accountId, requestId) == "O" ? 1 : 0;
+            var status = GetAccountStatus(accountId, requestId);
+            if (status == null) return 0;
+            return status == "O" ? 1 : 0;
         }
 
         // Get account balances
@@ -44,8 +51,10 @@ namespace Finacle.Core
                 var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Accounts/{accountId}/balances?accountType={accountType}");
                 requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
-                var response = _httpClient.SendAsync(requestMessage).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
+                var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
+                if (!response.IsSuccessStatusCode) return null;
+
+                var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 var Balance = JsonSerializer.Deserialize<Balance>(content);
                 return Balance;
             }
@@ -62,8 +71,10 @@ namespace Finacle.Core
                 var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Accounts/{accountId}/balances");
                 requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
-                var response = _httpClient.SendAsync(requestMessage).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
+                var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
+                if (!response.IsSuccessStatusCode) return new List<CustomerAccountBalance>();
+                var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
                 var accountsBalances = JsonSerializer.Deserialize<GetAcctBalancesResponse>(content);
                 return accountsBalances.CustomerAccountBalances;
             }
@@ -80,8 +91,10 @@ namespace Finacle.Core
                 var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Accounts/{accountId}/balances?accountType=EFFAVL");
                 requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
-                var response = _httpClient.SendAsync(requestMessage).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
+                var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
+                if (!response.IsSuccessStatusCode) return null;
+
+                var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 var accountBalance = JsonSerializer.Deserialize<Balance>(content);
                 return accountBalance.Amount;
             }
@@ -97,8 +110,10 @@ namespace Finacle.Core
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Accounts/{accountId}/transactions");
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
-            var response = _httpClient.SendAsync(requestMessage).Result;
-            var content = response.Content.ReadAsStringAsync().Result;
+            var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode) return new List<Transaction>();
+
+            var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             return JsonSerializer.Deserialize<List<Transaction>>(content);
         }
 
@@ -113,8 +128,9 @@ namespace Finacle.Core
             };
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
-            var response = _httpClient.SendAsync(requestMessage).Result;
-            var content = response.Content.ReadAsStringAsync().Result;
+            var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode) return null;
+            var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             return JsonSerializer.Deserialize<FreezeAccountResponse>(content);
         }
 
@@ -129,26 +145,33 @@ namespace Finacle.Core
             };
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
-            var response = _httpClient.SendAsync(requestMessage).Result;
-            var content = response.Content.ReadAsStringAsync().Result;
+            var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode) return null;
+            var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             return JsonSerializer.Deserialize<UnFreezeAccountResponse>(content);
         }
 
         // Check if account is frozen
         public bool IsAccountFrozen(string accountId, string requestId = null)
         {
-            return GetAccount(accountId, requestId)?.AccountStatus == "Frozen";
+            var account = GetAccount(accountId, requestId);
+            if (account == null) return false;
+            return account.AccountStatus == "Frozen";
         }
 
         public bool IsNotRestricted(string accountId, string requestId = null)
         {
-            return GetAccount(accountId, requestId)?.AccountStatus != "Frozen";
+            var account = GetAccount(accountId, requestId);
+            if (account == null) return false;
+            return account.AccountStatus != "Frozen";
         }
 
         // Check if account exists
         public bool IsAccountExist(string accountId, string requestId = null)
         {
-            return GetAccount(accountId, requestId)?.AccountIdentification == accountId;
+            var account = GetAccount(accountId, requestId);
+            if (account == null) return false;
+            return account.AccountIdentification == accountId;
         }
 
         // Get customer details by accountId
@@ -157,16 +180,35 @@ namespace Finacle.Core
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Accounts/{accountId}/customers");
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
-            var response = _httpClient.SendAsync(requestMessage).Result;
-            var content = response.Content.ReadAsStringAsync().Result;
+            var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode) return (null, null);
+            var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             var deserializedResponse = JsonSerializer.Deserialize<AccountCustomersResponse>(content);
             return (deserializedResponse.AccountDetails[0], deserializedResponse.CustomerDetails[0]);
         }
 
         public bool IsStaff(string accountId, string requestId = null)
         {
+            if (accountId.StartsWith("R")) // Check if argument is Retail CIF
+            {
+                var customer = GetCustomer<GetRetailCustomerResponse>(accountId, requestId);
+                return (customer?.Segment == "EMPB" ||
+                    customer?.Segment == "EMR" ||
+                    customer?.Segment == "EHNI");
+
+            }
+            return IsStaffAccount(accountId, requestId);
+        }
+
+        public bool IsStaffAccount(string accountId, string requestId = null)
+        {
             var (_, customerDetail) = GetAccountCustomers(accountId, requestId);
-            return customerDetail?.RELATIONSHIPMANAGERID == "GH001800";
+            if(accountId?.StartsWith("0") == null)
+            {
+                var account = GetAccount(accountId, requestId);
+                return account?.ProductCode == "OFLIB";
+            }
+            return (customerDetail?.OcuupationCode == "2104");
         }
 
         public CustomerDetail GetCustomerByAccountId(string accountId, string requestId = null)
@@ -188,10 +230,10 @@ namespace Finacle.Core
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Accounts/{accountId}/statements{query}");
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
-            var response = _httpClient.SendAsync(requestMessage).Result;
+            var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
 
-            var content = response.Content.ReadAsStringAsync().Result;
+            var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             return JsonSerializer.Deserialize<AcctStatementResponse>(content);
         }
 
@@ -207,9 +249,28 @@ namespace Finacle.Core
             };
             requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
-            var response = _httpClient.SendAsync(requestMessage).Result;
+            var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
-            return response.Content.ReadAsStringAsync().Result;
+            return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        }
+
+        public LienResponse BlockFunds(string accountId, LienRequest request, string requestId = null)
+        {
+            var url = $"/api/v1/Accounts/{accountId}/liens";
+            var jsonContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = jsonContent
+            };
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = _httpClient.SendAsync(requestMessage).GetAwaiter().GetResult();
+
+            // Ensure the request was successful
+            response.EnsureSuccessStatusCode();
+
+            var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonSerializer.Deserialize<LienResponse>(content);
         }
 
         public bool IsAccountTheSame(string DebitAccount, string CreditAccount)
@@ -228,23 +289,15 @@ namespace Finacle.Core
             return iscurrencySame;
         }
 
-        public bool IsAccountBalanceLessThanAmountToTransfer(double DebitAccountBalance, double amount, string AccountNumber, LiensList[] DebitlienDetailsList = null)
+        public bool IsAccountBalanceLessThanAmountToTransfer(double DebitAccountBalance, double amount, LiensList[] DebitlienDetailsList = null)
         {
             double lienAmount = 0;
             if (DebitlienDetailsList != null)
             {
-                foreach (var lien in DebitlienDetailsList)
-                {
-                    lienAmount += Convert.ToDouble(lien.lienReleaseAmount);
-                }
+                lienAmount = DebitlienDetailsList.Sum(lien => Convert.ToDouble(lien.lienReleaseAmount));
             }
             double totalBalance = lienAmount + DebitAccountBalance;
-
-            if (AccountNumber.Length > 10) { return false; }
-            else
-            {
-                return totalBalance < amount;
-            }
+            return totalBalance < amount;
         }
     }
 }

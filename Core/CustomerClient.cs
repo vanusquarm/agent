@@ -18,10 +18,24 @@ namespace Finacle.Core
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            response.EnsureSuccessStatusCode(); // Throws exception if not 2xx response
+            if (!response.IsSuccessStatusCode) return default(T);
 
             var content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<T>(content);
+        }
+
+        // Get Teller details
+        public async Task<TellerDetails> GetTellerDetailsAsync(string customerId, string requestId = null)
+        {
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/Customers/{customerId}/teller-details");
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<TellerDetails>(content);
         }
 
         public bool IsCustomerStaff(string customerId, string requestId = null)
@@ -41,7 +55,7 @@ namespace Finacle.Core
                 requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
 
                 var response = await _httpClient.SendAsync(requestMessage);
-                response.EnsureSuccessStatusCode();
+                if (!response.IsSuccessStatusCode) return null;
                 var content = await response.Content.ReadAsStringAsync();
 
                 return content;
@@ -70,7 +84,7 @@ namespace Finacle.Core
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode) return new List<Account>();
 
             var content = await response.Content.ReadAsStringAsync();
             var accounts = JsonSerializer.Deserialize<GetCustomerAcctsResponse>(content);
@@ -86,7 +100,7 @@ namespace Finacle.Core
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode) return new List<CustomerAccountBalance>();
 
             var content = await response.Content.ReadAsStringAsync();
             var accountsBalances = JsonSerializer.Deserialize<GetAcctBalancesResponse>(content);
@@ -102,7 +116,7 @@ namespace Finacle.Core
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode) return new List<Transaction>();
 
             var content = await response.Content.ReadAsStringAsync();
             var transactions = JsonSerializer.Deserialize<GetAcctTransactionsResponse>(content);
@@ -110,7 +124,7 @@ namespace Finacle.Core
             return transactions.TransactionDetailsList;
         }
 
-        public async Task<CreateRetailCustomerResponse> CreateRetailCustomerAsync(RetailCustomerRequest request, string requestId = null)
+        public async Task<CreateCustomerDto> CreateRetailCustomerAsync(CreateCustomerDto request, string requestId = null)
         {
             try
             {
@@ -128,7 +142,7 @@ namespace Finacle.Core
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    return JsonSerializer.Deserialize<CreateRetailCustomerResponse>(content, new JsonSerializerOptions
+                    return JsonSerializer.Deserialize<CreateCustomerDto>(content, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     });
