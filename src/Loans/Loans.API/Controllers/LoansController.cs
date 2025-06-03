@@ -40,7 +40,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from CreateLoan with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -73,7 +73,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from UpdateLoan with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -106,7 +106,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from DisburseLoan with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -150,7 +150,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from PayOff with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -185,7 +185,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from GetOutstandingInquiry with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -218,7 +218,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from SchedulePayment with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -250,7 +250,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from GetInterestDetails with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -283,7 +283,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from ModifyLoanInterestDetails with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -309,7 +309,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from GetLoanDetails with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -335,7 +335,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from GetUnsecuredLoanDetails with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -361,7 +361,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from PayOffLoan with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
@@ -388,7 +388,7 @@ namespace Loan.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Finacle call unsuccessful. Message: {Message}, StackTrace: {StackTrace}", ex.Message, ex.StackTrace);
+                Log.Error("Back from LoanInquiry with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }
