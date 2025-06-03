@@ -15,19 +15,19 @@ public interface ITransactionClient
     [Post("/v2/eodStatusDtls/geteodStatusDtls")]
     Task<EodStatusResponse> GetEodStatusDetails(EodStatusRequest request);
 
-    [Headers(
-        "context_sol_id: 201",
-        "delivery_channel: COR"
-    )]
+    [Headers("delivery_channel: COR")]
     [Post("/v2/transactions/cash-deposit")]
-    Task<CashTransferResponse> PerformCashDeposit(CashTransferRequest cashDepositRequest, [Header("context_user_id")] string tellerID);
+    Task<CashTransferResponse> PerformCashDeposit(
+        CashTransferRequest cashDepositRequest,
+        [Header("context_user_id")] string tellerId,
+        [Header("context_sol_id")] string solId);
 
-    [Headers(
-        "context_sol_id: 201",
-        "delivery_channel: COR"
-    )]
+    [Headers("delivery_channel: COR")]
     [Post("/v2/transactions/cash-withdrawal")]
-    Task<CashTransferResponse> PerformCashWithdrawal(CashTransferRequest cashWithdrawalRequest, [Header("context_user_id")] string tellerID);
+    Task<CashTransferResponse> PerformCashWithdrawal(
+        CashTransferRequest cashWithdrawalRequest,
+        [Header("context_user_id")] string tellerId,
+        [Header("context_sol_id")] string solId);
 
     [Headers(
         "delivery_channel: API",

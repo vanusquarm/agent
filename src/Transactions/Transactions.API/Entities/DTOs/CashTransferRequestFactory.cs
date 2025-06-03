@@ -48,6 +48,18 @@ public class CashTransferRequestFactory
         };
     }
 
+    public static CashTransferRequest Create(
+        string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks,
+        string referenceNumber, string transType, string? currency, Dictionary<string, string>? denomDetails)
+    {
+        var denomList = denomDetails != null
+            ? ConvertDictionaryToDenominationDetails(denomDetails, currency ?? Utils.ParseAccountNumber(creditAccount).Currency)
+            : null;
+
+        return Create(debitAccount, creditAccount, amount, partTransactionRemarks, referenceNumber, transType, currency, denomList);
+    }
+
+
     private static List<DenominationDetailsCurrencyType> SplitAmount(decimal amount, string currency)
     {
         int[] denominations = { 100, 50, 20, 10, 5, 2, 1 };
@@ -76,4 +88,29 @@ public class CashTransferRequestFactory
 
         return result;
     }
+
+    private static List<DenominationDetailsCurrencyType> ConvertDictionaryToDenominationDetails(
+    Dictionary<string, string> denomDetails, string currency)
+    {
+        var result = new List<DenominationDetailsCurrencyType>();
+        foreach (var kvp in denomDetails)
+        {
+            if (int.TryParse(kvp.Key, out int denomination) && int.TryParse(kvp.Value, out int count))
+            {
+                result.Add(new DenominationDetailsCurrencyType
+                {
+                    DenominationCurrency = currency,
+                    Denomination = denomination,
+                    DenominationType = "N",
+                    StrapOrBundleSize = 100,
+                    NumberOfNotesOrCoins = count,
+                    NumberOfStrapsOrBundles = 0,
+                    NumberOfNotesOrCoinsPaybackOrGetback = 0,
+                    NumberOfStrapsOrBundlesPaybackOrGetback = 0
+                });
+            }
+        }
+        return result;
+    }
+
 }

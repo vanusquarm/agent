@@ -42,9 +42,41 @@ public class TransferValidator //: ITransferValidator
         return result;
     }
 
+    public bool isValid(CashWithdrawalRequest request, out List<string> Errors)
+    {
+        CashWithdrawalRequestValidator accountValidator = new CashWithdrawalRequestValidator();
+        var validationResult = accountValidator.Validate(request);
+        Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+        return validationResult.IsValid;
+    }
+
+    public bool isValid(CashDepositRequest request, out List<string> Errors)
+    {
+        CashDepositRequestValidator accountValidator = new CashDepositRequestValidator();
+        var validationResult = accountValidator.Validate(request);
+        Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+        return validationResult.IsValid;
+    }
+
+    public bool isValid(PerformCashTransferRequest request, out List<string> Errors)
+    {
+        PerformCashTransferRequestValidator accountValidator = new PerformCashTransferRequestValidator();
+        var validationResult = accountValidator.Validate(request);
+        Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+        return validationResult.IsValid;
+    }
+
     public bool isValid(PerformChargeInquiryDto request, out List<string> Errors)
     {
         PerformChargeInquiryDtoValidator accountValidator = new PerformChargeInquiryDtoValidator();
+        var validationResult = accountValidator.Validate(request);
+        Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+        return validationResult.IsValid;
+    }
+
+    public bool isValid(PerformChargeRequestDto request, out List<string> Errors)
+    {
+        PerformChargeRequestDtoValidator accountValidator = new PerformChargeRequestDtoValidator();
         var validationResult = accountValidator.Validate(request);
         Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
         return validationResult.IsValid;
@@ -54,14 +86,6 @@ public class TransferValidator //: ITransferValidator
     {
         StatementChargeRquestValidator chargeRequestValidator = new StatementChargeRquestValidator();
         var validationResult = chargeRequestValidator.Validate(request);
-        Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-        return validationResult.IsValid;
-    }
-
-    public bool isValid(PerformChargeRequestDto request, out List<string> Errors)
-    {
-        PerformChargeRequestDtoValidator accountValidator = new PerformChargeRequestDtoValidator();
-        var validationResult = accountValidator.Validate(request);
         Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
         return validationResult.IsValid;
     }
@@ -146,20 +170,30 @@ public class TransferValidator //: ITransferValidator
         result.IsValid = true;
         return result;
     }
-}
 
-internal class StatementChargeRquestValidator : AbstractValidator<StatementChargeRquest>
-{
-    public StatementChargeRquestValidator()
+    public async Task<string> GetTellerSolIdByIdAsync(string tellerId)
     {
-        RuleFor(x => x.AccountNumber)
-            .NotEmpty().WithMessage("Account Number is required.")
-            .Matches(@"^\d{10,20}$").WithMessage("Account Number must be a numeric string between 10 and 20 characters.");
-        RuleFor(x => x.NoOfPages)
-            .NotEmpty().WithMessage("Number of pages is required.");
-        RuleFor(x => x.Remarks)
-            .MaximumLength(50).WithMessage("Remarks cannot exceed 50 characters.")
-            .When(x => !string.IsNullOrEmpty(x.Remarks));
+        try
+        {
+            var tellerDetails = await _accountService.GetTellerDetailsAsync(tellerId);
+
+            if (tellerDetails == null || string.IsNullOrEmpty(tellerDetails.SolId))
+            {
+                _logger.LogWarning($"Teller with ID {tellerId} not found.");
+                return "";
+            }
+
+            var solId = tellerDetails.SolId;
+
+            _logger.LogInformation($"Teller with ID {tellerId} is valid. SolId: {solId}");
+            return solId;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error occurred while validating teller with ID {tellerId}.");
+            return "";
+        }
+
     }
 }
 
@@ -244,5 +278,137 @@ public class PerformChargeRequestDtoValidator : AbstractValidator<PerformChargeR
         RuleFor(x => x.Currency)
             .NotEmpty().WithMessage("Currency is required.")
             .Must(currency => currency == "GHS").WithMessage("Currency must be 'GHS'.");
+    }
+}
+
+public class CashWithdrawalRequestValidator : AbstractValidator<CashWithdrawalRequest>
+{
+    public CashWithdrawalRequestValidator()
+    {
+        RuleFor(x => x.TellerId)
+            .NotEmpty().WithMessage("TellerID is required.")
+            .MaximumLength(10).WithMessage("TellerID cannot exceed 10 characters.");
+
+        RuleFor(x => x.CreditAccount)
+            .NotEmpty().WithMessage("CreditAccount is required.");
+
+        RuleFor(x => x.Amount)
+            .GreaterThan(0).WithMessage("Amount must be greater than zero.");
+
+        RuleFor(x => x.Remarks)
+            .MaximumLength(50).WithMessage("Remarks cannot exceed 50 characters.");
+
+        RuleFor(x => x.ChannelReference)
+            .NotEmpty().WithMessage("ChannelReference is required.")
+            .MaximumLength(80).WithMessage("ChannelReference cannot exceed 80 characters.");
+
+        RuleFor(x => x.Currency)
+            .NotEmpty().WithMessage("Currency is required.")
+            .When(x => x.Currency != null);
+
+        RuleForEach(x => x.DenomDetails)
+            .SetValidator(new DenominationDetailsCurrencyTypeValidator())
+            .When(x => x.DenomDetails != null);
+    }
+}
+
+public class CashDepositRequestValidator : AbstractValidator<CashDepositRequest>
+{
+    public CashDepositRequestValidator()
+    {
+        RuleFor(x => x.TellerId)
+            .NotEmpty().WithMessage("TellerID is required.")
+            .MaximumLength(10).WithMessage("TellerID cannot exceed 10 characters.");
+
+        RuleFor(x => x.DebitAccount)
+            .NotEmpty().WithMessage("DebitAccount is required.");
+
+        RuleFor(x => x.Amount)
+            .GreaterThan(0).WithMessage("Amount must be greater than zero.");
+
+        RuleFor(x => x.Remarks)
+            .MaximumLength(50).WithMessage("Remarks cannot exceed 50 characters.");
+
+        RuleFor(x => x.ChannelReference)
+            .NotEmpty().WithMessage("ChannelReference is required.")
+            .MaximumLength(80).WithMessage("ChannelReference cannot exceed 80 characters.");
+
+        RuleFor(x => x.Currency)
+            .NotEmpty().WithMessage("Currency is required.")
+            .When(x => x.Currency != null);
+
+        RuleForEach(x => x.DenomDetails)
+            .SetValidator(new DenominationDetailsCurrencyTypeValidator())
+            .When(x => x.DenomDetails != null);
+    }
+}
+
+public class PerformCashTransferRequestValidator : AbstractValidator<PerformCashTransferRequest>
+{
+    public PerformCashTransferRequestValidator()
+    {
+        RuleFor(x => x.TellerId)
+            .NotEmpty().WithMessage("TellerID is required.")
+            .MaximumLength(10).WithMessage("TellerID cannot exceed 10 characters.");
+
+        RuleFor(x => x.CustomerAccount)
+            .NotEmpty().WithMessage("CustomerAccount is required.")
+            .Matches(@"^\d{10,20}$").WithMessage("CustomerAccount must be a numeric string between 10 and 20 characters.");
+
+
+        RuleFor(x => x.Amount)
+            .GreaterThan(0).WithMessage("Amount must be greater than zero.");
+
+        RuleFor(x => x.TransType)
+            .Must(state => state == "D" || state == "C")
+            .WithMessage("Transaction Type must be either 'D' or 'C'.");
+
+        RuleFor(x => x.Remarks)
+            .NotEmpty().WithMessage("Remarks is required.")
+            .MaximumLength(80).WithMessage("Remarks cannot exceed 80 characters.");
+
+        RuleFor(x => x.ChannelReference)
+            .NotEmpty().WithMessage("ChannelReference is required.")
+            .MaximumLength(80).WithMessage("ChannelReference cannot exceed 80 characters.");
+
+        RuleFor(x => x.Currency)
+            .NotEmpty().WithMessage("Currency is required.")
+            .When(x => x.Currency != null);
+    }
+}
+
+public class DenominationDetailsCurrencyTypeValidator : AbstractValidator<DenominationDetailsCurrencyType>
+{
+    public DenominationDetailsCurrencyTypeValidator()
+    {
+        RuleFor(x => x.DenominationCurrency)
+            .NotEmpty().WithMessage("DenominationCurrency is required.");
+
+        RuleFor(x => x.Denomination)
+            .GreaterThan(0).WithMessage("Denomination must be greater than zero.");
+
+        RuleFor(x => x.StrapOrBundleSize)
+            .GreaterThanOrEqualTo(0).WithMessage("StrapOrBundleSize must be non-negative.");
+
+        RuleFor(x => x.NumberOfNotesOrCoins)
+            .GreaterThanOrEqualTo(0).WithMessage("NumberOfNotesOrCoins must be non-negative.");
+
+        RuleFor(x => x.NumberOfStrapsOrBundles)
+            .GreaterThanOrEqualTo(0).WithMessage("NumberOfStrapsOrBundles must be non-negative.");
+    }
+}
+
+internal class StatementChargeRquestValidator : AbstractValidator<StatementChargeRquest>
+{
+    public StatementChargeRquestValidator()
+    {
+        RuleFor(x => x.AccountNumber)
+            .NotEmpty().WithMessage("Account Number is required.")
+            .Matches(@"^\d{10,20}$").WithMessage("Account Number must be a numeric string between 10 and 20 characters.");
+        RuleFor(x => x.NoOfPages)
+            .NotEmpty().WithMessage("Number of pages is required.");
+        RuleFor(x => x.Remarks)
+            .MaximumLength(50).WithMessage("Remarks cannot exceed 50 characters.")
+            .When(x => !string.IsNullOrEmpty(x.Remarks));
     }
 }

@@ -2,7 +2,7 @@ namespace Transactions.API.Entities.DTOs;
 
 public class CashDepositRequest
 {
-    public required string TellerID { get; set; }
+    public required string TellerId { get; set; }
     public required string DebitAccount { get; set; }
     public decimal Amount { get; set; }
     public string Remarks { get; set; }

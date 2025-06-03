@@ -76,7 +76,7 @@ public class TransactionsController : ControllerBase
     }
 
     /// <summary>
-    /// Method to Perform Cash Deposit
+    /// Method to Perform Cash Deposit to Teller Account
     /// </summary>
     /// <param name="cashDepositRequest"></param>
     /// <returns></returns>
@@ -86,17 +86,19 @@ public class TransactionsController : ControllerBase
         Log.Information("Recieved Request at PerformCashDeposit: {@Request}", cashDepositRequest);
         try
         {
-            if (cashDepositRequest == null)
+            if (!_transferValidator.isValid(cashDepositRequest, out List<string> Errors))
             {
-                Log.Information("Invalid request data.: {@Request}", cashDepositRequest);
-                return BadRequest(ResponseManager.ReturnFailedValidations("Invalid request data."));
+                Log.Warning("Perform cash deposit validation failed: {Error}", cashDepositRequest);
+                return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", Errors)));
             }
 
+            var solId = cashDepositRequest.SolId ?? await _transferValidator.GetTellerSolIdByIdAsync(cashDepositRequest.TellerId);
+
             Log.Information("About to PerformCashDeposit with request: {@Request}", cashDepositRequest);
-            var request = CashTransferRequestFactory.Create(cashDepositRequest.TellerID, cashDepositRequest.DebitAccount, cashDepositRequest.Amount, cashDepositRequest.Remarks,
+            var request = CashTransferRequestFactory.Create(cashDepositRequest.TellerId, cashDepositRequest.DebitAccount, cashDepositRequest.Amount, cashDepositRequest.Remarks,
                 cashDepositRequest.ChannelReference, "C", cashDepositRequest.Currency, cashDepositRequest.DenomDetails);
-            var requeststring = JsonSerializer.Serialize(request);
-            var response = await _transactionClient.PerformCashDeposit(request, cashDepositRequest.TellerID);
+
+            var response = await _transactionClient.PerformCashDeposit(request, cashDepositRequest.TellerId, solId);
             Log.Information("Back from Performing CashDeposit with response: {@Response}", response);
             response.TranMessage = "SUCCESSFUL";
 
@@ -135,7 +137,7 @@ public class TransactionsController : ControllerBase
     }
 
     /// <summary>
-    /// Method to Perform Cash Withdrawal
+    /// Method to Perform Cash Withdrawal from Teller Account
     /// </summary>
     /// <param name="cashWithdrawalRequest"></param>
     /// <returns></returns>
@@ -145,17 +147,19 @@ public class TransactionsController : ControllerBase
         Log.Information("Recieved Request at PerformCashWithdrawal: {@Request}", cashWithdrawalRequest);
         try
         {
-            if (cashWithdrawalRequest == null)
+            if (!_transferValidator.isValid(cashWithdrawalRequest, out List<string> Errors))
             {
-                Log.Information("Invalid request data.: {@Request}", cashWithdrawalRequest);
-                return BadRequest(ResponseManager.ReturnFailedValidations("Invalid request data."));
+                Log.Warning("Perform cash withdrawal validation failed: {Error}", cashWithdrawalRequest);
+                return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", Errors)));
             }
 
+            var solId = cashWithdrawalRequest.SolId ?? await _transferValidator.GetTellerSolIdByIdAsync(cashWithdrawalRequest.TellerId);
+
             Log.Information("About to PerformCashWithdrawal with request: {@Request}", cashWithdrawalRequest);
-            var request = CashTransferRequestFactory.Create(cashWithdrawalRequest.TellerID, cashWithdrawalRequest.CreditAccount, cashWithdrawalRequest.Amount, cashWithdrawalRequest.Remarks, 
+            var request = CashTransferRequestFactory.Create(cashWithdrawalRequest.TellerId, cashWithdrawalRequest.CreditAccount, cashWithdrawalRequest.Amount, cashWithdrawalRequest.Remarks,
                 cashWithdrawalRequest.ChannelReference, "D", cashWithdrawalRequest.Currency, cashWithdrawalRequest.DenomDetails);
-            var requeststring = JsonSerializer.Serialize(request);
-            var response = await _transactionClient.PerformCashWithdrawal(request, cashWithdrawalRequest.TellerID);
+
+            var response = await _transactionClient.PerformCashWithdrawal(request, cashWithdrawalRequest.TellerId, solId);
             Log.Information("Back from Performing CashWithdrawal with response: {@Response}", response);
             response.TranMessage = "SUCCESSFUL";
 
@@ -170,7 +174,71 @@ public class TransactionsController : ControllerBase
         }
         catch (Refit.ApiException apiEx)
         {
-            Log.Error("Back from Performing CashWithdrawal with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: apiEx.Content));
+            Log.Error("Back from Performing PerformCashWithdrawal with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: apiEx.Content));
+            if (apiEx.StatusCode == System.Net.HttpStatusCode.UnprocessableContent)
+            {
+                return Ok(new CashTransferResponse
+                {
+                    TranMessage = apiEx.Message,
+                    TransactionIdentification = "",
+                    TransactionDate = DateTime.UtcNow.ToString("yyyy-MM-dd"),
+                    TransactionStatus = "N"
+                });
+            }
+            else
+            {
+                return StatusCode((int)apiEx.StatusCode, apiEx.Content ?? apiEx.Message);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error("An exception has occured at PerformCashDeposit with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Method to Perform Cash Transfer
+    /// </summary>
+    /// <param name="cashTransferRequest"></param>
+    /// <returns></returns>
+    [HttpPost("cash-transfer")]
+    public async Task<IActionResult> PerformCashTransfer (PerformCashTransferRequest performCashTransferRequest)
+    {
+        Log.Information("Recieved Request at PerformCashTransfer");
+        try
+        {
+            if (!_transferValidator.isValid(performCashTransferRequest, out List<string> Errors))
+            {
+                Log.Warning("Perform cash transfer validation failed: {Error}", performCashTransferRequest);
+                return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", Errors)));
+            }
+
+            Log.Information("About to PerformCashTransfer with request: {@Request}", performCashTransferRequest);
+            var request = CashTransferRequestFactory.Create(
+                performCashTransferRequest.TellerId, performCashTransferRequest.CustomerAccount, performCashTransferRequest.Amount, performCashTransferRequest.Remarks,
+                performCashTransferRequest.ChannelReference, performCashTransferRequest.TransType, performCashTransferRequest.Currency, performCashTransferRequest.DenomDetails);
+
+            var solId = await _transferValidator.GetTellerSolIdByIdAsync(performCashTransferRequest.TellerId);
+
+            var response = performCashTransferRequest.TransType == "D" ? await _transactionClient.PerformCashWithdrawal(request, performCashTransferRequest.TellerId, solId) :
+                await _transactionClient.PerformCashDeposit(request, performCashTransferRequest.TellerId, solId);
+
+            Log.Information("Back from Performing CashTransfer with response: {@Response}", response);
+            response.TranMessage = "SUCCESSFUL";
+
+            if (response == null || string.IsNullOrEmpty(response.TransactionIdentification))
+            {
+                response.TranMessage = "FAILED";
+                Log.Information("An error occurred while processing the transaction: {@Request}", request);
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, "Failed to process the cash withdrawal.");
+            }
+
+            return Ok(response);
+        }
+        catch (Refit.ApiException apiEx)
+        {
+            Log.Error("Back from Performing PerformCashTransfer with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: apiEx.Content));
             if (apiEx.StatusCode == System.Net.HttpStatusCode.UnprocessableContent)
             {
                 return Ok(new CashTransferResponse
@@ -188,7 +256,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error("An exception has occured at PerformCashDeposit with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            Log.Error("An exception has occured at PerformCashTransfer with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
             return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
         }
     }
@@ -307,7 +375,7 @@ public class TransactionsController : ControllerBase
         if (!_transferValidator.isValid(chargeRequest, out List<string> Errors))
         {
             Log.Warning("Perform charge validation failed: {Error}", chargeRequest);
-            return BadRequest(Errors);
+            return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", Errors)));
         }
         try
         {
@@ -447,7 +515,7 @@ public class TransactionsController : ControllerBase
         if (!_transferValidator.isValid(chargeRequest, out List<string> Errors))
         {
             Log.Warning("Perform charge validation failed: {Error}", chargeRequest);
-            return BadRequest(Errors);
+            return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", Errors)));
         }
         try
         {

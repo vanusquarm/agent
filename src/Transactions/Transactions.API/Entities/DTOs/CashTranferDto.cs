@@ -120,3 +120,15 @@ public class CashTransferResponse
     [JsonPropertyName("tranMessage")]
     public string? TranMessage { get; set; }
 }
+
+public class PerformCashTransferRequest
+{
+    public string TellerId { get; set; }
+    public string CustomerAccount { get; set; }
+    public decimal Amount { get; set; }
+    public string Remarks { get; set; }
+    public string ChannelReference { get; set; }
+    public string TransType { get; set; }
+    public string? Currency { get; set; }
+    public Dictionary<string, string>? DenomDetails { get; set; }
+}
