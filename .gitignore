@@ -16,3 +16,5 @@ app
 /src/Transactions/Transactions.API/Properties/PublishProfiles
 /src/Loans/Loans.API/Properties/PublishProfiles
 /src/Gateways/YarpGateway/Properties/PublishProfiles
+/src/Transactions/Transactions.API/.config/dotnet-tools.json
+/src/Customers/Customers.API/.config/dotnet-tools.json

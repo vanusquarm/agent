@@ -71,7 +71,6 @@ namespace Transactions.API.Controllers
         {
             try
             {
-                //HttpContext.Items.Add("RequestPayload", JsonSerializer.Serialize(request));
                 var response = await _fxSalesTransferService.ConvertCurrency(request);
 
                 return Ok(response);
@@ -79,7 +78,6 @@ namespace Transactions.API.Controllers
             catch (Refit.ApiException apiEx) { 
                 return StatusCode((int)apiEx.StatusCode,new { apiEx.Message }); 
             }
-
 
         }
 

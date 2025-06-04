@@ -6,6 +6,7 @@ using Serilog;
 using Finacle.Core;
 using Transactions.API.Filters;
 using Transactions.API.Entities;
+using Transactions.API.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.Channels.json", optional: true, reloadOnChange: true);

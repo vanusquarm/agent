@@ -8,6 +8,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Transactions.API.Entities;
+using Transactions.API.Validators;
 
 namespace Transactions.API.Controllers;
 
@@ -536,10 +537,4 @@ public class TransactionsController : ControllerBase
             return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
         }
     }
-
-    private string MapService(string key)
-    {
-        return _serviceMap.TryGetValue(key.ToUpper(), out string value) ? value : _serviceMap["DEFAULT"];
-    }
-
 }

@@ -2,7 +2,7 @@
 using FluentValidation;
 using Transactions.API.Entities.DTOs;
 
-namespace Transactions.API.Services;
+namespace Transactions.API.Validators;
 
 // Services/TransferValidator.cs
 public class TransferValidator //: ITransferValidator

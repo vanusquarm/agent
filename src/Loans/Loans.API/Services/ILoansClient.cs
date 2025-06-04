@@ -14,10 +14,10 @@ namespace Loans.API.Services
         Task<dynamic> DiburseLoan(string accountId, DisbursementRequestDTO disburseRequestDTO);
 
         // 
-        [Get("/v2/unsecured-loan-accounts/{accountIdentification}/interest-details  ")]
+        [Get("/v2/unsecured-loan-accounts/{accountIdentification}/interest-details")]
         Task<dynamic> GetUnsecuredLoanInterest(string accountIdentification);
 
-        [Get("/v2/unsecured-loan-accounts/{accountIdentification}/interest-details  ")]
+        [Get("/v2/unsecured-loan-accounts/{accountIdentification}/interest-details")]
         Task<dynamic> ModifyUnsecuredLoanInterest(string accountIdentification, UnsecuredLoanInterestRateDto unsecuredLoanInterestRateDto);
 
         [Get("/v2/unsecured-loan-accounts/{accountIdentification}/basic")]
