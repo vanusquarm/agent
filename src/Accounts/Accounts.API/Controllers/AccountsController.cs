@@ -24,7 +24,7 @@ namespace Acccounts.API.Controllers
         [HttpGet("{accountId}")]
         public async Task<IActionResult> GetAccountAsync(string accountId)
         {
-            Log.Information("Recieved Request at GetAccountAsync: {Request}", accountId);
+            Log.Information("Received request at GetAccountAsync: {Request}", accountId);
 
             var validationResult = await accountValidator.ValidateAsync(accountId);
             if (!validationResult.IsValid)
@@ -33,53 +33,42 @@ namespace Acccounts.API.Controllers
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
                 return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
             }
-            var accountDetails = new object();
-            try
+
+            var strategies = new List<Func<Task<object>>>
             {
-                Log.Information("Recieved Request: {Request}", accountId);
-                Log.Information("About to get account details with request: {Request}", accountId);
-                accountDetails = await accountClient.GetAccountDetails(new { accountId });
-                Log.Information("Back from getting account details with response: {@Response}", accountDetails);
-            }
-            catch (Exception ex)
+                () => accountClient.GetAccountDetails(new { accountId }),
+                () => accountClient.GetSavingsAccount(accountId),
+                () => accountClient.GetCurrentAccount(accountId),
+                () => accountClient.GetCorpCurrentAccount(accountId)
+            };
+
+            foreach (var strategy in strategies)
             {
-                Log.Error("An exception has occured trying to get account details with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
                 try
                 {
-                    Log.Information("About to get savings account with request: {Request}", accountId);
-                    accountDetails = await accountClient.GetSavingsAccount(accountId);
-                    Log.Information("Back from getting savings account with response: {@Response}", accountDetails);
+                    Log.Information("Attempting to retrieve account with strategy: {Strategy}", strategy.Method.Name);
+                    var result = await strategy();
+                    Log.Information("Successful response from strategy {Strategy}: {@Response}", strategy.Method.Name, result);
+                    return Ok(result);
                 }
-                catch (Exception exi)
+                catch (Refit.ApiException apiEx)
                 {
-                    Log.Error("An exception has occured trying to get savings account with message: {Message} and stack trace: {StackTrace}", exi.Message, exi.StackTrace);
-                    try
+                    Log.Warning("Refit API exception in {Strategy}: {StatusCode} - {Content}", strategy.Method.Name, apiEx.StatusCode, apiEx.Content);
+                    if (strategy == strategies.Last())
                     {
-                        Log.Information("About to get current account with request: {Request}", accountId);
-                        accountDetails = await accountClient.GetCurrentAccount(accountId);
-                        Log.Information("Back from getting current account with response: {@Response}", accountDetails);
+                        return StatusCode((int)apiEx.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: apiEx.Content));
                     }
-                    catch (Exception exii)
-                    {
-                        Log.Error("An exception has occured trying to get current account with message: {Message} and stack trace: {StackTrace}", exii.Message, exii.StackTrace);
-                        try
-                        {
-                            Log.Information("About to get Corporate Current account with request: {Request}", accountId);
-                            accountDetails = await accountClient.GetCorpCurrentAccount(accountId);
-                            Log.Information("Back from getting Corporate Current account with response: {@Response}", accountDetails);
-                        }
-                        catch (Refit.ApiException exiii)
-                        {
-                            Log.Error("Back from getting account details with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: exiii.Content));
-                            return StatusCode((int)exiii.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: exiii.Content));
-                        }
-                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning("Exception in {Strategy}: {Message} | {StackTrace}", strategy.Method.Name, ex.Message, ex.StackTrace);
                 }
             }
-            if (accountDetails != null) { return Ok(accountDetails); }
-            Log.Information("Account details could not be retrieved");
+
+            Log.Information("Account details could not be retrieved after all failover attempts.");
             return NotFound("Account details could not be retrieved");
         }
+
 
         /// <summary>
         /// Async Method to Get Account Statements
