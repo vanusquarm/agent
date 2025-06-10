@@ -433,9 +433,6 @@ namespace Customers.API.Controllers
             Log.Information("Recieved Request at GetTellerTransactions: {Request}", customerId);
             try
             {
-                if (!CustomerValidator.IsValid(customerId, out List<string> errors))
-                    return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
-
                 var request = new Dictionary<string, string> { { "tellerId", customerId }, { "tranDate", date ?? DateTime.UtcNow.ToString("yyyy-MM-dd") }  };
                 Log.Information("About to GetTellerTransactionDetails with request: {@Request}", request);
                 var resp = await customerClient.GetTellerTransactionDetails(request);
@@ -460,9 +457,6 @@ namespace Customers.API.Controllers
             Log.Information("Recieved Request at GetTellerAccounts: {Request}", customerId);
             try
             {
-                if (!CustomerValidator.IsValid(customerId, out List<string> errors))
-                    return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", errors)));
-
                 var request = new Dictionary<string, string> { { "userId", customerId } };
                 Log.Information("About to GetTellerAccountDetails with request: {@Request}", request);
                 var resp = await customerClient.GetTellerAccountDetails(request);

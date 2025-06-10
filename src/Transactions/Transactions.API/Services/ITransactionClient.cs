@@ -54,13 +54,6 @@ public interface ITransactionClient
     [Post("/v2/bankBranchBodDateDtls/getbankBranchBodDateDtls")]
     Task<BankDateDto> GetTransactionBankDate([Body] Dictionary<string, string> request);
 
-
-    [Post("/v2/FXRateDtls/getFXRateDtlssl")]
-    Task<FxSaleRateResponse> GetFxRates(string rateCodeString, string requestId);
-
-    [Post("/v2/FXRateDtls/getFXRateDtlssl")]
-    Task<FxSaleRateResponse> GetFxRates(RatesRequestModel rateCodeString);
-
     [Post("/v2/eventIdchargeDtls/geteventIdchargeDtls")]
     Task<object> ChargeInquiry(ChargeInquiryRequest request);
 

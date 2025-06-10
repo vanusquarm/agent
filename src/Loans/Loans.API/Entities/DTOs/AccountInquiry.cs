@@ -93,6 +93,12 @@ public class AccountInquiryDetailsResponseDto
 
         [JsonPropertyName("maturityDate")]
         public string MaturityDate { get; set; }
+
+        [JsonPropertyName("operativeAccount")]
+        public string OperativeAccount { get; set; }
+
+        [JsonPropertyName("interestAccrued")]
+        public string InterestAccrued { get; set; }
     }
 
 }
