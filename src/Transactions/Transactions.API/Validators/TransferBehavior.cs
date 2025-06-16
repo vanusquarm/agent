@@ -137,15 +137,27 @@ public class TransferValidator //: ITransferValidator
         var recipientAccount = await _accountService.GetAccountAsync(request.DestinationAccountId);
         double.TryParse(senderAccount.EffectiveAvailableBalanceAmount.ToString(), out var availableBalance);
 
-        if (senderAccount?.AccountName == null)
+        if (string.IsNullOrEmpty(senderAccount?.AccountName))
         {
             result.ErrorMessage = "Sender account not found";
             return result;
         }
 
-        if (recipientAccount?.AccountName == null)
+        if (senderAccount?.AccountFreezeStatus == "D" || senderAccount?.AccountFreezeStatus == "T")
+        {
+            result.ErrorMessage = "Sender account is frozen and cannot be Debited";
+            return result;
+        }
+
+        if (string.IsNullOrEmpty(recipientAccount?.AccountName))
         {
             result.ErrorMessage = "Recipient account not found";
+            return result;
+        }
+
+        if (senderAccount?.AccountFreezeStatus == "C" || senderAccount?.AccountFreezeStatus == "T")
+        {
+            result.ErrorMessage = "Recipient account is frozen and cannot be Credited";
             return result;
         }
 
