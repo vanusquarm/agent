@@ -286,10 +286,6 @@ public class PerformChargeRequestDtoValidator : AbstractValidator<PerformChargeR
 
         RuleFor(x => x.ChargeAmount)
             .GreaterThan(0).WithMessage("ChargeAmount must be greater than zero.");
-
-        RuleFor(x => x.Currency)
-            .NotEmpty().WithMessage("Currency is required.")
-            .Must(currency => currency == "GHS").WithMessage("Currency must be 'GHS'.");
     }
 }
 

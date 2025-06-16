@@ -38,10 +38,10 @@ public class ChargeDetailsDto
     public string ChrgAmt { get; set; }
 
     [JsonPropertyName("chrgCrncy")]
-    public string? ChrgCrncy { get; set; } = "GHS";
+    public string? ChrgCrncy { get; set; }
 
     [JsonPropertyName("remarks")]
-    public string? Remarks { get; set; } = "";
+    public string? Remarks { get; set; }
 
     [JsonPropertyName("delivery_channel")]
     public string? DeliveryChannel { get; set; } = "API";
@@ -61,8 +61,8 @@ public class PerformChargeRequestDto
     public string TransactionReference { get; set; }
     public string AccountId { get; set; }
     public string ChargeType { get; set; }
-    public decimal ChargeAmount { get; set; }  // Changed to decimal
-    public string Currency { get; set; } = "GHS";  // Changed to decimal
+    public decimal ChargeAmount { get; set; }
+    public string Currency { get; set; }
 }
 
 public class StatementChargeRquest
