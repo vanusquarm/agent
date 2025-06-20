@@ -380,7 +380,7 @@ public class TransactionsController : ControllerBase
         }
         try
         {
-            var currency = chargeRequest.AccountId ?? Utils.ParseAccountNumber(chargeRequest.AccountId).Currency;
+            var currency = chargeRequest.Currency ?? Utils.ParseAccountNumber(chargeRequest.AccountId).Currency;
             var request = new ChargeDetailsDto
             {
                 AccountNumber = chargeRequest.AccountId,
