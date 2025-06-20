@@ -38,6 +38,19 @@ namespace Finacle.Core
             return JsonSerializer.Deserialize<TellerDetails>(content);
         }
 
+        public async Task<TellerAccountDetails> GetTellerAccountDetailsAsync(string customerId, string requestId = null)
+        {
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/customers/{customerId}/teller-accounts");
+            requestMessage.Headers.Add("RequestId", requestId ?? Guid.NewGuid().ToString());
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<TellerAccountDetails>(content);
+        }  
+
         public bool IsCustomerStaff(string customerId, string requestId = null)
         {
             var customer = GetCustomer<GetRetailCustomerResponse>(customerId, requestId);

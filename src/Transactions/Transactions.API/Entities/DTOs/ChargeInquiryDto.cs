@@ -41,7 +41,7 @@ public class ChargeDetailsDto
     public string? ChrgCrncy { get; set; }
 
     [JsonPropertyName("remarks")]
-    public string? Remarks { get; set; }
+    public string? Remarks { get; set; } = string.Empty;
 
     [JsonPropertyName("delivery_channel")]
     public string? DeliveryChannel { get; set; } = "API";
