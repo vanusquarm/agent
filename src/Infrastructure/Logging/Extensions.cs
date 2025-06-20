@@ -94,7 +94,7 @@ namespace Finacle.Infrastructure.Logging
                     responseBody.Seek(0, SeekOrigin.Begin);
                     var responseText = await new StreamReader(responseBody).ReadToEndAsync();
                     apiCall.ResponseCode = context.Response.StatusCode.ToString().Split(50, 1);
-                    apiCall.ResponseParam = responseText.Split(200, 1);
+                    apiCall.ResponseParam = responseText;
                     apiCall.ReponseTime = DateTime.UtcNow;
 
                     responseBody.Seek(0, SeekOrigin.Begin);
