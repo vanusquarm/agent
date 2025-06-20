@@ -187,15 +187,15 @@ public class TransferValidator //: ITransferValidator
     {
         try
         {
-            var tellerDetails = await _accountService.GetTellerDetailsAsync(tellerId);
+            var tellerDetails = await _accountService.GetTellerAccountDetailsAsync(tellerId);
 
-            if (tellerDetails == null || string.IsNullOrEmpty(tellerDetails.SolId))
+            if (tellerDetails == null || tellerDetails.ErrorFlg == "Y")
             {
                 _logger.LogWarning($"Teller with ID {tellerId} not found.");
                 return "";
             }
 
-            var solId = tellerDetails.SolId;
+            var solId = tellerDetails?.TellerDetails?.FirstOrDefault().AccountNumber.Substring(1, 3);
 
             _logger.LogInformation($"Teller with ID {tellerId} is valid. SolId: {solId}");
             return solId;

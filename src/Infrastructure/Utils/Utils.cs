@@ -32,8 +32,8 @@ namespace Finacle.Infrastructure.Utils
             return code switch
             {
                 "0" => "OFFICE",
-                "1" or "2" => "CURRENT",
-                "3" => "SAVINGS",
+                "1" or "2" => "SAVINGS",
+                "3" => "CURRENT",
                 _ => "UNKNOWN"
             };
         }
