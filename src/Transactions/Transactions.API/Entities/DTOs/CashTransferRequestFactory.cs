@@ -43,7 +43,7 @@ public class CashTransferRequestFactory
                 }
             },
             UserTransactionCode = "102",
-            TransactionRemarks = partTransactionRemarks,
+            TransactionRemarks = partTransactionRemarks.Split(50, 1),
             EntererId = debitAccount
         };
     }

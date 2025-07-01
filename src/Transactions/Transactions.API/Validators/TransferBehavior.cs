@@ -304,7 +304,7 @@ public class CashWithdrawalRequestValidator : AbstractValidator<CashWithdrawalRe
             .GreaterThan(0).WithMessage("Amount must be greater than zero.");
 
         RuleFor(x => x.Remarks)
-            .MaximumLength(50).WithMessage("Remarks cannot exceed 50 characters.");
+            .NotEmpty().WithMessage("Remarks is required.");
 
         RuleFor(x => x.ChannelReference)
             .NotEmpty().WithMessage("ChannelReference is required.")
@@ -335,7 +335,7 @@ public class CashDepositRequestValidator : AbstractValidator<CashDepositRequest>
             .GreaterThan(0).WithMessage("Amount must be greater than zero.");
 
         RuleFor(x => x.Remarks)
-            .MaximumLength(50).WithMessage("Remarks cannot exceed 50 characters.");
+            .NotEmpty().WithMessage("Remarks is required.");
 
         RuleFor(x => x.ChannelReference)
             .NotEmpty().WithMessage("ChannelReference is required.")
@@ -372,8 +372,7 @@ public class PerformCashTransferRequestValidator : AbstractValidator<PerformCash
             .WithMessage("Transaction Type must be either 'D' or 'C'.");
 
         RuleFor(x => x.Remarks)
-            .NotEmpty().WithMessage("Remarks is required.")
-            .MaximumLength(80).WithMessage("Remarks cannot exceed 80 characters.");
+            .NotEmpty().WithMessage("Remarks is required.");
 
         RuleFor(x => x.ChannelReference)
             .NotEmpty().WithMessage("ChannelReference is required.")
