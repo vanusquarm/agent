@@ -17,8 +17,8 @@ namespace Customers.API.Services
         Task<dynamic> GetCorporateCustomer(string customerId, string prop);
 
         // Retail Customer
-        [Post("/retail-customers")] 
-        Task<CreateRetailCustomerResponse> CreateRetailCustomer(CreateRetailCustomerRequest createRCRequest);
+        [Post("/retail-customers")]
+        Task<CreateCustomerDto> CreateRetailCustomer(CreateCustomerDto createRCRequest);
 
         // Retail Customer
         [Post("/retail-customers")]

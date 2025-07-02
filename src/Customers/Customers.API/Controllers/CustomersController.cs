@@ -140,27 +140,20 @@ namespace Customers.API.Controllers
         /// <param name="customerType"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateCustomer(object customerDto, string customerType)
+        public async Task<IActionResult> CreateCustomer(CreateCustomerDto customerDto)
         {
             try
             {
-                if (customerType.ToUpper() == CustomerType.Corporate)
+                if (customerDto != null)
                 {
-                    Log.Information("Corporate. Now about to CreateCorporateCustomer with request: {@Request}", (customerDto, customerType));
-                    var customer = await customerClient.CreateCorporateCustomer((CreateCorpCustomerRequest)customerDto);
-                    Log.Information("Back from Creating CorporateCustomer with response: {@Response}", customer); 
-                    return Ok(customer);
-                }
-                else if (customerType.ToUpper() == CustomerType.Retail)
-                {
-                    Log.Information("Retail. Now about to CreateRetailCustomer with request: @Request}", (customerDto, customerType));
-                    var customer = await customerClient.CreateRetailCustomer((CreateRetailCustomerRequest)customerDto);
-                    Log.Information("Back from Creating RetailCustomer with response: {@Response}", customer);
+                    Log.Information("About to CreateRetailCustomer2 with request: {@Request}", (customerDto));
+                    var customer = await customerClient.CreateRetailCustomer(customerDto);
+                    Log.Information("Back from Creating RetailCustomer2 with response: {@Response}", customer);
                     return Ok(customer);
                 }
                 else
                 {
-                    Log.Information("No record found for request: {@Request}", (customerDto, customerType));
+                    Log.Information("No record found for request: {@Request}", (customerDto));
                     return NotFound();
                 }
             }
