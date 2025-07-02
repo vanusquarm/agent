@@ -25,7 +25,7 @@ public class CashTransferRequestFactory
                     TransactionCurrency = currency,
                     ValuedDate = transactionDate,
                     PrintAdvice = "O",
-                    TransactionParticulars = referenceNumber
+                    TransactionParticulars = partTransactionRemarks.Split(80, 1),
                 }
             },
             DenominationDetails = new List<DenominationDetail>
@@ -43,7 +43,7 @@ public class CashTransferRequestFactory
                 }
             },
             UserTransactionCode = "102",
-            TransactionRemarks = partTransactionRemarks.Split(50, 1),
+            TransactionRemarks = referenceNumber.Split(50, 1),
             EntererId = debitAccount
         };
     }

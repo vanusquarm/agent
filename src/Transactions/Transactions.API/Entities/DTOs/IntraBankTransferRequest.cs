@@ -84,6 +84,10 @@ public class IntraBankTransferTransactionDetail
     [JsonPropertyName("userPartTransactionCode")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string UserPartTransactionCode { get; set; }
+
+    [JsonPropertyName("intrumentDetails")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public InstrumentDetails? InstrumentDetails { get; set; }
 }
  
 public class TransferMiscellaneousDetailsType

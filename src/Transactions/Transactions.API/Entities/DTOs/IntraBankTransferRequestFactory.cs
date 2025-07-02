@@ -1,3 +1,4 @@
+using Finacle.Infrastructure.Utils;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 
@@ -5,7 +6,8 @@ namespace Transactions.API.Entities.DTOs;
 
 public class IntraBankTransferRequestFactory
 {
-    public static IntraBankTransferRequest Create(string requestReference, string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, string? currency, string? docNum, string? chargeEventId, string? batchId, string? userPartTransactionCode)
+    public static IntraBankTransferRequest Create(string requestReference, string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, 
+        string? currency, string? docNum, string? chargeEventId, string? batchId, string? explanationCode, ChequeDetails? chequeDetails = null)
     {
         DateTime transactionDate = DateTime.ParseExact(
             DateTime.Now.ToString("yyyy-MM-dd"),
@@ -13,7 +15,7 @@ public class IntraBankTransferRequestFactory
             CultureInfo.InvariantCulture
         );
 
-        var(remarksPart1, remarksPart2, remarksPart3) = SplitTransactionRemarks(partTransactionRemarks);
+        var (remarksPart1, remarksPart2, remarksPart3) = SplitTransactionRemarks(partTransactionRemarks);
 
         return new IntraBankTransferRequest
         {
@@ -21,7 +23,7 @@ public class IntraBankTransferRequestFactory
             TransactionSubType = IntraBankTransferConstants.TransactionSubType,
             ChannelIdentification = (channel.Length >= 3) ? channel.Substring(0, 3).ToUpper() : IntraBankTransferConstants.ChannelIdentification,
             EntererId = null,
-            UserTransactionCode = userPartTransactionCode ?? IntraBankTransferConstants.UserTransactionCode,
+            UserTransactionCode = explanationCode ?? IntraBankTransferConstants.UserTransactionCode,
             TransferTransactionDetail = new List<IntraBankTransferTransactionDetail>
             {
                 new IntraBankTransferTransactionDetail
@@ -39,6 +41,13 @@ public class IntraBankTransferRequestFactory
                     PartTransactionRemarks2 = remarksPart3,
                     LienDetailsList = new List<LienDetails>(),
                     ChargeEventId = chargeEventId,
+                    InstrumentDetails = chequeDetails != null ? new InstrumentDetails
+                    {
+                        InstrumentDate = chequeDetails.InstrumentDate,
+                        InstrumentAlpha = chequeDetails.InstrumentAlpha,
+                        InstrumentNumber = chequeDetails.InstrumentNumber,
+                        InstrumentType = chequeDetails.InstrumentType
+                    }: null,
                     MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
                     {
                         DocumentNumber = docNum ?? "DocNum",
@@ -46,7 +55,7 @@ public class IntraBankTransferRequestFactory
                         Freetxt3 = requestReference,
                         Freetxt4 = batchId
                     },
-                    UserPartTransactionCode = userPartTransactionCode ?? IntraBankTransferConstants.UserTransactionCode,
+                    UserPartTransactionCode = explanationCode ?? IntraBankTransferConstants.UserTransactionCode,
                 },
                 new IntraBankTransferTransactionDetail
                 {
@@ -62,9 +71,73 @@ public class IntraBankTransferRequestFactory
                     ReferenceNumber = referenceNumber.Split(20, 1),
                     PartTransactionRemarks2 = remarksPart3,
                     LienDetailsList = new List<LienDetails>(),
-                    UserPartTransactionCode = userPartTransactionCode ?? IntraBankTransferConstants.UserTransactionCode,
+                    UserPartTransactionCode = explanationCode ?? IntraBankTransferConstants.UserTransactionCode,
                 }
             }
+        };
+    }
+
+    public static IntraBankTransferRequest CreateBatch(string requestReference, string debitAccount, List<CreditTarget> creditAccounts, string partTransactionRemarks, string referenceNumber, string channel, 
+        string? currency, string? chargeEventId, string? batchId, string? explanationCode)
+    {
+        DateTime transactionDate = DateTime.ParseExact(
+            DateTime.Now.ToString("yyyy-MM-dd"),
+            "yyyy-MM-dd",
+            CultureInfo.InvariantCulture
+        );
+        currency = currency ?? Utils.ParseAccountNumber(debitAccount).Currency;
+        var (remarksPart1, remarksPart2, remarksPart3) = SplitTransactionRemarks(partTransactionRemarks);
+
+        var totalDebitAmount = creditAccounts.Sum(c => c.Amount);
+
+        return new IntraBankTransferRequest
+        {
+            TransactionType = IntraBankTransferConstants.TransactionType,
+            TransactionSubType = IntraBankTransferConstants.TransactionSubType,
+            ChannelIdentification = (channel.Length >= 3) ? channel.Substring(0, 3).ToUpper() : IntraBankTransferConstants.ChannelIdentification,
+            TransferTransactionDetail = new List<IntraBankTransferTransactionDetail>
+            {
+                // Debit leg
+                new IntraBankTransferTransactionDetail
+                {
+                    SerialNumber = IntraBankTransferConstants.SerialNumberDebit,
+                    PartTransactionType = IntraBankTransferConstants.PartTransactionTypeDebit,
+                    AccountIdentification = debitAccount,
+                    TransactionAmount = totalDebitAmount,
+                    TransactionCurrency = currency,
+                    TransactionValueDate = transactionDate,
+                    TransactionParticulars = remarksPart1,
+                    Rate = IntraBankTransferConstants.Rate,
+                    PartTransactionRemarks = remarksPart2,
+                    ReferenceNumber = referenceNumber.Split(20, 1),
+                    PartTransactionRemarks2 = remarksPart3,
+                    LienDetailsList = new List<LienDetails>(),
+                    ChargeEventId = chargeEventId,
+                    MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
+                    {
+                        DocumentNumber = "Batch",
+                        Freetxt2 = requestReference,
+                        Freetxt3 = requestReference,
+                        Freetxt4 = batchId
+                    },
+                    UserPartTransactionCode = explanationCode ?? IntraBankTransferConstants.UserTransactionCode,
+                },
+            } // Credit legs
+            .Concat(creditAccounts.Select((creditAccount, index) => new IntraBankTransferTransactionDetail
+            {
+                SerialNumber = (index + IntraBankTransferConstants.PartTransactionTypeCredit).ToString(),
+                PartTransactionType = IntraBankTransferConstants.PartTransactionTypeCredit,
+                AccountIdentification = creditAccount?.AccountId.Trim(),
+                TransactionAmount = creditAccount.Amount,
+                TransactionCurrency = currency,
+                TransactionValueDate = transactionDate,
+                TransactionParticulars = remarksPart1,
+                Rate = IntraBankTransferConstants.Rate,
+                PartTransactionRemarks = remarksPart2,
+                ReferenceNumber = referenceNumber.Split(20, 1),
+                PartTransactionRemarks2 = remarksPart3,
+                LienDetailsList = new List<LienDetails>()
+            })).ToList()
         };
     }
 
@@ -97,4 +170,17 @@ public static class StringExtensions
     {
         return input.Split(chunkSize).Skip(chunkIndex - 1).FirstOrDefault() ?? string.Empty;
     }
+}
+
+
+public class CreditTarget
+{
+    public string AccountId { get; set; }
+    public decimal Amount { get; set; }
+}
+
+public class BatchTransactionRequest
+{
+    public string SourceAccountId { get; set; }
+    public List<CreditTarget> CreditTargets { get; set; } = new();
 }
