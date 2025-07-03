@@ -1,4 +1,5 @@
-﻿using Customers.API.Entities.DTOs;
+﻿using Customers.API.Entities;
+using Customers.API.Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Refit;
 
@@ -18,11 +19,7 @@ namespace Customers.API.Services
 
         // Retail Customer
         [Post("/retail-customers")]
-        Task<CreateCustomerDto> CreateRetailCustomer(CreateCustomerDto createRCRequest);
-
-        // Retail Customer
-        [Post("/retail-customers")]
-        Task<CreateRetailCustomerResponseDto2> CreateRetailCustomer2(CreateRetailCustomerRequestDto2 createRCRequest);
+        Task<CreateRetailCustomerResponse> CreateRetailCustomer(CreateCustomerDto createRCRequest);
 
         [Get("/retail-customers/{customerId}")]
         Task<GetRetailCustomerResponse> GetRetailCustomer(string customerId);

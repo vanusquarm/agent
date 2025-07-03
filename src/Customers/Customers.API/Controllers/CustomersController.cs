@@ -137,17 +137,20 @@ namespace Customers.API.Controllers
         /// Method to Create Customer
         /// </summary>
         /// <param name="customerDto"></param>
-        /// <param name="customerType"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateCustomer(CreateCustomerDto customerDto)
+        public async Task<IActionResult> CreateCustomer(CreateBasicCustomerDto customerDto)
         {
             try
             {
                 if (customerDto != null)
                 {
                     Log.Information("About to CreateRetailCustomer2 with request: {@Request}", (customerDto));
-                    var customer = await customerClient.CreateRetailCustomer(customerDto);
+                    var request = new CreateCustomerDto(customerDto);
+                    Log.Information("Back from Creating RetailCustomer2 with response: {@Response}", request);
+
+                    Log.Information("About to CreateRetailCustomer2 with request: {@Request}", (customerDto));
+                    var customer = await customerClient.CreateRetailCustomer(request);
                     Log.Information("Back from Creating RetailCustomer2 with response: {@Response}", customer);
                     return Ok(customer);
                 }
@@ -159,45 +162,7 @@ namespace Customers.API.Controllers
             }
             catch (Refit.ApiException ex)
             {
-                Log.Error("Back from CreateCustomer with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
-                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
-            }
-        }
-
-        /// <summary>
-        /// Method to Create Customer2
-        /// </summary>
-        /// <param name="customerDto"></param>
-        /// <param name="customerType"></param>
-        /// <returns></returns>
-        [HttpPost("createCustomer/{customerType}")]
-        public async Task<IActionResult> CreateCustomer2(CreateRetailCustomerRequestDto2 customerDto, string customerType)
-        {
-            try
-            {
-                if (customerType.ToUpper() == CustomerType.Corporate)
-                {
-                    Log.Information("Corporate. Now about to CreateCorporateCustomer with request: {@Request}", (customerDto, customerType));
-                    //await customerClient.CreateCorporateCustomer((CreateCorpCustomerRequest)customerDto);
-                    Log.Information("Back from Creating CorporateCustomer with response: {@Response}");
-                    return Ok();
-                }
-                else if (customerType.ToUpper() == CustomerType.Retail)
-                {
-                    Log.Information("Retail. Now about to CreateRetailCustomer2 with request: @Request}", (customerDto, customerType));
-                    var customer = await customerClient.CreateRetailCustomer2((CreateRetailCustomerRequestDto2) customerDto);
-                    Log.Information("Back from Creating RetailCustomer2 with response: {@Response}", customer);
-                    return Ok(customer);
-                }
-                else
-                {
-                    Log.Information("No record found for request: {@Request}", (customerDto, customerType));
-                    return NotFound();
-                }
-            }
-            catch (Refit.ApiException ex)
-            {
-                Log.Error("Back from CreateCustomer2 with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                Log.Error("An exception has occured at CreateCustomer2 with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
         }

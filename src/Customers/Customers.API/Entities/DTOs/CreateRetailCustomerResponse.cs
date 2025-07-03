@@ -5,124 +5,124 @@ namespace Customers.API.Entities.DTOs
     public class CreateRetailCustomerResponse
     {
         [JsonPropertyName("customerIdentifier")]
-        public string CustomerIdentifier { get; set; }
+        public string? CustomerIdentifier { get; set; }
 
         [JsonPropertyName("salutation")]
-        public string Salutation { get; set; }
+        public string? Salutation { get; set; }
 
         [JsonPropertyName("BVN")]
-        public string BVN { get; set; }
+        public string? BVN { get; set; }
 
         [JsonPropertyName("TierInformation")]
-        public string TierInformation { get; set; }
+        public string? TierInformation { get; set; }
 
         [JsonPropertyName("EST")]
-        public string EST { get; set; }
+        public string? EST { get; set; }
 
         [JsonPropertyName("firstName")]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         [JsonPropertyName("middleName")]
-        public string MiddleName { get; set; }
+        public string? MiddleName { get; set; }
 
         [JsonPropertyName("lastName")]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         [JsonPropertyName("suffix")]
-        public string Suffix { get; set; }
+        public string? Suffix { get; set; }
 
         [JsonPropertyName("gender")]
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
         [JsonPropertyName("dob")]
-        public string Dob { get; set; }
+        public string? Dob { get; set; }
 
         [JsonPropertyName("minor")]
-        public string Minor { get; set; }
+        public string? Minor { get; set; }
 
         [JsonPropertyName("guardianDetails")]
-        public GuardianDetails GuardianDetails { get; set; }
+        public GuardianDetails? GuardianDetails { get; set; }
 
         [JsonPropertyName("seniorCitizen")]
-        public string SeniorCitizen { get; set; }
+        public string? SeniorCitizen { get; set; }
 
         [JsonPropertyName("phoneDetails")]
-        public List<PhoneDetail> PhoneDetails { get; set; }
+        public List<PhoneDetail>? PhoneDetails { get; set; }
 
         [JsonPropertyName("emailDetails")]
-        public List<EmailDetail> EmailDetails { get; set; }
+        public List<EmailDetail>? EmailDetails { get; set; }
 
         [JsonPropertyName("addressDetails")]
-        public List<AddressDetail> AddressDetails { get; set; }
+        public List<AddressDetail>? AddressDetails { get; set; }
 
         [JsonPropertyName("employmentDetails")]
-        public List<EmploymentDetail> EmploymentDetails { get; set; }
+        public List<EmploymentDetail>? EmploymentDetails { get; set; }
 
         [JsonPropertyName("riskRatingDetails")]
-        public List<RiskRatingDetail> RiskRatingDetails { get; set; }
+        public List<RiskRatingDetail>? RiskRatingDetails { get; set; }
 
         [JsonPropertyName("relatedParty")]
-        public List<RelatedParty> RelatedParty { get; set; }
+        public List<RelatedParty>? RelatedParty { get; set; }
 
         [JsonPropertyName("productPreferenceDetails")]
-        public List<ProductPreferenceDetail> ProductPreferenceDetails { get; set; }
+        public List<ProductPreferenceDetail>? ProductPreferenceDetails { get; set; }
 
         [JsonPropertyName("communicationPreferenceDetails")]
-        public List<CommunicationPreferenceDetail> CommunicationPreferenceDetails { get; set; }
+        public List<CommunicationPreferenceDetail>? CommunicationPreferenceDetails { get; set; }
 
         [JsonPropertyName("educationDetails")]
-        public List<EducationDetail> EducationDetails { get; set; }
+        public List<EducationDetail>? EducationDetails { get; set; }
 
         [JsonPropertyName("customerDocuments")]
-        public List<CustomerDocument> CustomerDocuments { get; set; }
+        public List<CustomerDocument>? CustomerDocuments { get; set; }
 
         [JsonPropertyName("relationshipManagerDetails")]
-        public List<RelationshipManagerDetail> RelationshipManagerDetails { get; set; }
+        public List<RelationshipManagerDetail>? RelationshipManagerDetails { get; set; }
 
         [JsonPropertyName("primaryBranch")]
-        public string PrimaryBranch { get; set; }
+        public string? PrimaryBranch { get; set; }
 
         [JsonPropertyName("segment")]
-        public string Segment { get; set; }
+        public string? Segment { get; set; }
 
         [JsonPropertyName("subsegment")]
-        public string Subsegment { get; set; }
+        public string? Subsegment { get; set; }
 
         [JsonPropertyName("relationshipStartDate")]
-        public string RelationshipStartDate { get; set; }
+        public string? RelationshipStartDate { get; set; }
 
         [JsonPropertyName("countryOfPrimaryCitizenship")]
-        public string CountryOfPrimaryCitizenship { get; set; }
+        public string? CountryOfPrimaryCitizenship { get; set; }
 
         [JsonPropertyName("taxResident")]
-        public string TaxResident { get; set; }
+        public string? TaxResident { get; set; }
 
         [JsonPropertyName("taxIdType")]
-        public string TaxIdType { get; set; }
+        public string? TaxIdType { get; set; }
 
         [JsonPropertyName("taxIdentificationNumber")]
-        public string TaxIdentificationNumber { get; set; }
+        public string? TaxIdentificationNumber { get; set; }
 
         [JsonPropertyName("taxExemptionCode")]
-        public string TaxExemptionCode { get; set; }
+        public string? TaxExemptionCode { get; set; }
 
         [JsonPropertyName("employmentStatus")]
-        public string EmploymentStatus { get; set; }
+        public string? EmploymentStatus { get; set; }
 
         [JsonPropertyName("annualSalaryIncome")]
         public int? AnnualSalaryIncome { get; set; }
 
         [JsonPropertyName("maritalStatus")]
-        public string MaritalStatus { get; set; }
+        public string? MaritalStatus { get; set; }
 
         [JsonPropertyName("motherMaidenName")]
-        public string MotherMaidenName { get; set; }
+        public string? MotherMaidenName { get; set; }
 
         [JsonPropertyName("kycStatus")]
-        public string KycStatus { get; set; }
+        public string? KycStatus { get; set; }
 
         [JsonPropertyName("reviewedDate")]
-        public string ReviewedDate { get; set; }
+        public string? ReviewedDate { get; set; }
     }
 
     //public class AddressDetail
