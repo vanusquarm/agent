@@ -132,3 +132,9 @@ public class PerformCashTransferRequest
     public string? Currency { get; set; }
     public Dictionary<string, string>? DenomDetails { get; set; }
 }
+
+public static class TransactionType
+{
+    public const string WITHDRAWAL = "D"; // Debit customer account, Credit Teller Cash Account
+    public const string DEPOSIT = "C";    // Credit customer account, Debit Teller Cash Account
+}

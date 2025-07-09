@@ -222,8 +222,7 @@ public class TransactionsController : ControllerBase
             var solId = await _transferValidator.GetTellerSolIdByIdAsync(performCashTransferRequest.TellerId);
 
             Log.Information("About to PerformCashTransfer with request: {@Request}, headers: {@Headers}", request, new { performCashTransferRequest.TellerId, solId });
-            // Crediting or Debiting Teller's Till
-            var response = performCashTransferRequest.TransType == "C" ? await _transactionClient.PerformCashWithdrawal(request, performCashTransferRequest.TellerId, solId) :
+            var response = performCashTransferRequest.TransType == TransactionType.WITHDRAWAL ? await _transactionClient.PerformCashWithdrawal(request, performCashTransferRequest.TellerId, solId) :
                 await _transactionClient.PerformCashDeposit(request, performCashTransferRequest.TellerId, solId);
 
             Log.Information("Back from Performing CashTransfer with response: {@Response}", response);
