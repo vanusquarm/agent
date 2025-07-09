@@ -393,5 +393,35 @@ namespace Loan.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Method to Delete Loan (Close)
+        /// </summary>
+        /// <param name="accountId"> Loan Account Id</param>
+        /// <returns></returns>
+        [HttpDelete("{accountId}")]
+        public async Task<IActionResult> CloseLoan(string accountId)
+        {
+            Log.Information("Recieved Request at CloseLoan: {@Request}", accountId);
+            try
+            {
+                if (!string.IsNullOrEmpty(accountId))
+                {
+                    var branchCode = accountId.Length > 3 ? accountId.Substring(1, 3) : string.Empty;
+                    var res = await loanClient.CloseAccount(accountId, branchCode);
+                    Log.Information("Back from CloseLoanAccount with response: {@Response}", res);
+                    return Ok(res);
+                }
+                else
+                {
+                    Log.Information("No record found for request: {@Request}", accountId);
+                    return NotFound();
+                }
+            }
+            catch (Refit.ApiException ex)
+            {
+                Log.Error("Back from CloseLoanAccount with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+                return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+            }
+        }
     }
 }
