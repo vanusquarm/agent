@@ -95,10 +95,10 @@ public class TransactionsController : ControllerBase
 
             var solId = cashDepositRequest.SolId ?? await _transferValidator.GetTellerSolIdByIdAsync(cashDepositRequest.TellerId);
 
-            Log.Information("About to PerformCashDeposit with request: {@Request}", cashDepositRequest);
             var request = CashTransferRequestFactory.Create(cashDepositRequest.TellerId, cashDepositRequest.DebitAccount, cashDepositRequest.Amount, cashDepositRequest.Remarks,
                 cashDepositRequest.ChannelReference, "C", cashDepositRequest.Currency, cashDepositRequest.DenomDetails);
 
+            Log.Information("About to PerformCashDeposit with request: {@Request}, headers: {@Headers}", request, new { cashDepositRequest.TellerId, solId });
             var response = await _transactionClient.PerformCashDeposit(request, cashDepositRequest.TellerId, solId);
             Log.Information("Back from Performing CashDeposit with response: {@Response}", response);
             response.TranMessage = "SUCCESSFUL";
@@ -156,10 +156,10 @@ public class TransactionsController : ControllerBase
 
             var solId = cashWithdrawalRequest.SolId ?? await _transferValidator.GetTellerSolIdByIdAsync(cashWithdrawalRequest.TellerId);
 
-            Log.Information("About to PerformCashWithdrawal with request: {@Request}", cashWithdrawalRequest);
             var request = CashTransferRequestFactory.Create(cashWithdrawalRequest.TellerId, cashWithdrawalRequest.CreditAccount, cashWithdrawalRequest.Amount, cashWithdrawalRequest.Remarks,
                 cashWithdrawalRequest.ChannelReference, "D", cashWithdrawalRequest.Currency, cashWithdrawalRequest.DenomDetails);
 
+            Log.Information("About to PerformCashWithdrawal with request: {@Request}, headers: {@Headers}", request, new { cashWithdrawalRequest.TellerId, solId });
             var response = await _transactionClient.PerformCashWithdrawal(request, cashWithdrawalRequest.TellerId, solId);
             Log.Information("Back from Performing CashWithdrawal with response: {@Response}", response);
             response.TranMessage = "SUCCESSFUL";
@@ -206,7 +206,7 @@ public class TransactionsController : ControllerBase
     [HttpPost("cash-transfer")]
     public async Task<IActionResult> PerformCashTransfer (PerformCashTransferRequest performCashTransferRequest)
     {
-        Log.Information("Recieved Request at PerformCashTransfer");
+        Log.Information("Recieved Request at PerformCashTransfer: {@Request}", performCashTransferRequest);
         try
         {
             if (!_transferValidator.isValid(performCashTransferRequest, out List<string> Errors))
@@ -215,13 +215,13 @@ public class TransactionsController : ControllerBase
                 return BadRequest(ResponseManager.ReturnFailedValidations(string.Join("; ", Errors)));
             }
 
-            Log.Information("About to PerformCashTransfer with request: {@Request}", performCashTransferRequest);
             var request = CashTransferRequestFactory.Create(
                 performCashTransferRequest.TellerId, performCashTransferRequest.CustomerAccount, performCashTransferRequest.Amount, performCashTransferRequest.Remarks,
                 performCashTransferRequest.ChannelReference, performCashTransferRequest.TransType, performCashTransferRequest.Currency, performCashTransferRequest.DenomDetails);
 
             var solId = await _transferValidator.GetTellerSolIdByIdAsync(performCashTransferRequest.TellerId);
 
+            Log.Information("About to PerformCashTransfer with request: {@Request}, headers: {@Headers}", request, new { performCashTransferRequest.TellerId, solId });
             // Crediting or Debiting Teller's Till
             var response = performCashTransferRequest.TransType == "C" ? await _transactionClient.PerformCashWithdrawal(request, performCashTransferRequest.TellerId, solId) :
                 await _transactionClient.PerformCashDeposit(request, performCashTransferRequest.TellerId, solId);
