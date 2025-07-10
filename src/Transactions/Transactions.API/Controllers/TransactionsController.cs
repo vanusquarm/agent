@@ -295,7 +295,128 @@ public class TransactionsController : ControllerBase
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
             var request = IntraBankTransferRequestFactory.Create(requestId, accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
-                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, "", accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId, userPartTransactionCode: accountTransferRequest.UserPartTransactionCode);
+                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, "", accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId, explanationCode: accountTransferRequest.UserPartTransactionCode);
+            Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
+
+            Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Header());
+            var response = await _transactionClient.PerformIntraBankTransfer(requestId, request);
+
+            Log.Information("Back from Performing IntraBankTransfer with response: {@Response}", response);
+
+            if (response.TransactionReference == null)
+            {
+                Log.Information("An error occurred while processing the transaction: {@Request}", request);
+                return StatusCode(500, $"Failed to process the intra-bank transfer with Response: {response}");
+            }
+
+            return Ok(response);
+        }
+        catch (Refit.ApiException ex)
+        {
+            Log.Error("Back from Performing IntraBankTransfer with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+        }
+        catch (Exception ex)
+        {
+            Log.Error("An exception has occured at PerformIntraBankTransfer with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Method to Perform Cheque Transfer
+    /// </summary>
+    /// <param name="accountTransferRequest"></param>
+    /// <returns></returns>
+    [HttpPost("cheque-deposit")]
+    public async Task<IActionResult> PerformChequeDeposit([FromBody] ChequeDepositRequest chequeDepositRequest)
+    {
+        try
+        {
+            // Validate the request
+            var validationResult = await _transferValidator.ValidateAsync(AccountTransferRequest.Map(chequeDepositRequest));
+
+            if (!validationResult.IsValid)
+            {
+                Log.Warning("Transfer validation failed: {Error}", validationResult.ErrorMessage);
+                return BadRequest(ResponseManager.ReturnFailedValidations(validationResult.ErrorMessage));
+            }
+
+            if (validationResult.RequiresAdditionalVerification)
+            {
+                return Accepted(new
+                {
+                    Message = "Additional verification required",
+                    Methods = validationResult.AvailableVerificationMethods
+                });
+            }
+
+            var requestId = JsonSerializer.Serialize(chequeDepositRequest).ToHash();
+
+            Log.Information("About to Map Finacle intra transfer request with request: {@Request}", chequeDepositRequest);
+            var request = IntraBankTransferRequestFactory.Create(requestId, chequeDepositRequest.ChequeAccountNumber, chequeDepositRequest.BeneficiaryAccountNumber, chequeDepositRequest.Amount,
+                    chequeDepositRequest.ChequeAccountName, chequeDepositRequest.ChequeAccountName, "", null, null, null, null, explanationCode: null, chequeDetails: ChequeDepositRequest.Map(chequeDepositRequest));
+            Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
+
+            Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Header());
+            var response = await _transactionClient.PerformIntraBankTransfer(requestId, request);
+
+            Log.Information("Back from Performing IntraBankTransfer with response: {@Response}", response);
+
+            if (response.TransactionReference == null)
+            {
+                Log.Information("An error occurred while processing the transaction: {@Request}", request);
+                return StatusCode(500, $"Failed to process the intra-bank transfer with Response: {response}");
+            }
+
+            return Ok(response);
+        }
+        catch (Refit.ApiException ex)
+        {
+            Log.Error("Back from Performing IntraBankTransfer with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+        }
+        catch (Exception ex)
+        {
+            Log.Error("An exception has occured at PerformIntraBankTransfer with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Method to Perform Intra Bank Transfer
+    /// </summary>
+    /// <param name="accountTransferRequest"></param>
+    /// <returns></returns>
+    [HttpPost("batch-transfer")]
+    public async Task<IActionResult> PerformBatchTransfer([FromBody] AccountTransferRequest accountTransferRequest)
+    {
+        try
+        {
+            // Validate the request
+            accountTransferRequest.Trim();
+            var validationResult = await _transferValidator.ValidateAsync(accountTransferRequest);
+
+            if (!validationResult.IsValid)
+            {
+                Log.Warning("Transfer validation failed: {Error}", validationResult.ErrorMessage);
+                return BadRequest(ResponseManager.ReturnFailedValidations(validationResult.ErrorMessage));
+            }
+
+            if (validationResult.RequiresAdditionalVerification)
+            {
+                return Accepted(new
+                {
+                    Message = "Additional verification required",
+                    Methods = validationResult.AvailableVerificationMethods
+                });
+            }
+
+            var requestId = JsonSerializer.Serialize(accountTransferRequest).ToHash();
+
+            Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
+            var request = IntraBankTransferRequestFactory.Create(requestId, accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
+                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, "", accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId, explanationCode: accountTransferRequest.UserPartTransactionCode);
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 
             Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Header());
