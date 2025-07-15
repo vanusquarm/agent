@@ -158,7 +158,8 @@ namespace Customers.API.Entities
                 new RelationshipManagerDetail(
                     basicCustomerDto.RelationshipManagerId,
                     basicCustomerDto.RelationshipManagerName ?? "Default RM",
-                    basicCustomerDto.RelationshipManagerEmail ?? "")
+                    basicCustomerDto.RelationshipManagerEmail ?? "",
+                    basicCustomerDto.RelationshipManagerPcCode)
             } : null;
             EmploymentDetails = basicCustomerDto.EmployerName != null ? new List<EmploymentDetail>
             {
@@ -231,6 +232,7 @@ namespace Customers.API.Entities
         public string? RelationshipManagerId { get; set; }
         public string? RelationshipManagerName { get; set; }
         public string? RelationshipManagerEmail { get; set; }
+        public string RelationshipManagerPcCode { get; set; }
 
         // Employment Details
         public string OccupationCode { get; set; } = "2104";
@@ -494,12 +496,13 @@ namespace Customers.API.Entities
         [JsonPropertyName("teamEmail")]
         public string? TeamEmail { get; set; }
 
-        public RelationshipManagerDetail(string relationshipManagerId, string relationshipManagerName, string relationshipManagerEmail)
+        public RelationshipManagerDetail(string relationshipManagerId, string relationshipManagerName, string relationshipManagerEmail, string relationshipManagerPcCode)
         {
             RelationshipManagerId = relationshipManagerId;
             RelationshipManagerName = relationshipManagerName;
             PrimaryRelationshipManager = "Y";
             TeamEmail = relationshipManagerEmail; // Assuming team email is the same as RM email
+            PcCode = relationshipManagerPcCode;
         }
     }
 

@@ -18,3 +18,4 @@ app
 /src/Gateways/YarpGateway/Properties/PublishProfiles
 /src/Transactions/Transactions.API/.config/dotnet-tools.json
 /src/Customers/Customers.API/.config/dotnet-tools.json
+/src/Accounts/Accounts.API/.config
