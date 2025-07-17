@@ -1,20 +1,24 @@
+using Finacle.Infrastructure.Logging;
+using Finacle.Infrastructure.Utils;
+using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Serilog;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Threading.Channels;
+using Transactions.API.Entities;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
-using Finacle.Infrastructure.Utils;
-using Finacle.Infrastructure.Logging;
-using System.Text.Json;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
-using Transactions.API.Entities;
 using Transactions.API.Validators;
+using static MassTransit.ValidationResultExtensions;
 
 namespace Transactions.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-[Authorize]
+//[Authorize]
 public class TransactionsController : ControllerBase
 {
     private readonly ITransactionClient _transactionClient;
@@ -389,34 +393,23 @@ public class TransactionsController : ControllerBase
     /// <param name="accountTransferRequest"></param>
     /// <returns></returns>
     [HttpPost("batch-transfer")]
-    public async Task<IActionResult> PerformBatchTransfer([FromBody] AccountTransferRequest accountTransferRequest)
+    public async Task<IActionResult> PerformBatchTransfer([FromBody] BatchTransferRequest accountTransferRequest)
     {
         try
         {
             // Validate the request
-            accountTransferRequest.Trim();
-            var validationResult = await _transferValidator.ValidateAsync(accountTransferRequest);
-
-            if (!validationResult.IsValid)
+            //var validationResult = _transferValidator.ValidateAsync(accountTransferRequest, out string errorMessage);
+            if (!_transferValidator.ValidateAsync(accountTransferRequest, out var ErrorMessage))
             {
-                Log.Warning("Transfer validation failed: {Error}", validationResult.ErrorMessage);
-                return BadRequest(ResponseManager.ReturnFailedValidations(validationResult.ErrorMessage));
-            }
-
-            if (validationResult.RequiresAdditionalVerification)
-            {
-                return Accepted(new
-                {
-                    Message = "Additional verification required",
-                    Methods = validationResult.AvailableVerificationMethods
-                });
+                Log.Warning("Transfer validation failed: {Error}", ErrorMessage);
+                return BadRequest(ResponseManager.ReturnFailedValidations(ErrorMessage));
             }
 
             var requestId = JsonSerializer.Serialize(accountTransferRequest).ToHash();
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
-            var request = IntraBankTransferRequestFactory.Create(requestId, accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
-                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, "", accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId, explanationCode: accountTransferRequest.UserPartTransactionCode);
+            var request = IntraBankTransferRequestFactory.CreateBatch(requestId, accountTransferRequest.SourceAccountId, accountTransferRequest.CreditTargets,
+                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.Currency, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId, explanationCode: accountTransferRequest.ExplanationCode);
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 
             Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Header());

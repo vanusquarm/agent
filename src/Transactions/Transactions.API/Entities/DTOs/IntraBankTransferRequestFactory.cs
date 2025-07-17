@@ -125,7 +125,7 @@ public class IntraBankTransferRequestFactory
             } // Credit legs
             .Concat(creditAccounts.Select((creditAccount, index) => new IntraBankTransferTransactionDetail
             {
-                SerialNumber = (index + IntraBankTransferConstants.PartTransactionTypeCredit).ToString(),
+                SerialNumber = (index + IntraBankTransferConstants.SerialNumberCredit).ToString(),
                 PartTransactionType = IntraBankTransferConstants.PartTransactionTypeCredit,
                 AccountIdentification = creditAccount?.AccountId.Trim(),
                 TransactionAmount = creditAccount.Amount,
@@ -134,7 +134,7 @@ public class IntraBankTransferRequestFactory
                 TransactionParticulars = remarksPart1,
                 Rate = IntraBankTransferConstants.Rate,
                 PartTransactionRemarks = remarksPart2,
-                ReferenceNumber = referenceNumber.Split(20, 1),
+                ReferenceNumber = creditAccount?.Reference.Split(20, 1),
                 PartTransactionRemarks2 = remarksPart3,
                 LienDetailsList = new List<LienDetails>()
             })).ToList()
@@ -170,17 +170,4 @@ public static class StringExtensions
     {
         return input.Split(chunkSize).Skip(chunkIndex - 1).FirstOrDefault() ?? string.Empty;
     }
-}
-
-
-public class CreditTarget
-{
-    public string AccountId { get; set; }
-    public decimal Amount { get; set; }
-}
-
-public class BatchTransactionRequest
-{
-    public string SourceAccountId { get; set; }
-    public List<CreditTarget> CreditTargets { get; set; } = new();
 }

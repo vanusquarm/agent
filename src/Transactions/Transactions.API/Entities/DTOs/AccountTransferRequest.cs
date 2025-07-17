@@ -69,3 +69,24 @@ public class ChequeDepositRequest
         };
     }
 }
+
+public class BatchTransferRequest
+{
+    public string SourceAccountId { get; set; }
+    public List<CreditTarget> CreditTargets { get; set; } = new();
+    public decimal Amount { get; set; }
+    public string Remarks { get; set; }
+    public string ChannelReference { get; set; }
+    public string ChannelId { get; set; }
+    public string? Currency { get; set; }
+    public string? ExplanationCode { get; set; }
+    public string? ChargeEventId { get; set; }
+    public string? BatchId { get; set; }
+}
+
+public class CreditTarget
+{
+    public string AccountId { get; set; }
+    public decimal Amount { get; set; }
+    public string Reference { get; set; }
+}

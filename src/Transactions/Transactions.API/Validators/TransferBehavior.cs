@@ -1,5 +1,6 @@
 ﻿using Finacle.Core;
 using FluentValidation;
+using System.Linq;
 using Transactions.API.Entities.DTOs;
 
 namespace Transactions.API.Validators;
@@ -129,6 +130,45 @@ public class TransferValidator //: ITransferValidator
         return true;
     }
 
+    public bool ValidateAsync(BatchTransferRequest request, out string errorMessage)
+    {
+        errorMessage = null;
+        var validator = new BatchTransferRequestValidator();
+        var validationResult = validator.Validate(request);
+
+        if (!validationResult.IsValid)
+        {
+            errorMessage = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(request.SourceAccountId))
+        {
+            errorMessage = "Sender account number is required";
+            return false;
+        }
+
+        if (request.CreditTargets.Any(x => string.IsNullOrWhiteSpace(x.AccountId)))
+        {
+            errorMessage = "Recipient account number is required";
+            return false;
+        }
+
+        if (request.CreditTargets.Any(x => x.Amount <= 0))
+        {
+            errorMessage = "Transfer amount must be positive";
+            return false;
+        }
+
+        if (request.CreditTargets.Any(x => x.AccountId == request.SourceAccountId))
+        {
+            errorMessage = "Source and destination account numbers must not be the same.";
+            return false;
+        }
+
+        return true;
+    }
+
     private async Task<TransferValidationResult> ValidateAccountAsync(AccountTransferRequest request)
     {
         var result = new TransferValidationResult();
@@ -248,6 +288,43 @@ public class AccountTransferRequestValidator : AbstractValidator<AccountTransfer
         RuleFor(x => x.BatchId)
             .MaximumLength(50).WithMessage("Batch ID cannot exceed 50 characters.")
             .When(x => !string.IsNullOrEmpty(x.BatchId));
+    }
+}
+
+public class BatchTransferRequestValidator : AbstractValidator<BatchTransferRequest>
+{
+    public BatchTransferRequestValidator()
+    {
+        RuleFor(x => x.SourceAccountId)
+            .NotEmpty().WithMessage("Source account ID is required.")
+            .Matches(@"^\d{10,20}$").WithMessage("Source account ID must be a numeric string between 10 and 20 characters.");
+
+        RuleFor(x => x.CreditTargets)
+            .NotEmpty().WithMessage("CreditTarget must contain at least one item.");
+
+        RuleFor(x => x.Amount)
+            .GreaterThan(0).WithMessage("Amount must be greater than zero.");
+
+        RuleFor(x => x.Remarks)
+            .MaximumLength(500).WithMessage("Remarks cannot exceed 500 characters.");
+
+        RuleFor(x => x.ChannelReference)
+            .NotEmpty().WithMessage("Channel reference is required.");
+
+        RuleFor(x => x.ChannelId)
+            .NotEmpty().WithMessage("Channel ID is required.");
+
+        RuleFor(x => x.ExplanationCode)
+            .MaximumLength(50).WithMessage("User part transaction code cannot exceed 50 characters.")
+            .When(x => !string.IsNullOrEmpty(x.ExplanationCode));
+
+        RuleFor(x => x.ChargeEventId)
+            .MaximumLength(50).WithMessage("Charge event ID cannot exceed 50 characters.")
+            .When(x => !string.IsNullOrEmpty(x.ChargeEventId));
+
+        RuleFor(x => x.BatchId)
+            .NotEmpty().WithMessage("BatchId is required.")
+            .MaximumLength(50).WithMessage("Batch ID cannot exceed 50 characters.");
     }
 }
 
