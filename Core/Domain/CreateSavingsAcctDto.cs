@@ -26,12 +26,15 @@ namespace Acccounts.API.Entities.DTOs
         public string AccountOpeningDate { get; set; }
 
         [JsonPropertyName("alertsRequired")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string AlertsRequired { get; set; }
 
         [JsonPropertyName("alertsType")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string AlertsType { get; set; }
 
         [JsonPropertyName("alertsFeatures")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string AlertsFeatures { get; set; }
     }
 
