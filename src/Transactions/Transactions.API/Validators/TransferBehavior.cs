@@ -195,7 +195,7 @@ public class TransferValidator //: ITransferValidator
             return result;
         }
 
-        if (senderAccount?.AccountFreezeStatus == "C" || senderAccount?.AccountFreezeStatus == "T")
+        if (recipientAccount?.AccountFreezeStatus == "C" || recipientAccount?.AccountFreezeStatus == "T")
         {
             result.ErrorMessage = "Recipient account is frozen and cannot be Credited";
             return result;

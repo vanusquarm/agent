@@ -91,7 +91,7 @@ namespace Finacle.Core
                 Remarks = remarks
             };
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"/api/v1/transactions/reverse")
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"/api/v1/transactions/reversals")
             {
                 Content = new StringContent(JsonSerializer.Serialize(reversalTransferRequest), Encoding.UTF8, "application/json")
             };

@@ -560,7 +560,7 @@ public class TransactionsController : ControllerBase
         }
     }
 
-    [HttpPost("reverse")]
+    [HttpPost("reversals")]
     public async Task<IActionResult> PerformReversal([FromBody] TransactionIdentification reversalRequest)
     {
         Log.Information("Recieved Request at PerformReversal: {@Request}", reversalRequest);
