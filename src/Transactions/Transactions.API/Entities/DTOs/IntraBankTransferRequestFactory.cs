@@ -6,7 +6,7 @@ namespace Transactions.API.Entities.DTOs;
 
 public class IntraBankTransferRequestFactory
 {
-    public static IntraBankTransferRequest Create(string requestReference, string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel, 
+    public static IntraBankTransferRequest Create(string requestReference, string debitAccount, string creditAccount, decimal amount, string partTransactionRemarks, string referenceNumber, string channel,
         string? currency, string? docNum, string? chargeEventId, string? batchId, string? explanationCode, ChequeDetails? chequeDetails = null)
     {
         DateTime transactionDate = DateTime.ParseExact(
@@ -14,6 +14,12 @@ public class IntraBankTransferRequestFactory
             "yyyy-MM-dd",
             CultureInfo.InvariantCulture
         );
+
+        DateTime valueDate = (chequeDetails != null) ? DateTime.ParseExact(
+            chequeDetails.InstrumentDate,
+            "yyyy-MM-dd",
+            CultureInfo.InvariantCulture
+        ) : transactionDate;
 
         var (remarksPart1, remarksPart2, remarksPart3) = SplitTransactionRemarks(partTransactionRemarks);
 
@@ -33,18 +39,18 @@ public class IntraBankTransferRequestFactory
                     AccountIdentification = debitAccount,
                     TransactionAmount = amount,
                     TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
-                    TransactionValueDate = transactionDate,
+                    TransactionValueDate = valueDate,
                     TransactionParticulars = remarksPart1,
                     Rate = IntraBankTransferConstants.Rate,
                     PartTransactionRemarks = remarksPart2,
-                    //ReferenceNumber = referenceNumber.Split(20, 1),
-                    ReferenceNumber = referenceNumber,
+                    ReferenceNumber = referenceNumber.Split(20, 1),
                     PartTransactionRemarks2 = remarksPart3,
                     LienDetailsList = new List<LienDetails>(),
                     ChargeEventId = chargeEventId,
-                    InstrumentDetails = chequeDetails != null ? new InstrumentDetails
+                    // InstrumentAlpha == "!" represents inward cheque
+                    InstrumentDetails = chequeDetails.InstrumentAlpha.Equals("!") ? new InstrumentDetails
                     {
-                        InstrumentDate = chequeDetails.InstrumentDate,
+                        InstrumentDate = transactionDate,
                         InstrumentAlpha = chequeDetails.InstrumentAlpha,
                         InstrumentNumber = chequeDetails.InstrumentNumber,
                         InstrumentType = chequeDetails.InstrumentType
@@ -65,7 +71,7 @@ public class IntraBankTransferRequestFactory
                     AccountIdentification = creditAccount,
                     TransactionAmount = amount,
                     TransactionCurrency = currency ?? IntraBankTransferConstants.TransactionCurrency,
-                    TransactionValueDate = transactionDate,
+                    TransactionValueDate = valueDate,
                     TransactionParticulars = remarksPart1,
                     Rate = IntraBankTransferConstants.Rate,
                     PartTransactionRemarks = remarksPart2,
@@ -78,7 +84,7 @@ public class IntraBankTransferRequestFactory
         };
     }
 
-    public static IntraBankTransferRequest CreateBatch(string requestReference, string debitAccount, List<CreditTarget> creditAccounts, string partTransactionRemarks, string referenceNumber, string channel, 
+    public static IntraBankTransferRequest CreateBatch(string requestReference, string debitAccount, List<CreditTarget> creditAccounts, string partTransactionRemarks, string referenceNumber, string channel,
         string? currency, string? chargeEventId, string? batchId, string? explanationCode)
     {
         DateTime transactionDate = DateTime.ParseExact(

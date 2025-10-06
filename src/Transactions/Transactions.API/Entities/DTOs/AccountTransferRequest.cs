@@ -63,7 +63,7 @@ public class ChequeDepositRequest
         return new ChequeDetails
         {
             InstrumentDate = chequeDepositRequest.ValueDate.ToString("yyyy-MM-dd"),
-            InstrumentAlpha = chequeDepositRequest.BankName.Length > 4 ? chequeDepositRequest.BankName.ToUpper().Substring(0, 4) : "!",
+            InstrumentAlpha = chequeDepositRequest.BankName.ToUpper().Equals("GTB") ? "!" : chequeDepositRequest.BankName.ToUpper().Substring(0, 4),
             InstrumentNumber = chequeDepositRequest.ChequeNumber,
             InstrumentType = "CHQ" // Assuming the type is always a cheque
         };

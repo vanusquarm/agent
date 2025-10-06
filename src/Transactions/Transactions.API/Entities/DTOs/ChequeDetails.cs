@@ -15,7 +15,8 @@ namespace Transactions.API.Entities.DTOs
     {
 
         [JsonPropertyName("instrumentDate")]
-        public string InstrumentDate { get; set; } // Date of the instrument, e.g., cheque date
+        [JsonConverter(typeof(DateFormatConverter))]
+        public DateTime InstrumentDate { get; set; } // Date of the instrument, e.g., cheque date
 
         [JsonPropertyName("instrumentAlpha")]
         [StringLength(6)]
