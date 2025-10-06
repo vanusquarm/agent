@@ -35,7 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{F65C1A01-F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Finacle.Core", "Core\Finacle.Core.csproj", "{7BD53D34-4279-44D8-8CD0-4A152E65410E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acccounts.API", "src\Accounts\Accounts.API\Acccounts.API.csproj", "{72121572-1F18-4A4A-984B-5B0DC4F936B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accounts.API", "src\Accounts\Accounts.API\Accounts.API.csproj", "{72121572-1F18-4A4A-984B-5B0DC4F936B7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Loans.API", "src\Loans\Loans.API\Loans.API.csproj", "{67BA8AB9-B497-49F4-A8C9-54945E82DC76}"
 EndProject

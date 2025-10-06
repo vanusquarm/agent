@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+using Finacle.Infrastructure.Logging;
 using Loans.API.Entities.DTOs;
 using Loans.API.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using Serilog;
-using Finacle.Infrastructure.Logging;
 
 
 namespace Loan.API.Controllers
@@ -25,6 +26,12 @@ namespace Loan.API.Controllers
             Log.Information("Recieved Request at CreateLoan: {@Request}", createUnsecuredLoanRequest);
             try
             {
+                //if (!string.IsNullOrEmpty(createUnsecuredLoanRequest.AccountIdentification))
+                //{
+                //    var branchCode = createUnsecuredLoanRequest.AccountIdentification.Substring(1, 3);
+                //    var res = await loanClient.CloseAccount(createUnsecuredLoanRequest.AccountIdentification, branchCode);
+
+                //}
                 if (createUnsecuredLoanRequest != null)
                 {
                     Log.Information("About to CreateSecureLoan with request: {@Request}", createUnsecuredLoanRequest);
