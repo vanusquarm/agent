@@ -11,7 +11,7 @@ public static class Extensions
     public static IServiceCollection AddOpenIdAuth(this IServiceCollection services, IConfiguration config, List<string> policyNames)
     {
         var allowedOrigins = config.GetSection("CorsOptions:AllowedOrigins").Get<string[]>();
-        var authOptions = config.GetSection("JwtSettings").Get<JwtOptions>();
+        var authOptions = config.GetSection("OpenIdOptions").Get<OpenIdOptions>();
 
         services.AddCors(options =>
         {
