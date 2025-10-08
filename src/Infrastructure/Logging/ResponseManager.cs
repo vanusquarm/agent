@@ -654,6 +654,35 @@ namespace Finacle.Infrastructure.Logging
             public object? Data { get; set; }
         }
 
+        //public class ApiResponse<T>
+        //{
+        //    // Parameterless ctor for serializers / default construction
+        //    public ApiResponse() { }
+
+        //    // Proper constructor (constructor name must not include the generic parameter)
+        //    public ApiResponse(bool isSuccess, string? message = null, T? data = default, ApiError? error = null)
+        //    {
+        //        IsSuccess = isSuccess;
+        //        Message = message;
+        //        Data = data;
+        //        Error = error;
+        //    }
+
+        //    public bool IsSuccess { get; set; } = false;
+        //    public string? Message { get; set; }
+        //    public T? Data { get; set; }
+        //    public ApiError? Error { get; set; } = null;
+        //    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        //}
+
+
+        //public class ApiError
+        //{
+        //    public int Code { get; set; }
+        //    public string Type { get; set; }
+        //    public string Details { get; set; }
+        //}
+
     }
 
 

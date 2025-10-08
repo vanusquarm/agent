@@ -29,6 +29,7 @@
 		<PackageReference Include="Microsoft.OpenApi.Readers" Version="1.6.10" />
 		<PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
 		<PackageReference Include="RestSharp" Version="112.1.0" />
+		<PackageReference Include="Sentry.AspNetCore" Version="5.14.1" />
 		<PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
 		<PackageReference Include="Serilog.Expressions" Version="5.0.0" />
 		<PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />

@@ -53,28 +53,28 @@ namespace Finacle.Infrastructure.Logging
                     catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 2601)
                     {
                         Log.Warning("Duplicate requestId detected: {@RequestId}", requestId);
-                        dbContext.ChangeTracker.Clear();
+                        var errordetails = CustomProblemDetails.FailureResponse(detail: "Duplicate Transaction", ResponseCode: ResponseManager.DuplicateRecord.Item1, title: ResponseManager.FinacleFailure.Item2, status: (int)HttpStatusCode.BadRequest);
+                        context.Response.StatusCode = (int)errordetails.Status;
+                        await context.Response.WriteAsync(JsonSerializer.Serialize(errordetails));
 
+                        dbContext.ChangeTracker.Clear();
                         apiCall = dbContext.ApiCalls.FirstOrDefault(item => item.RequestId == requestId);
+                        var apiCallDup = ApiCallDup.Map(apiCall);
+                        apiCallDup.ResponseParam = JsonSerializer.Serialize(errordetails);
+                        apiCallDup.ResponseCode = context.Response.StatusCode.ToString() ?? errordetails.Status.ToString();
+
+                        Log.Information("About to insert into ApiCallDup table with parameters: {@Request}", apiCallDup);
+                        dbContext.ApiCallDuplicates.Add(apiCallDup);
+                        await dbContext.SaveChangesAsync();
+                        Log.Information("Back from inserting into ApiCallDup table");
+
                         if (apiCall?.ResponseCode == StatusCodes.Status200OK.ToString())
                         {
                             Log.Information("Cannot reprocess successful transaction parameters: {@Request}", apiCall);
-                            var errordetails = CustomProblemDetails.FailureResponse(detail: "Duplicate Transaction", ResponseCode: ResponseManager.DuplicateRecord.Item1, title: ResponseManager.FinacleFailure.Item2, status: (int)HttpStatusCode.BadRequest);
-                            string response = JsonSerializer.Serialize(errordetails);
-                            context.Response.StatusCode = (int)errordetails.Status;
-                            await context.Response.WriteAsync(response);
                             return;
                         }
-                        else
-                        {
-                            var apiCallDup = ApiCallDup.Map(apiCall);
-                            Log.Information("About to insert into ApiCallDup table with parameters: {@Request}", apiCallDup);
-                            dbContext.ApiCallDuplicates.Add(apiCallDup);
-                            await dbContext.SaveChangesAsync();
-                            Log.Information("Back from inserting into ApiCallDup table");
 
-                            Log.Information("About to reprocess transaction with parameters: {@Request}", apiCall);
-                        }
+                        Log.Information("About to reprocess transaction with parameters: {@Request}", apiCall);
                     }
                     catch (Exception ex)
                     {

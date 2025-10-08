@@ -1,3 +1,4 @@
+using Acccounts.API.Grpc;
 using Acccounts.API.Services;
 using Accounts.API.Validators;
 using Finacle.Infrastructure.Auth;
@@ -22,6 +23,7 @@ configuration["JwtSettings:ClientSecret"] = decryptedClientSecret;
 // Add services to the container.
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
+builder.Services.AddGrpc();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtMiddleware<IAccountClient>(configuration);
@@ -45,5 +47,8 @@ app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+app.MapGrpcService<GrpcAccountService>();
+app.MapGet("/", () => "Use a gRPC client to call the service.");
 
 app.Run();

@@ -84,11 +84,11 @@ namespace Finacle.Infrastructure.Logging
                 var insertRes = await logRequestResponse.LogRequestResponse(middlewareLogRequest);
                 if (insertRes == "-99999")
                 {
-                    _logger.LogInformation("Flagged Transaction as Duplicate");
-                    var errordetails = CustomProblemDetails.FailureResponse(detail: "Duplicate Transaction", ResponseCode: ResponseManager.DuplicateRecord.Item1, title: ResponseManager.FinacleFailure.Item2, status: (int)HttpStatusCode.BadRequest);
-                    string response = JsonConvert.SerializeObject(errordetails);
-                    httpContext.Response.StatusCode = (int) errordetails.Status;
-                    await httpContext.Response.WriteAsync(response);
+                //    _logger.LogInformation("Flagged Transaction as Duplicate");
+                //    var errordetails = CustomProblemDetails.FailureResponse(detail: "Duplicate Transaction", ResponseCode: ResponseManager.DuplicateRecord.Item1, title: ResponseManager.FinacleFailure.Item2, status: (int)HttpStatusCode.BadRequest);
+                //    string response = JsonConvert.SerializeObject(errordetails);
+                //    httpContext.Response.StatusCode = (int) errordetails.Status;
+                //    await httpContext.Response.WriteAsync(response);
                     return;
                 }
             }
