@@ -1,11 +1,14 @@
-using Transactions.API.Services;
+using Finacle.Core;
 using Finacle.Infrastructure.Auth;
 using Finacle.Infrastructure.Auth.BasicJwt;
 using Finacle.Infrastructure.Auth.OpenId;
+using Finacle.Infrastructure.Logging;
+using Finacle.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
-using Finacle.Core;
-using Transactions.API.Filters;
 using Transactions.API.Entities;
+using Transactions.API.Filters;
+using Transactions.API.Services;
 using Transactions.API.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +27,10 @@ var decryptedClientSecret = EncryptionHelper.Decrypt(encryptedClientSecret);
 configuration["JwtSettings:ClientSecret"] = decryptedClientSecret;
 
 var finacleGateway = configuration["FinacleGateway:BaseUrl"] ?? throw new ArgumentNullException("FinacleGateway:BaseUrl");
+
+// Register DbContext
+builder.Services.AddDbContext<FinacleDbContext>(options =>
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 builder.Services.AddHttpClient<FinacleClient>(client =>
@@ -58,5 +65,6 @@ app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseRequestResponseLoggerMiddleware();
 
 app.Run();

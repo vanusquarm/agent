@@ -118,8 +118,6 @@ app.MapReverseProxy(config =>
     });
 });
 
-//app.UseMiddleware<RequestResponseLoggerMiddleware>();
-app.UseRequestResponseLoggerMiddleware();
 app.MapGet("/", () => "Healthy");
 
 app.Run();
