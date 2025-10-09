@@ -1,18 +1,17 @@
 using Finacle.Infrastructure.Logging;
+using Finacle.Infrastructure.Persistence;
 using Finacle.Infrastructure.Utils;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
-using System.Collections.Generic;
 using System.Text.Json;
-using System.Threading.Channels;
 using Transactions.API.Entities;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
 using Transactions.API.Validators;
-using static MassTransit.ValidationResultExtensions;
 
 namespace Transactions.API.Controllers;
 
@@ -23,13 +22,13 @@ public class TransactionsController : ControllerBase
 {
     private readonly ITransactionClient _transactionClient;
     private readonly TransferValidator _transferValidator;
-    private readonly Dictionary<string, string> _serviceMap;
+    private readonly FinacleDbContext _finacleDbContext;
 
-    public TransactionsController(ITransactionClient transactionClient, TransferValidator transferValidator, IOptions<ServiceMapOptions> options)
+    public TransactionsController(ITransactionClient transactionClient, TransferValidator transferValidator, FinacleDbContext finacleDbContext)
     {
         _transactionClient = transactionClient;
         _transferValidator = transferValidator;
-        _serviceMap = options.Value.ServiceMap ?? new Dictionary<string, string>();
+        _finacleDbContext = finacleDbContext;
     }
 
     /// <summary>
@@ -295,7 +294,8 @@ public class TransactionsController : ControllerBase
                 });
             }
 
-            var requestId = JsonSerializer.Serialize(accountTransferRequest).ToHash();
+            HttpContext.Items.TryGetValue("requestId", out var requestIdObj);
+            string requestId = requestIdObj?.ToString() ?? string.Empty;
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
             var request = IntraBankTransferRequestFactory.Create(requestId, accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
@@ -355,7 +355,10 @@ public class TransactionsController : ControllerBase
                 });
             }
 
-            var requestId = JsonSerializer.Serialize(chequeDepositRequest).ToHash();
+            // Todo: Check clearing status. If cleared, give value to customer
+
+            HttpContext.Items.TryGetValue("requestId", out var requestIdObj);
+            string requestId = requestIdObj?.ToString() ?? string.Empty;
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", chequeDepositRequest);
             var request = IntraBankTransferRequestFactory.Create(requestId, chequeDepositRequest.ChequeAccountNumber, chequeDepositRequest.BeneficiaryAccountNumber, chequeDepositRequest.Amount,
@@ -405,7 +408,8 @@ public class TransactionsController : ControllerBase
                 return BadRequest(ResponseManager.ReturnFailedValidations(ErrorMessage));
             }
 
-            var requestId = JsonSerializer.Serialize(accountTransferRequest).ToHash();
+            HttpContext.Items.TryGetValue("requestId", out var requestIdObj);
+            string requestId = requestIdObj?.ToString() ?? string.Empty;
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
             var request = IntraBankTransferRequestFactory.CreateBatch(requestId, accountTransferRequest.SourceAccountId, accountTransferRequest.CreditTargets,
@@ -433,47 +437,6 @@ public class TransactionsController : ControllerBase
         catch (Exception ex)
         {
             Log.Error("An exception has occured at PerformIntraBankTransfer with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
-        }
-    }
-
-    /// <summary>
-    /// Method to Get Eod Status
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
-    [HttpPost("eod-status")]
-    public async Task<IActionResult> GetEodStatus([FromBody] EodStatusRequest request)
-    {
-        Log.Information("Recieved Request at GetEodStatus: {@Request}", request);
-        try
-        {
-            if (request == null)
-            {
-                Log.Information("Invalid request data.: {@Request}", request);
-                return BadRequest(ResponseManager.ReturnFailedValidations("Invalid request data."));
-            }
-
-            Log.Information("About to GetEodStatus with request: {@Request}", request);
-            var response = await _transactionClient.GetEodStatusDetails(request);
-            Log.Information("Back from getting EodStatus with response: {@Response}", response);
-
-            if (response == null || string.IsNullOrEmpty(response.BankStatus))
-            {
-                Log.Information("An error occurred while processing the transaction: {@Request}", request);
-                return StatusCode(500, "Failed to retrieve EOD status.");
-            }
-
-            return Ok(response);
-        }
-        catch (Refit.ApiException ex)
-        {
-            Log.Error("Back from getting EodStatus with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
-            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
-        }
-        catch (Exception ex)
-        {
-            Log.Error("An exception has occured at GetEodStatus with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
             return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
         }
     }
@@ -566,6 +529,11 @@ public class TransactionsController : ControllerBase
         Log.Information("Recieved Request at PerformReversal: {@Request}", reversalRequest);
         try
         {
+            var apiCall = await _finacleDbContext.ApiCalls
+                .Where(a => a.ResponseParam != null && a.ResponseParam.Contains(reversalRequest.TransactionReference))
+                .OrderByDescending(a => a.Id)
+                .FirstOrDefaultAsync();
+
             var request = new ReversalTransferRequest
             {
                 TransactionIdentification = new TransactionIdentification
@@ -576,10 +544,80 @@ public class TransactionsController : ControllerBase
                 }
             };
 
-
             Log.Information("About to PerformReversal with request: {@Request}", request);
             var response = await _transactionClient.Reverse(reversalRequest.TransactionReference, request);
             Log.Information("Back from PerformReversal with response: {@Response}", response);
+
+            Log.Information("About to Update ApiCall with reversal request: {@Request}", request);
+            if (!string.IsNullOrEmpty(response.ReversalTransactionIdentification.TransactionReference))
+            {
+                apiCall.IsReversed = true;
+                apiCall.ReversalResponseParam = JsonSerializer.Serialize(response);
+                _finacleDbContext.ApiCalls.Update(apiCall);
+                await _finacleDbContext.SaveChangesAsync();
+            }
+            Log.Information("Back from Updating ApiCall with reversal response: {@Response}", response);
+
+            return Ok(response);
+        }
+        catch (Refit.ApiException ex)
+        {
+            Log.Error("Back from PerformReversal with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+        }
+        catch (Exception ex)
+        {
+            Log.Error("An exception has occured at PerformReversal with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
+    }
+
+    [HttpPost("reversals/{channelReference}")]
+    public async Task<IActionResult> PerformReversal(string channelReference)
+    {
+        Log.Information("Recieved Request at PerformReversal: {@Request}", channelReference);
+        var request = new ReversalTransferRequest();
+
+        try
+        {
+            var apiCall = await _finacleDbContext.ApiCalls
+                .Where(a => a.RequestParam.Contains(channelReference))
+                .OrderByDescending(a => a.Id)
+                .FirstOrDefaultAsync();
+
+            if (apiCall != null && apiCall?.ResponseCode == "200")
+            {
+                var deserializedResponse = JsonSerializer.Deserialize<IntraBankTransferResponse>(apiCall?.ResponseParam);
+
+                request = new ReversalTransferRequest
+                {
+                    TransactionIdentification = new TransactionIdentification
+                    {
+                        TransactionDate = deserializedResponse?.TransactionDate,
+                        TransactionReference = deserializedResponse.TransactionReference,
+                        Remarks = channelReference
+                    }
+                };
+            }
+            else
+            {
+                return StatusCode(422, ResponseManager.ReturnFinacleCallUnsuccessful(exception: 
+                    $"No record found for the given channelReference: {channelReference} to reverse"));
+            }
+
+                Log.Information("About to PerformReversal with request: {@Request}", request);
+            var response = await _transactionClient.Reverse(apiCall?.RequestId, request);
+            Log.Information("Back from PerformReversal with response: {@Response}", response);
+
+            Log.Information("About to Update ApiCall with reversal request: {@Request}", request);
+            if (!string.IsNullOrEmpty(response.ReversalTransactionIdentification.TransactionReference))
+            {
+                apiCall.IsReversed = true;
+                apiCall.ReversalResponseParam = JsonSerializer.Serialize(response);
+                _finacleDbContext.ApiCalls.Update(apiCall);
+                await _finacleDbContext.SaveChangesAsync();
+            }
+            Log.Information("Back from Updating ApiCall with reversal response: {@Response}", response);
 
             return Ok(response);
         }

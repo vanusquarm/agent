@@ -48,7 +48,7 @@ public class IntraBankTransferRequestFactory
                     LienDetailsList = new List<LienDetails>(),
                     ChargeEventId = chargeEventId,
                     // InstrumentAlpha == "!" represents inward cheque
-                    InstrumentDetails = chequeDetails.InstrumentAlpha.Equals("!") ? new InstrumentDetails
+                    InstrumentDetails = chequeDetails?.InstrumentAlpha == "!" ? new InstrumentDetails
                     {
                         InstrumentDate = transactionDate,
                         InstrumentAlpha = chequeDetails.InstrumentAlpha,

@@ -150,6 +150,8 @@ namespace Finacle.Infrastructure.Persistence
         public string? UserAgent { get; set; }
         public string? Userid { get; set; }
         public string? TraceId { get; set; }
+        public bool? IsReversed { get; set; }
+        public string? ReversalResponseParam { get; set; }
     }
 
     public class ApiCallDup
