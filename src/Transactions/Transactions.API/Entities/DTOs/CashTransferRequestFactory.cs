@@ -36,7 +36,7 @@ public class CashTransferRequestFactory
                     RoundOffIndicator = "C",
                     RoundOffAmount = new RoundOffAmount
                     {
-                        Value = amount - Math.Truncate(amount),
+                        Value = 0,
                         Currency = currency
                     },
                     DenominationRemarks = "ok"
@@ -90,26 +90,53 @@ public class CashTransferRequestFactory
     }
 
     private static List<DenominationDetailsCurrencyType> ConvertDictionaryToDenominationDetails(
-    Dictionary<string, string> denomDetails, string currency)
+        Dictionary<string, string> denomDetails, string currency)
     {
         var result = new List<DenominationDetailsCurrencyType>();
+        int strapOrBundleSize = 100;
+
         foreach (var kvp in denomDetails)
         {
-            if (int.TryParse(kvp.Key, out int denomination) && int.TryParse(kvp.Value, out int count))
+            // Try to parse the key as a decimal (to allow coins like 0.50)
+            if (decimal.TryParse(kvp.Key, out decimal denomination) && int.TryParse(kvp.Value, out int count))
             {
-                result.Add(new DenominationDetailsCurrencyType
+                // Determine if this is a coin or note
+                bool isCoin = denomination < 1m;
+
+                if (isCoin)
                 {
-                    DenominationCurrency = currency,
-                    Denomination = denomination,
-                    DenominationType = "N",
-                    StrapOrBundleSize = 100,
-                    NumberOfNotesOrCoins = count,
-                    NumberOfStrapsOrBundles = 0,
-                    NumberOfNotesOrCoinsPaybackOrGetback = 0,
-                    NumberOfStrapsOrBundlesPaybackOrGetback = 0
-                });
+                    int fullBundles = count / strapOrBundleSize;
+                    int remainingCoins = count % strapOrBundleSize;
+
+                    result.Add(new DenominationDetailsCurrencyType
+                    {
+                        DenominationCurrency = currency ?? "GHS",
+                        Denomination = denomination,
+                        DenominationType = "C",
+                        StrapOrBundleSize = strapOrBundleSize,
+                        NumberOfNotesOrCoins = remainingCoins, // coins not in full roll
+                        NumberOfStrapsOrBundles = fullBundles, // full rolls
+                        NumberOfNotesOrCoinsPaybackOrGetback = 0,
+                        NumberOfStrapsOrBundlesPaybackOrGetback = 0
+                    });
+                }
+                else
+                {
+                    result.Add(new DenominationDetailsCurrencyType
+                    {
+                        DenominationCurrency = currency ?? "GHS",
+                        Denomination = denomination,
+                        DenominationType = "N",
+                        StrapOrBundleSize = strapOrBundleSize,
+                        NumberOfNotesOrCoins = count,
+                        NumberOfStrapsOrBundles = 0,
+                        NumberOfNotesOrCoinsPaybackOrGetback = 0,
+                        NumberOfStrapsOrBundlesPaybackOrGetback = 0
+                    });
+                }
             }
         }
+
         return result;
     }
 

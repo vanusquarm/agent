@@ -75,7 +75,7 @@ namespace Transactions.API.Entities.DTOs
         public string? DenominationCurrency { get; set; }
 
         [JsonPropertyName("denomination")]
-        public int Denomination { get; set; }
+        public decimal Denomination { get; set; }
 
         [JsonPropertyName("denominationType")]
         public string? DenominationType { get; set; }
