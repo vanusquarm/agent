@@ -1,5 +1,5 @@
-using Acccounts.API.Grpc;
-using Acccounts.API.Services;
+using Accounts.API.Grpc;
+using Accounts.API.Services;
 using Accounts.API.Validators;
 using Finacle.Infrastructure.Auth;
 using Finacle.Infrastructure.Auth.BasicJwt;
