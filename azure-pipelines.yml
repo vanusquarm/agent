@@ -3,8 +3,8 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-trigger:
-- preprod
+#trigger:
+#- preprod
 
 pool:
   name: default
