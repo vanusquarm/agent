@@ -175,7 +175,6 @@ public class TransferValidator //: ITransferValidator
 
         var senderAccount = await _accountService.GetAccountAsync(request.SourceAccountId);
         var recipientAccount = await _accountService.GetAccountAsync(request.DestinationAccountId);
-        double.TryParse(senderAccount.EffectiveAvailableBalanceAmount.ToString(), out var availableBalance);
 
         if (string.IsNullOrEmpty(senderAccount?.AccountName))
         {
@@ -202,7 +201,9 @@ public class TransferValidator //: ITransferValidator
         }
 
         // Exclude office or internal accounts. These accounts are allowed to run into overdraft.
-        if (availableBalance < (double)request.Amount && !senderAccount.AccountIdentification.StartsWith("0"))
+        if (!string.IsNullOrEmpty(senderAccount?.EffectiveAvailableBalanceAmount) &&
+            double.TryParse(senderAccount!.EffectiveAvailableBalanceAmount!.ToString(), out var availableBalance) &&
+            availableBalance < (double)request.Amount && !senderAccount.AccountIdentification.StartsWith("0"))
         {
             result.ErrorMessage = "Insufficient funds";
             return result;
