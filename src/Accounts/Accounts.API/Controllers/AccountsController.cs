@@ -1,6 +1,6 @@
-using Acccounts.API.Entities;
-using Acccounts.API.Entities.DTOs;
-using Acccounts.API.Services;
+using Accounts.API.Entities;
+using Accounts.API.Entities.DTOs;
+using Accounts.API.Services;
 using Accounts.API.Validators;
 using Finacle.Infrastructure.Logging;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +9,7 @@ using Serilog;
 using System.Text.Json;
 
 
-namespace Acccounts.API.Controllers
+namespace Accounts.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]

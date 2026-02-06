@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Acccounts.API.Entities.DTOs
+namespace Accounts.API.Entities.DTOs
 {
     //public class AccountDto
     //{

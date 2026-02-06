@@ -1,4 +1,4 @@
-﻿using Acccounts.API.Entities.DTOs;
+﻿using Accounts.API.Entities.DTOs;
 using FluentValidation;
 
 namespace Accounts.API.Validators

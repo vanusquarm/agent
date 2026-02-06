@@ -1,4 +1,4 @@
-﻿namespace Acccounts.API.Entities.Models
+﻿namespace Accounts.API.Entities.Models
 {
     public class Account
     {

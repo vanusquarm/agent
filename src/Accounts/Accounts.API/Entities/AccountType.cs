@@ -1,4 +1,4 @@
-﻿namespace Acccounts.API.Entities
+﻿namespace Accounts.API.Entities
 {
     public enum AccountType
     {

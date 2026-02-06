@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace Acccounts.API.Entities.DTOs
+namespace Accounts.API.Entities.DTOs
 {
     public class CreateCurrentAcctRequest
     {
