@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option csharp_namespace = "Accounts.API.Grpc";
+
+service AccountService {
+  rpc GetAccount (GetAccountRequest) returns (GetAccountResponse);
+  rpc GetAccountStatements (GetAccountStatementsRequest) returns (GetAccountStatementsResponse);
+  rpc GetAccountStatement (GetAccountStatementRequest) returns (GetAccountStatementResponse);
+  rpc AddAccountRestriction (FreezeAccountRequest) returns (GenericResponse);
+  rpc RemoveAccountRestriction (UnFreezeAccountRequest) returns (GenericResponse);
+  rpc GetCustomersDetailsByAccountId (GetByAccountIdRequest) returns (GetCustomersDetailsByAccountIdResponse);
+  rpc GetAccountCustomers (GetByAccountIdRequest) returns (GetAccountCustomersResponse);
+  rpc GetAccountBalances (GetAccountBalancesRequest) returns (GetAccountBalancesResponse);
+  rpc GetAccountBalance (GetAccountBalanceRequest) returns (GetAccountBalanceResponse);
+  rpc CreateCurrentAccount (CreateCurrentAcctRequest) returns (CreateCurrentAcctResponse);
+  rpc CreateSavingsAccount (CreateSavingsAcctRequest) returns (CreateSavingsAcctResponse);
+  rpc CreateCorpCurrentAccount (CreateCorpCurrentAcctRequest) returns (CreateCorpCurrentAcctResponse);
+  rpc GetTerminalOfficeAcct (TerminalOfficeAcctRequest) returns (GetTerminalOfficeAcctResponse);
+  rpc GetAccountLiens (GetAccountLiensRequest) returns (GetAccountLiensResponse);
+  rpc CreateAccountLiens (CreateAccountLiensRequest) returns (CreateAccountLiensResponse);
+}
+
+message GetAccountRequest { string account_id = 1; }
+message GetAccountResponse { bool success = 1; string error = 2; AccountDetails details = 3; }
+
+message GetAccountStatementsRequest { string account_id = 1; string from_date = 2; string to_date = 3; int32 set_number = 4; int32 maximum_records = 5; }
+message GetAccountStatementsResponse { bool success = 1; string error = 2; repeated Statement statements = 3; }
+
+message GetAccountStatementRequest { string account_id = 1; string from_date = 2; string to_date = 3; }
+message GetAccountStatementResponse { bool success = 1; string error = 2; Statement statement = 3; }
+
+message FreezeAccountRequest { string customer_id = 1; string account_number = 2; string reason_type = 3; string reason_code = 4; string freeze_remarks = 5; }
+message UnFreezeAccountRequest { string customer_id = 1; string reason_code = 2; string remarks = 3; }
+message GenericResponse { bool success = 1; string error = 2; }
+
+message GetByAccountIdRequest { string account_id = 1; }
+message GetCustomersDetailsByAccountIdResponse { bool success = 1; string error = 2; CustomerDetails details = 3; }
+message GetAccountCustomersResponse { bool success = 1; string error = 2; CustomerDetails details = 3; }
+
+message GetAccountBalancesRequest { string account_id = 1; string account_type = 2; }
+message GetAccountBalancesResponse { bool success = 1; string error = 2; repeated Balance balances = 3; }
+message GetAccountBalanceRequest { string account_id = 1; string date = 2; }
+message GetAccountBalanceResponse { bool success = 1; string error = 2; Balance balance = 3; }
+
+message CreateCurrentAcctRequest { string customer_reference = 1; string product_code = 2; string gl_sub_head_code = 3; string account_currency = 4; string branch_reference = 5; }
+message CreateCurrentAcctResponse { bool success = 1; string error = 2; string account_id = 3; }
+
+message CreateSavingsAcctRequest { string customer_reference = 1; string product_code = 2; string account_nick_name = 3; string account_currency = 4; string branch_reference = 5; string mode_of_operation = 6; string account_opening_date = 7; }
+message CreateSavingsAcctResponse { bool success = 1; string error = 2; string account_id = 3; }
+
+message CreateCorpCurrentAcctRequest { string customer_reference = 1; string product_code = 2; string gl_sub_head_code = 3; string account_currency = 4; string branch_reference = 5; }
+message CreateCorpCurrentAcctResponse { bool success = 1; string error = 2; string account_id = 3; }
+
+message TerminalOfficeAcctRequest { string terminal_id = 1; }
+message GetTerminalOfficeAcctResponse { bool success = 1; string error = 2; TerminalOfficeAccount details = 3; }
+
+message GetAccountLiensRequest { string account_id = 1; string lien_type = 2; }
+message GetAccountLiensResponse { bool success = 1; string error = 2; repeated Lien liens = 3; }
+
+message CreateAccountLiensRequest { string account_id = 1; string lien_type = 2; double lien_amount = 3; string lien_start_date = 4; string lien_expiry_date = 5; string lien_purpose_reference = 6; }
+message CreateAccountLiensResponse { bool success = 1; string error = 2; Lien lien = 3; }
+
+// Define AccountDetails, Statement, CustomerDetails, Balance, TerminalOfficeAccount, Lien as needed.
