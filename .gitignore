@@ -20,3 +20,8 @@ app
 /src/Customers/Customers.API/.config/dotnet-tools.json
 /src/Accounts/Accounts.API/.config
 /errors
+/src/Services/Accounts/Accounts.API/Properties/PublishProfiles
+/src/Services/Cheques/Cheques.API/Properties/PublishProfiles
+/src/Services/Customers/Customers.API/Properties/PublishProfiles
+/src/Services/Loans/Loans.API/Properties/PublishProfiles
+/src/Services/Transactions/Transactions.API/Properties/PublishProfiles
