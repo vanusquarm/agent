@@ -15,5 +15,6 @@ namespace Finacle.Core.Domain
         public string DocNum { get; set; }
         public string UserPartTransactionCode { get; set; }
         public string ChargeEventId { get; set; }
+        public string BatchId { get; set; }
     }
 }

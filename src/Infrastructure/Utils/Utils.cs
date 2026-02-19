@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -75,6 +76,21 @@ namespace Finacle.Infrastructure.Utils
                 return false; // Invalid format
             }
             catch (Exception) { return false; }
+        }
+
+        public static bool TryDeserialize<T>(string json, out T result)
+        {
+            try
+            {
+                result = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return result != null;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"{nameof(T)} JSON Deserialization failed: {ex.Message}");
+                result = default;
+                return false;
+            }
         }
     }
 }
