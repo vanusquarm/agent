@@ -23,7 +23,7 @@ namespace Finacle.Infrastructure.Logging
             app.Use(async (context, next) =>
             {
                 var requestBody = await ReadBodyFromRequest(context.Request);
-                var requestId = requestBody.ToHash() ?? context.Request.Headers["requestId"].FirstOrDefault();
+                var requestId = context.Request.Headers["requestId"].FirstOrDefault() ?? requestBody.ToHash();
                 context.Items["requestId"] = requestId;
 
                 var apiCall = new ApiCall

@@ -1,6 +1,6 @@
 namespace Transactions.API.Entities.DTOs;
 
-public class AccountTransferRequest
+public class TransferRequest
 {
     public string SourceAccountId { get; set; }
     public string DestinationAccountId { get; set; }
@@ -33,9 +33,9 @@ public class AccountTransferRequest
         BatchId = BatchId?.Trim();
     }
 
-    public static AccountTransferRequest Map(ChequeDepositRequest chequeDepositRequest)
+    public static TransferRequest Map(ChequeDepositRequest chequeDepositRequest)
     {
-        return new AccountTransferRequest
+        return new TransferRequest
         {
             SourceAccountId = chequeDepositRequest.ChequeAccountNumber,
             DestinationAccountId = chequeDepositRequest.BeneficiaryAccountNumber,

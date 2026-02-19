@@ -1,5 +1,4 @@
 using Finacle.Infrastructure.Logging;
-using Finacle.Infrastructure.Persistence;
 using Finacle.Infrastructure.Utils;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
@@ -22,13 +21,13 @@ public class TransactionsController : ControllerBase
 {
     private readonly ITransactionClient _transactionClient;
     private readonly TransferValidator _transferValidator;
-    private readonly FinacleDbContext _finacleDbContext;
+    private readonly TransferOrchestrator _transfer;
 
-    public TransactionsController(ITransactionClient transactionClient, TransferValidator transferValidator, FinacleDbContext finacleDbContext)
+    public TransactionsController(ITransactionClient transactionClient, TransferValidator transferValidator, TransferOrchestrator transfer)
     {
         _transactionClient = transactionClient;
         _transferValidator = transferValidator;
-        _finacleDbContext = finacleDbContext;
+        _transfer = transfer;
     }
 
     /// <summary>
@@ -271,7 +270,7 @@ public class TransactionsController : ControllerBase
     /// <param name="accountTransferRequest"></param>
     /// <returns></returns>
     [HttpPost("transfer")]
-    public async Task<IActionResult> PerformIntraBankTransfer([FromBody] AccountTransferRequest accountTransferRequest)
+    public async Task<IActionResult> PerformIntraBankTransfer([FromBody] TransferRequest accountTransferRequest)
     {
         try
         {
@@ -299,19 +298,13 @@ public class TransactionsController : ControllerBase
 
             Log.Information("About to Map Finacle intra transfer request with request: {@Request}", accountTransferRequest);
             var request = IntraBankTransferRequestFactory.Create(requestId, accountTransferRequest.SourceAccountId, accountTransferRequest.DestinationAccountId, accountTransferRequest.Amount,
-                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, "", accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId, explanationCode: accountTransferRequest.UserPartTransactionCode);
+                    accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.Currency, accountTransferRequest.DocNum, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId, explanationCode: accountTransferRequest.UserPartTransactionCode);
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 
-            Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Header());
-            var response = await _transactionClient.PerformIntraBankTransfer(requestId, request);
+            Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Finacle.Core.Domain.Header());
+            var response = await _transfer.PerformIntraBankTransfer(requestId, request);
 
             Log.Information("Back from Performing IntraBankTransfer with response: {@Response}", response);
-
-            if (response.TransactionReference == null)
-            {
-                Log.Information("An error occurred while processing the transaction: {@Request}", request);
-                return StatusCode(500, $"Failed to process the intra-bank transfer with Response: {response}");
-            }
 
             return Ok(response);
         }
@@ -356,7 +349,7 @@ public class TransactionsController : ControllerBase
         try
         {
             // Validate the request
-            var validationResult = await _transferValidator.ValidateAsync(AccountTransferRequest.Map(chequeDepositRequest));
+            var validationResult = await _transferValidator.ValidateAsync(TransferRequest.Map(chequeDepositRequest));
 
             if (!validationResult.IsValid)
             {
@@ -383,7 +376,7 @@ public class TransactionsController : ControllerBase
                     chequeDepositRequest.ChequeAccountName, chequeDepositRequest.ChequeAccountName, "", null, null, null, null, explanationCode: null, chequeDetails: ChequeDepositRequest.Map(chequeDepositRequest));
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 
-            Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Header());
+            Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Finacle.Core.Domain.Header());
             var response = await _transactionClient.PerformIntraBankTransfer(requestId, request);
 
             Log.Information("Back from Performing IntraBankTransfer with response: {@Response}", response);
@@ -434,7 +427,7 @@ public class TransactionsController : ControllerBase
                     accountTransferRequest.Remarks, accountTransferRequest.ChannelReference, accountTransferRequest.ChannelId, accountTransferRequest.Currency, accountTransferRequest.ChargeEventId, accountTransferRequest.BatchId, explanationCode: accountTransferRequest.ExplanationCode);
             Log.Information("Back from Mapping Finacle intra transfer request with finacle request: {@Request}", request);
 
-            Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Header());
+            Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Finacle.Core.Domain.Header());
             var response = await _transactionClient.PerformIntraBankTransfer(requestId, request);
 
             Log.Information("Back from Performing IntraBankTransfer with response: {@Response}", response);
@@ -541,115 +534,115 @@ public class TransactionsController : ControllerBase
         }
     }
 
-    [HttpPost("reversals")]
-    public async Task<IActionResult> PerformReversal([FromBody] TransactionIdentification reversalRequest)
-    {
-        Log.Information("Recieved Request at PerformReversal: {@Request}", reversalRequest);
-        try
-        {
-            var apiCall = await _finacleDbContext.ApiCalls
-                .Where(a => a.ResponseParam != null && a.ResponseParam.Contains(reversalRequest.TransactionReference))
-                .OrderByDescending(a => a.Id)
-                .FirstOrDefaultAsync();
+    //[HttpPost("reversals")]
+    //public async Task<IActionResult> PerformReversal([FromBody] TransactionIdentification reversalRequest)
+    //{
+    //    Log.Information("Recieved Request at PerformReversal: {@Request}", reversalRequest);
+    //    try
+    //    {
+    //        var apiCall = await _finacleDbContext.ApiCalls
+    //            .Where(a => a.ResponseParam != null && a.ResponseParam.Contains(reversalRequest.TransactionReference))
+    //            .OrderByDescending(a => a.Id)
+    //            .FirstOrDefaultAsync();
 
-            var request = new ReversalTransferRequest
-            {
-                TransactionIdentification = new TransactionIdentification
-                {
-                    TransactionDate = reversalRequest?.TransactionDate,
-                    TransactionReference = reversalRequest.TransactionReference,
-                    Remarks = reversalRequest?.Remarks
-                }
-            };
+    //        var request = new ReversalTransferRequest
+    //        {
+    //            TransactionIdentification = new TransactionIdentification
+    //            {
+    //                TransactionDate = reversalRequest?.TransactionDate,
+    //                TransactionReference = reversalRequest.TransactionReference,
+    //                Remarks = reversalRequest?.Remarks
+    //            }
+    //        };
 
-            Log.Information("About to PerformReversal with request: {@Request}", request);
-            var response = await _transactionClient.Reverse(reversalRequest.TransactionReference, request);
-            Log.Information("Back from PerformReversal with response: {@Response}", response);
+    //        Log.Information("About to PerformReversal with request: {@Request}", request);
+    //        var response = await _transactionClient.Reverse(reversalRequest.TransactionReference, request);
+    //        Log.Information("Back from PerformReversal with response: {@Response}", response);
 
-            Log.Information("About to Update ApiCall with reversal request: {@Request}", request);
-            if (!string.IsNullOrEmpty(response.ReversalTransactionIdentification.TransactionReference))
-            {
-                apiCall.IsReversed = true;
-                apiCall.ReversalResponseParam = JsonSerializer.Serialize(response);
-                _finacleDbContext.ApiCalls.Update(apiCall);
-                await _finacleDbContext.SaveChangesAsync();
-            }
-            Log.Information("Back from Updating ApiCall with reversal response: {@Response}", response);
+    //        Log.Information("About to Update ApiCall with reversal request: {@Request}", request);
+    //        if (!string.IsNullOrEmpty(response.ReversalTransactionIdentification.TransactionReference))
+    //        {
+    //            apiCall.IsReversed = true;
+    //            apiCall.ReversalResponseParam = JsonSerializer.Serialize(response);
+    //            _finacleDbContext.ApiCalls.Update(apiCall);
+    //            await _finacleDbContext.SaveChangesAsync();
+    //        }
+    //        Log.Information("Back from Updating ApiCall with reversal response: {@Response}", response);
 
-            return Ok(response);
-        }
-        catch (Refit.ApiException ex)
-        {
-            Log.Error("Back from PerformReversal with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
-            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
-        }
-        catch (Exception ex)
-        {
-            Log.Error("An exception has occured at PerformReversal with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
-        }
-    }
+    //        return Ok(response);
+    //    }
+    //    catch (Refit.ApiException ex)
+    //    {
+    //        Log.Error("Back from PerformReversal with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+    //        return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Log.Error("An exception has occured at PerformReversal with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+    //        return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+    //    }
+    //}
 
-    [HttpPost("reversals/{channelReference}")]
-    public async Task<IActionResult> PerformReversal(string channelReference)
-    {
-        Log.Information("Recieved Request at PerformReversal: {@Request}", channelReference);
-        var request = new ReversalTransferRequest();
+    //[HttpPost("reversals/{channelReference}")]
+    //public async Task<IActionResult> PerformReversal(string channelReference)
+    //{
+    //    Log.Information("Recieved Request at PerformReversal: {@Request}", channelReference);
+    //    var request = new ReversalTransferRequest();
 
-        try
-        {
-            var apiCall = await _finacleDbContext.ApiCalls
-                .Where(a => a.RequestParam.Contains(channelReference))
-                .OrderByDescending(a => a.Id)
-                .FirstOrDefaultAsync();
+    //    try
+    //    {
+    //        var apiCall = await _finacleDbContext.ApiCalls
+    //            .Where(a => a.RequestParam.Contains(channelReference))
+    //            .OrderByDescending(a => a.Id)
+    //            .FirstOrDefaultAsync();
 
-            if (apiCall != null && apiCall?.ResponseCode == "200")
-            {
-                var deserializedResponse = JsonSerializer.Deserialize<IntraBankTransferResponse>(apiCall?.ResponseParam);
+    //        if (apiCall != null && apiCall?.ResponseCode == "200")
+    //        {
+    //            var deserializedResponse = JsonSerializer.Deserialize<IntraBankTransferResponse>(apiCall?.ResponseParam);
 
-                request = new ReversalTransferRequest
-                {
-                    TransactionIdentification = new TransactionIdentification
-                    {
-                        TransactionDate = deserializedResponse?.TransactionDate,
-                        TransactionReference = deserializedResponse.TransactionReference,
-                        Remarks = channelReference
-                    }
-                };
-            }
-            else
-            {
-                return StatusCode(422, ResponseManager.ReturnFinacleCallUnsuccessful(exception: 
-                    $"No record found for the given channelReference: {channelReference} to reverse"));
-            }
+    //            request = new ReversalTransferRequest
+    //            {
+    //                TransactionIdentification = new TransactionIdentification
+    //                {
+    //                    TransactionDate = deserializedResponse?.TransactionDate,
+    //                    TransactionReference = deserializedResponse.TransactionReference,
+    //                    Remarks = channelReference
+    //                }
+    //            };
+    //        }
+    //        else
+    //        {
+    //            return StatusCode(422, ResponseManager.ReturnFinacleCallUnsuccessful(exception: 
+    //                $"No record found for the given channelReference: {channelReference} to reverse"));
+    //        }
 
-                Log.Information("About to PerformReversal with request: {@Request}", request);
-            var response = await _transactionClient.Reverse(apiCall?.RequestId, request);
-            Log.Information("Back from PerformReversal with response: {@Response}", response);
+    //            Log.Information("About to PerformReversal with request: {@Request}", request);
+    //        var response = await _transactionClient.Reverse(apiCall?.RequestId, request);
+    //        Log.Information("Back from PerformReversal with response: {@Response}", response);
 
-            Log.Information("About to Update ApiCall with reversal request: {@Request}", request);
-            if (!string.IsNullOrEmpty(response.ReversalTransactionIdentification.TransactionReference))
-            {
-                apiCall.IsReversed = true;
-                apiCall.ReversalResponseParam = JsonSerializer.Serialize(response);
-                _finacleDbContext.ApiCalls.Update(apiCall);
-                await _finacleDbContext.SaveChangesAsync();
-            }
-            Log.Information("Back from Updating ApiCall with reversal response: {@Response}", response);
+    //        Log.Information("About to Update ApiCall with reversal request: {@Request}", request);
+    //        if (!string.IsNullOrEmpty(response.ReversalTransactionIdentification.TransactionReference))
+    //        {
+    //            apiCall.IsReversed = true;
+    //            apiCall.ReversalResponseParam = JsonSerializer.Serialize(response);
+    //            _finacleDbContext.ApiCalls.Update(apiCall);
+    //            await _finacleDbContext.SaveChangesAsync();
+    //        }
+    //        Log.Information("Back from Updating ApiCall with reversal response: {@Response}", response);
 
-            return Ok(response);
-        }
-        catch (Refit.ApiException ex)
-        {
-            Log.Error("Back from PerformReversal with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
-            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
-        }
-        catch (Exception ex)
-        {
-            Log.Error("An exception has occured at PerformReversal with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
-            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
-        }
-    }
+    //        return Ok(response);
+    //    }
+    //    catch (Refit.ApiException ex)
+    //    {
+    //        Log.Error("Back from PerformReversal with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+    //        return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Log.Error("An exception has occured at PerformReversal with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+    //        return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+    //    }
+    //}
 
     [HttpGet("bankdate")]
     public async Task<IActionResult> GetTransactionBankDate(string branchCode)

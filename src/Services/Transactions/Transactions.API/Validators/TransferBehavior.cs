@@ -1,6 +1,5 @@
 ﻿using Finacle.Core;
 using FluentValidation;
-using System.Linq;
 using Transactions.API.Entities.DTOs;
 
 namespace Transactions.API.Validators;
@@ -19,7 +18,7 @@ public class TransferValidator //: ITransferValidator
         _logger = logger;
     }
 
-    public async Task<TransferValidationResult> ValidateAsync(AccountTransferRequest request)
+    public async Task<TransferValidationResult> ValidateAsync(TransferRequest request)
     {
         var result = new TransferValidationResult();
 
@@ -91,7 +90,7 @@ public class TransferValidator //: ITransferValidator
         return validationResult.IsValid;
     }
 
-    private bool ValidateFields(AccountTransferRequest request, out string errorMessage)
+    private bool ValidateFields(TransferRequest request, out string errorMessage)
     {
         errorMessage = null;
         var validator = new AccountTransferRequestValidator();
@@ -169,7 +168,7 @@ public class TransferValidator //: ITransferValidator
         return true;
     }
 
-    private async Task<TransferValidationResult> ValidateAccountAsync(AccountTransferRequest request)
+    private async Task<TransferValidationResult> ValidateAccountAsync(TransferRequest request)
     {
         var result = new TransferValidationResult();
 
@@ -250,7 +249,7 @@ public class TransferValidator //: ITransferValidator
     }
 }
 
-public class AccountTransferRequestValidator : AbstractValidator<AccountTransferRequest>
+public class AccountTransferRequestValidator : AbstractValidator<TransferRequest>
 {
     public AccountTransferRequestValidator()
     {

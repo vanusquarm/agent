@@ -10,6 +10,7 @@ namespace Finacle.Infrastructure.Persistence
         public DbSet<ApiCall> ApiCalls { get; set; } = null!;
         public DbSet<ApiCallDup> ApiCallDuplicates { get; set; } = null!;
         public DbSet<Holiday> Holidays { get; set; } = null!;
+        public DbSet<TransferEntity> Transfers { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -129,6 +130,27 @@ namespace Finacle.Infrastructure.Persistence
 
         }
 
+    }
+
+    public class TransferEntity
+    {
+        public int Id { get; set; }
+        public string RequestId { get; set; }
+        public string SourceAccount { get; set; }
+        public string DestinationAccount { get; set; }
+        public decimal Amount { get; set; }
+        public string Currency { get; set; }
+        public string Remarks { get; set; }
+        public string ChannelReference { get; set; }
+        public string ChannelId { get; set; }
+        public string DocNum { get; set; }
+        public string UserPartTransactionCode { get; set; }
+        public string ChargeEventId { get; set; }
+        public string Status { get; set; }
+        public string StatusCode { get; set; }
+        public string ResponsePayload { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 
     public class ApiCall

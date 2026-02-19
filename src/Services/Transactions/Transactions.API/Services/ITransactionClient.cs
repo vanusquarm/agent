@@ -1,19 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Transactions.API.Entities.DTOs;
-
-namespace Transactions.API.Services;
 using Refit;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Transactions.API.Entities;
 
+namespace Transactions.API.Services;
+
 public interface ITransactionClient
 {
     [Post("/v2/transactiondetails/gettransactiondetails")]
-    Task<GetTransactionsResponse> GetTransactionDetails(object request);
-
-    [Post("/v2/eodStatusDtls/geteodStatusDtls")]
-    Task<EodStatusResponse> GetEodStatusDetails(EodStatusRequest request);
+    Task<object> GetTransactionDetails(object request);
 
     [Headers("delivery_channel: COR")]
     [Post("/v2/transactions/cash-deposit")]
@@ -63,7 +60,6 @@ public interface ITransactionClient
 
     [Post("/v2/createStatementCharge/createStatementChargeDtls")]
     Task<object> PerformStatementCharge(StatementChargeRquest chargeRequest);
-
 
     //"GetFxSaleRates": "v2/FXRateDtls/getFXRateDtlss",
     //"CurrencyConversion": "v2/currencies/CONVERT",

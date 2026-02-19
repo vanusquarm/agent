@@ -4,10 +4,10 @@ using Finacle.Infrastructure.Auth.BasicJwt;
 using Finacle.Infrastructure.Auth.OpenId;
 using Finacle.Infrastructure.Logging;
 using Finacle.Infrastructure.Persistence;
+using Finacle.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Transactions.API.Entities;
-using Transactions.API.Filters;
 using Transactions.API.Services;
 using Transactions.API.Validators;
 
@@ -39,7 +39,8 @@ builder.Services.AddHttpClient<FinacleClient>(client =>
     client.DefaultRequestHeaders.Add("ChannelId", configuration["FinacleGateway:ChannelId"]?.ToUpper());
 });
 builder.Services.AddScoped<TransferValidator>();
-builder.Services.AddScoped<ValidateModelFilter>();
+builder.Services.AddScoped<TransferOrchestrator>();
+builder.Services.AddScoped<ITransferRepository, TransferRepository>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();

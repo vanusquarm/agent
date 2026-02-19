@@ -64,4 +64,8 @@
     <PackageReference Include="IdentityModel.AspNetCore" Version="4.3.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Core\Finacle.Core.csproj" />
+	</ItemGroup>
+
 </Project>
