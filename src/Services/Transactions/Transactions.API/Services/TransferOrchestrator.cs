@@ -137,7 +137,7 @@ namespace Transactions.API.Services
         {
             try
             {
-                searchTerm = searchTerm.Length > 50 ? searchTerm.Substring(50) : searchTerm;
+                searchTerm = searchTerm.Length > 50 ? searchTerm.Substring(0,50) : searchTerm;
                 var request = new Dictionary<string, string>
                 {
                     { "fromDate", $"{ date }" },
