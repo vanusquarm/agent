@@ -12,4 +12,5 @@ public class IntraBankTransferResponse
 
     [JsonPropertyName("tranStatus")]
     public required string TranStatus { get; set; }
+    public string? Message { get; internal set; }
 }

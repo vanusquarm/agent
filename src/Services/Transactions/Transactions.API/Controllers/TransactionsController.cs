@@ -304,8 +304,6 @@ public class TransactionsController : ControllerBase
             Log.Information("About to PerformIntraBankTransfer - RequestId: {RequestId}, Request: {@Request}, Header: {@Header}", requestId, request, new Finacle.Core.Domain.Header());
             var response = await _transfer.PerformIntraBankTransfer(requestId, request);
 
-            Log.Information("Back from Performing IntraBankTransfer with response: {@Response}", response);
-
             return Ok(response);
         }
         catch (Refit.ApiException ex)
@@ -645,6 +643,7 @@ public class TransactionsController : ControllerBase
     //}
 
     [HttpGet("bankdate")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetTransactionBankDate(string branchCode)
     {
         try

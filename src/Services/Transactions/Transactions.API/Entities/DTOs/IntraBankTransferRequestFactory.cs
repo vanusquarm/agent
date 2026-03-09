@@ -29,7 +29,6 @@ public class IntraBankTransferRequestFactory
             TransactionSubType = IntraBankTransferConstants.TransactionSubType,
             ChannelIdentification = (channel.Length >= 3) ? channel.Substring(0, 3).ToUpper() : IntraBankTransferConstants.ChannelIdentification,
             EntererId = null,
-            UserTransactionCode = explanationCode ?? IntraBankTransferConstants.UserTransactionCode,
             TransferTransactionDetail = new List<IntraBankTransferTransactionDetail>
             {
                 new IntraBankTransferTransactionDetail

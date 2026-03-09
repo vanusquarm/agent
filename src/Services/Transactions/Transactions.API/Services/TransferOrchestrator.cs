@@ -2,8 +2,6 @@
 using Finacle.Infrastructure.Persistence.Repositories;
 using Finacle.Infrastructure.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Refit;
-using Serilog;
 using System.Text.Json;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Validators;
@@ -12,13 +10,16 @@ namespace Transactions.API.Services
 {
     public class TransferOrchestrator
     {
+        private readonly ILogger<TransferOrchestrator> _logger;
         private readonly ITransferRepository _repository;
         private readonly ITransactionClient _coreClient;
 
         public TransferOrchestrator(
+            ILogger<TransferOrchestrator> logger,
             ITransferRepository repository,
             ITransactionClient coreClient)
         {
+            _logger = logger;
             _repository = repository;
             _coreClient = coreClient;
         }
@@ -47,6 +48,7 @@ namespace Transactions.API.Services
                 //    request.Remarks, request.ChannelReference, "", request.Currency, request.DocNum, request.ChargeEventId, request.BatchId, explanationCode: request.UserPartTransactionCode);
 
                 var response = await _coreClient.PerformIntraBankTransfer(requestId, request);
+                _logger.LogInformation("Back from Performing IntraBankTransfer with response: {@Response}", response);
 
                 //await _repository.UpdateStatusAsync(
                 //    requestId,
@@ -58,10 +60,13 @@ namespace Transactions.API.Services
             }
             catch (Refit.ApiException ex) when ((int)ex.StatusCode == 500)
             {
+                _logger.LogError("Error performing intra-bank transfer with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 // 3️⃣ On 500, query transaction status
                 string date = DateTime.Now.ToString("yyyy-MM-dd");
-                var statusResponse = await GetTransactionStatus(requestId, request.TransferTransactionDetail[0].AccountIdentification, date, request.TransferTransactionDetail[0].TransactionParticulars);
 
+                _logger.LogInformation("About to get transaction status for requestId: {RequestId}. StatusCode: {StatusCode}, Content: {Content}", requestId, ex.StatusCode, ex.Content);
+                var statusResponse = await GetTransactionStatus(requestId, request.TransferTransactionDetail[0].AccountIdentification, date, request.TransferTransactionDetail[0].TransactionParticulars);
+                _logger.LogInformation("Back from GetTransactionStatus with response: {@StatusResponse}", statusResponse);
 
                 if (statusResponse != null && statusResponse?.TranDetails != null)
                 {
@@ -93,13 +98,14 @@ namespace Transactions.API.Services
                     {
                         TransactionDate = "",
                         TransactionReference = "",
-                        TranStatus = "Failed"
+                        TranStatus = "Failed",
+                        Message = ex.Content
                     };
 
                     return response;
                 }
             }
-            catch (Exception ex)
+            catch (Refit.ApiException ex)
             {
                 // Other exceptions
                 //await _repository.UpdateStatusAsync(
@@ -108,11 +114,13 @@ namespace Transactions.API.Services
                 //    "500",
                 //    ex.Message);
 
+                _logger.LogError(ex, "Error performing intra-bank transfer for requestId: {RequestId}", requestId);
                 var response = new IntraBankTransferResponse
                 {
                     TransactionDate = "",
                     TransactionReference = "",
-                    TranStatus = "Failed"
+                    TranStatus = "Failed",
+                    Message = ex.Content
                 };
 
                 return response;
