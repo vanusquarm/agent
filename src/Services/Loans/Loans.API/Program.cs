@@ -1,7 +1,7 @@
-using Loans.API.Services;
 using Finacle.Infrastructure.Auth;
 using Finacle.Infrastructure.Auth.BasicJwt;
 using Finacle.Infrastructure.Auth.OpenId;
+using Loans.API.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +24,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtMiddleware<ILoanClient>(configuration);
+builder.Services.AddScoped<ILoanService, LoanService>();
 //builder.Services.AddOpenIdAuth(builder.Configuration, null); // Add Token Validation
 
 var app = builder.Build();

@@ -7,12 +7,12 @@ using Microsoft.Identity.Client;
 using Serilog;
 
 
-namespace Loan.API.Controllers
+namespace Loans.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
 
-    public class LoansController(ILoanClient loanClient) : ControllerBase
+    public class LoansController(ILoanClient loanClient, ILoanService _loanService) : ControllerBase
     {
         /// <summary>
         /// Method to Create Loan
@@ -35,7 +35,7 @@ namespace Loan.API.Controllers
                 if (createUnsecuredLoanRequest != null)
                 {
                     Log.Information("About to CreateSecureLoan with request: {@Request}", createUnsecuredLoanRequest);
-                    var loan = isSecured ? await loanClient.CreateSecureLoan((CreateUnsecuredLoanRequest)createUnsecuredLoanRequest) : await loanClient.CreateUnsecureLoan((CreateUnsecuredLoanRequest)createUnsecuredLoanRequest);
+                    var loan = isSecured ? await loanClient.CreateSecureLoan(createUnsecuredLoanRequest) : await loanClient.CreateUnsecureLoan(createUnsecuredLoanRequest);
                     Log.Information("Back from Creating SecureLoan with response: {@Response}", loan);
                     return Ok(loan);
                 }
@@ -429,6 +429,39 @@ namespace Loan.API.Controllers
                 Log.Error("Back from CloseLoanAccount with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
             }
+        }
+
+        /// <summary>
+        /// Method to Check Eligibility for Quick Credit
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
+        [HttpGet("eligibility")]
+        public async Task<ActionResult<EligibilityResponse>> GetEligibility([FromQuery] int bracode, [FromQuery] string cusnum)
+        {
+            var result = await _loanService.GetEligibilityAsync(bracode, cusnum);
+            return Ok(result);
+        }
+
+        [HttpPost("eligibility")]
+        public async Task<ActionResult<EligibilityResponse>> PostEligibility([FromBody] EligibilityRequest request)
+        {
+            var result = await _loanService.GetEligibilityAsync(request.BraCode, request.CusNum);
+            return Ok(result);
+        }
+
+        [HttpPost("manual-quick-credit")]
+        public async Task<ActionResult<ManualQuickCreditResponse>> ManualQuickCredit([FromBody] ManualQuickCreditRequest request)
+        {
+            var result = await _loanService.ProcessManualQuickCreditAsync(request);
+            return Ok(result);
+        }
+
+        [HttpPost("quick-credit-hr-undertaking")]
+        public async Task<ActionResult<QuickCreditHRUndertakingResponse>> HRUndertaking([FromBody] QuickCreditHRUndertakingRequest request)
+        {
+            var result = await _loanService.ProcessHRUndertakingAsync(request);
+            return Ok(result);
         }
     }
 }
