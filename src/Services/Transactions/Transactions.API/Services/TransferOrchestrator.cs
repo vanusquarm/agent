@@ -81,7 +81,7 @@ namespace Transactions.API.Services
                     {
                         TransactionDate = transactionDetails.TransactionDate,
                         TransactionReference = transactionDetails.TransactionIdentification,
-                        TranStatus = "Success"
+                        TranStatus = ""
                     };
 
                     return response;
