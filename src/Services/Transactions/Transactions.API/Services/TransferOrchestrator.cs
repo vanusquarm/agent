@@ -65,7 +65,7 @@ namespace Transactions.API.Services
                 string date = DateTime.Now.ToString("yyyy-MM-dd");
 
                 _logger.LogInformation("About to get transaction status for requestId: {RequestId}. StatusCode: {StatusCode}, Content: {Content}", requestId, ex.StatusCode, ex.Content);
-                var statusResponse = await GetTransactionStatus(requestId, request.TransferTransactionDetail[0].AccountIdentification, date, request.TransferTransactionDetail[0].TransactionParticulars);
+                var statusResponse = await GetTransactionStatus(requestId, request.TransferTransactionDetail[1].AccountIdentification, date, request.TransferTransactionDetail[1].TransactionParticulars);
                 _logger.LogInformation("Back from GetTransactionStatus with response: {@StatusResponse}", statusResponse);
 
                 if (statusResponse != null && statusResponse?.TranDetails != null)
