@@ -1,6 +1,7 @@
 ﻿using Finacle.Infrastructure.Logging;
 using Finacle.Infrastructure.Persistence.Repositories;
 using Finacle.Infrastructure.Utils;
+using MassTransit.Middleware;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Transactions.API.Entities.DTOs;
@@ -60,50 +61,39 @@ namespace Transactions.API.Services
             }
             catch (Refit.ApiException ex) when ((int)ex.StatusCode == 500)
             {
+                var _maxRetries = 3;
                 _logger.LogError("Error performing intra-bank transfer with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 // 3️⃣ On 500, query transaction status
-                string date = DateTime.Now.ToString("yyyy-MM-dd");
+                var status = await CheckTransactionStatusAsync(requestId, request);
 
-                _logger.LogInformation("About to get transaction status for requestId: {RequestId}. StatusCode: {StatusCode}, Content: {Content}", requestId, ex.StatusCode, ex.Content);
-                var statusResponse = await GetTransactionStatus(requestId, request.TransferTransactionDetail[1].AccountIdentification, date, request.TransferTransactionDetail[1].TransactionParticulars);
-                _logger.LogInformation("Back from GetTransactionStatus with response: {@StatusResponse}", statusResponse);
-
-                if (statusResponse != null && statusResponse?.TranDetails != null)
+                while (status == null)
                 {
-                    var transactionDetails = statusResponse?.TranDetails?.FirstOrDefault();
-                    //await _repository.UpdateStatusAsync(
-                    //    requestId,
-                    //    "Success",
-                    //    "200",
-                    //    JsonSerializer.Serialize(statusResponse));
+                    int retryCount = 0;
+                    status = await CheckTransactionStatusAsync(requestId, request);
 
-                    var response = new IntraBankTransferResponse
+                    retryCount++;
+
+                    if (retryCount > _maxRetries)
                     {
-                        TransactionDate = transactionDetails.TransactionDate,
-                        TransactionReference = transactionDetails.TransactionIdentification,
-                        TranStatus = ""
-                    };
+                        _logger.LogError("Max retries reached.");
+                        return new IntraBankTransferResponse
+                        {
+                            TransactionDate = "",
+                            TransactionReference = "",
+                            TranStatus = "Failed",
+                            Message = ex.Content
+                        };
+                    }
 
-                    return response;
+                    var delaySeconds = Math.Pow(4, retryCount);
+                    var jitter = new Random().Next(0, 1000);
+                    var delay = TimeSpan.FromSeconds(delaySeconds) + TimeSpan.FromMilliseconds(jitter);
+
+                    _logger.LogWarning("Retry {RetryCount} after {Delay}", retryCount, delay);
+
+                    await Task.Delay(delay);
                 }
-                else
-                {
-                    //await _repository.UpdateStatusAsync(
-                    //    requestId,
-                    //    "Failed",
-                    //    ex.StatusCode.ToString(),
-                    //    ex.Content);
-
-                    var response = new IntraBankTransferResponse
-                    {
-                        TransactionDate = "",
-                        TransactionReference = "",
-                        TranStatus = "Failed",
-                        Message = ex.Content
-                    };
-
-                    return response;
-                }
+                return status;
             }
             catch (Refit.ApiException ex)
             {
@@ -181,6 +171,48 @@ namespace Transactions.API.Services
                 result = default;
                 return false;
             }
+        }
+
+        private async Task<IntraBankTransferResponse?> CheckTransactionStatusAsync(
+            string requestId,
+            IntraBankTransferRequest request)
+        {
+            string date = DateTime.Now.ToString("yyyy-MM-dd");
+
+            _logger.LogInformation(
+                "Checking transaction status. RequestId: {RequestId}, AccountId: {AccountId}, Date: {Date}, SearchTerm: {SearchTerm}",
+                requestId,
+                request.TransferTransactionDetail[0].AccountIdentification,
+                date,
+                request.TransferTransactionDetail[0].TransactionParticulars
+            );
+
+            var statusResponse = await GetTransactionStatus(
+                requestId,
+                request.TransferTransactionDetail[0].AccountIdentification,
+                date,
+                request.TransferTransactionDetail[0].TransactionParticulars
+            );
+
+            if (statusResponse?.TranDetails != null)
+            {
+                var transactionDetails = statusResponse.TranDetails
+                    .FirstOrDefault(x =>
+                        x.TransactionAmount ==
+                        request.TransferTransactionDetail[1].TransactionAmount.ToString());
+
+                if (transactionDetails != null)
+                {
+                    return new IntraBankTransferResponse
+                    {
+                        TransactionDate = DateTime.Parse(transactionDetails.TransactionDate).ToString("yyyy-MM-dd"),
+                        TransactionReference = transactionDetails.TransactionIdentification,
+                        TranStatus = "Success"
+                    };
+                }
+            }
+
+            return null;
         }
     }
 }
