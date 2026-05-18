@@ -45,20 +45,16 @@ namespace Finacle.Infrastructure.Logging
         /// </summary>
         /// <param name="Data">the object to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        //public static ResponseWithStatusCode ReturnSuccess(object Data, string? Message = null)
-        //{
-        //    return new ResponseWithStatusCode()
-        //    {
-        //        StatusCode = (int)HttpStatusCode.OK,
-        //        Response = new GenericBaseResponse()
-        //        {
-        //            IsSuccess = true,
-        //            ResponseCode = Success.Item1,
-        //            ResponseDescription = Success.Item2,
-        //            Data = Data
-        //        }
-        //    };
-        //}
+        public static CustomProblemDetails ReturnSuccess(object Data, string? Message = null)
+        {
+            return new CustomProblemDetails()
+            {
+                IsSuccess = true,
+                ResponseCode = Success.Item1,
+                Status = (int)HttpStatusCode.OK,
+                FinacleData = Data
+            };
+        }
 
         /// <summary>
         /// Formats the response for an unsuccessful Finacle API call
@@ -397,18 +393,18 @@ namespace Finacle.Infrastructure.Logging
         /// </summary>
         /// <param name="Data">the object to return in the Data of the API response.</param>
         /// <returns>ApiResponse</returns>
-        public static GenericBaseResponse ReturnSuccess(object Data, string? Message = null)
-        {
+        //public static GenericBaseResponse ReturnSuccess(object Data, string? Message = null)
+        //{
 
-            return new GenericBaseResponse()
-            {
-                IsSuccess = true,
-                ResponseCode = Success.Item1,
-                ResponseDescription = Success.Item2,
-                Data = Data
-            };
+        //    return new GenericBaseResponse()
+        //    {
+        //        IsSuccess = true,
+        //        ResponseCode = Success.Item1,
+        //        ResponseDescription = Success.Item2,
+        //        Data = Data
+        //    };
 
-        }
+        //}
 
         /// <summary>
         /// Formats the response for an unsuccessful Finacle API call

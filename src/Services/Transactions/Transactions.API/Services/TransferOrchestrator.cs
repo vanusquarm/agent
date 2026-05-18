@@ -214,5 +214,16 @@ namespace Transactions.API.Services
 
             return null;
         }
+
+        public async Task<Finacle.Core.Domain.IntraBankTransferResponse?> CheckTransactionStatusAsync(string channelReference)
+        {
+            string date = DateTime.Now.ToString("yyyy-MM-dd");
+
+            _logger.LogInformation("Checking transaction status. RequestId: {RequestId}", channelReference);
+
+                var statusResponse = await _repository.GetTransactionAsync(channelReference);
+
+            return statusResponse;
+        }
     }
 }

@@ -31,6 +31,30 @@ public class TransactionsController : ControllerBase
     }
 
     /// <summary>
+    /// Method to Get Transaction
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpGet("{id}")]
+    public async Task<IActionResult> CheckTransactionStatus([FromRoute] string id)
+    {
+        Log.Information("Recieved Request at CheckTransactionStatus: {@Request}", id);
+        try
+        {
+            Log.Information("About to CheckTransactionStatus with request: {@Request}", id);
+            var transactions = await _transfer.CheckTransactionStatusAsync(id);
+            Log.Information("Back from Checking Transaction Status with response: {@Response}", transactions);
+
+            return Ok(transactions);
+        }
+        catch (Refit.ApiException ex)
+        {
+            Log.Error("Back from Checking Transaction Status with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+            return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+        }
+    }
+
+    /// <summary>
     /// Method to Get Transactions
     /// </summary>
     /// <param name="request"></param>
@@ -332,6 +356,45 @@ public class TransactionsController : ControllerBase
         catch (Exception ex)
         {
             Log.Error("An exception has occured at PerformIntraBankTransfer with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Method to Perform Intra Bank Transfer
+    /// </summary>
+    /// <param name="accountTransferRequest"></param>
+    /// <returns></returns>
+    [HttpPut("transfers/validate")]
+    public async Task<IActionResult> CanTransfer([FromBody] TransferRequest accountTransferRequest)
+    {
+        try
+        {
+            // Validate the request
+            accountTransferRequest.Trim();
+            var validationResult = await _transferValidator.ValidateAsync(accountTransferRequest);
+
+            if (!validationResult.IsValid)
+            {
+                Log.Warning("Transfer validation failed: {Error}", validationResult.ErrorMessage);
+                return BadRequest(ResponseManager.ReturnFailedValidations(validationResult.ErrorMessage));
+            }
+
+            if (validationResult.RequiresAdditionalVerification)
+            {
+                return Accepted(new
+                {
+                    Message = "Additional verification required",
+                    Methods = validationResult.AvailableVerificationMethods
+                });
+            }
+            
+
+            return Ok(ResponseManager.ReturnSuccess(validationResult.ErrorMessage));
+        }
+        catch (Exception ex)
+        {
+            Log.Error("An exception has occurred at validating transfer request body with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
             return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
         }
     }
