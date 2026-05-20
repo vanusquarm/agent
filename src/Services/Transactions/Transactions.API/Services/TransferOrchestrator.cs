@@ -212,7 +212,16 @@ namespace Transactions.API.Services
                 }
             }
 
-            return null;
+            var dbresponse = await CheckTransactionStatusAsync(request.TransferTransactionDetail[0].ReferenceNumber);
+
+            if (dbresponse == null) return null;
+
+            return new IntraBankTransferResponse
+            {
+                TransactionDate = dbresponse.TransactionDate,
+                TransactionReference = dbresponse.TransactionReference,
+                TranStatus = dbresponse.TranStatus
+            };
         }
 
         public async Task<Finacle.Core.Domain.IntraBankTransferResponse?> CheckTransactionStatusAsync(string channelReference)
