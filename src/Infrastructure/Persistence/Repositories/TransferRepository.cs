@@ -159,7 +159,7 @@ namespace Finacle.Infrastructure.Persistence.Repositories
             try
             {
                 string connectionString =
-            _configuration.GetConnectionString("FinacleConn");
+            _configuration.GetConnectionString("FinacleConn") ?? throw new InvalidOperationException("Connection string 'FinacleConn' is not configured");
 
                 using OracleConnection conn =
                     new OracleConnection(connectionString);
@@ -189,7 +189,7 @@ namespace Finacle.Infrastructure.Persistence.Repositories
 
                 cmd.Parameters.Add(new OracleParameter("channelReference", refNo));
 
-                using OracleDataReader reader = cmd.ExecuteReader();
+                using OracleDataReader reader = await cmd.ExecuteReaderAsync();
 
                 if (await reader.ReadAsync())
                 {
@@ -205,7 +205,7 @@ namespace Finacle.Infrastructure.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                throw;
+                throw new Exception($"An exception occurred at GetTransactionAsync with message: {ex.Message}, stackTrace: {ex.StackTrace}");
             }
         }
     }
