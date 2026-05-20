@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Oracle.ManagedDataAccess.Client;
 namespace Finacle.Infrastructure.Persistence.Repositories
 {
@@ -9,17 +10,18 @@ namespace Finacle.Infrastructure.Persistence.Repositories
     {
         Task<TransferEntity> CreateIfNotExistsAsync(string requestId, TransferRequest request);
         Task UpdateStatusAsync(string requestId, string status, string statusCode, string responsePayload);
-        Task<IntraBankTransferResponse?> GetTransactionAsync(string accountId, string entryDate, string refNo, string tranInd);
         Task<IntraBankTransferResponse?> GetTransactionAsync(string refNo);
     }
 
     public class TransferRepository : ITransferRepository
     {
+        private readonly ILogger<TransferRepository> _logger;
         private readonly FinacleDbContext _context;
         private readonly IConfiguration _configuration;
 
-        public TransferRepository(IConfiguration configuration, FinacleDbContext context)
+        public TransferRepository(ILogger<TransferRepository> logger,IConfiguration configuration, FinacleDbContext context)
         {
+            _logger = logger;
             _context = context;
             _configuration = configuration;
         }
@@ -77,73 +79,6 @@ namespace Finacle.Infrastructure.Persistence.Repositories
                 new SqlParameter("@StatusCode", statusCode),
                 new SqlParameter("@ResponsePayload",
                     responsePayload ?? (object)DBNull.Value));
-        }
-
-
-        public async Task<IntraBankTransferResponse?> GetTransactionAsync(string accountId, string entryDate, string refNo, string tranInd)
-        {
-            if (string.IsNullOrWhiteSpace(refNo))
-                throw new ArgumentException("Reference number is required.", nameof(refNo));
-
-            if (refNo.Length > 20)
-                throw new ArgumentException("Reference number cannot exceed 20 characters.", nameof(refNo));
-
-            IntraBankTransferResponse? response = null;
-            DateTime date = DateTime.Parse(entryDate);
-
-            string connectionString =
-                _configuration.GetConnectionString("FinacleConn");
-
-            using OracleConnection conn =
-                new OracleConnection(connectionString);
-
-            await conn.OpenAsync();
-
-            string query =
-                @"
-                SELECT
-                    tran_id,
-                    tran_date,
-                    value_date,
-                    part_tran_type,
-                    tran_amt,
-                    tran_particular
-                FROM
-                    (
-                        SELECT * FROM htd
-                        UNION ALL
-                        SELECT * FROM dtd
-                    )
-                WHERE
-                    ENT_ACCOUNT_ID = :accountId
-                    AND ENTRY_DATE = :entryDate
-                    AND REF_NUM = :channelReference
-                    AND PART_TRAN_TYPE = :tranInd
-                    AND del_flg = 'N'
-                ORDER BY
-                    tran_date DESC";
-
-            using OracleCommand cmd =
-                new OracleCommand(query, conn);
-
-            cmd.Parameters.Add(new OracleParameter("accountId", accountId));
-            cmd.Parameters.Add(new OracleParameter("entryDate", date.ToString("dd-MMM-yyyy").ToLower()));
-            cmd.Parameters.Add(new OracleParameter("channelReference", refNo));
-            cmd.Parameters.Add(new OracleParameter("tranInd", tranInd));
-
-            using OracleDataReader reader = cmd.ExecuteReader();
-
-            if (await reader.ReadAsync())
-            {
-                response = new IntraBankTransferResponse
-                {
-                    TransactionDate = reader["tran_id"].ToString(),
-                    TransactionReference = reader["tran_date"].ToString(),
-                    TranStatus = ""
-                };
-            }
-
-            return response;
         }
 
         public async Task<IntraBankTransferResponse?> GetTransactionAsync(string refNo)
@@ -205,7 +140,8 @@ namespace Finacle.Infrastructure.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"An exception occurred at GetTransactionAsync with message: {ex.Message}, stackTrace: {ex.StackTrace}");
+                _logger.LogError($"An exception occurred at GetTransactionAsync with message: {ex.Message}, stackTrace: {ex.StackTrace}");
+                return default;
             }
         }
     }
