@@ -178,20 +178,27 @@ namespace Transactions.API.Services
             IntraBankTransferRequest request)
         {
             string date = DateTime.Now.ToString("yyyy-MM-dd");
+            var senderTransactionDetail = request.TransferTransactionDetail.FirstOrDefault();
+            var recipientTransactionDetail = request.TransferTransactionDetail.Skip(1).FirstOrDefault();
+            if (senderTransactionDetail != null) 
+            { 
+                _logger.LogWarning("No transfer detail available for DB fallback. RequestId: {RequestId}", requestId);
+                date = senderTransactionDetail.TransactionValueDate.ToString("yyyy-MM-dd");
+            }
 
             _logger.LogInformation(
                 "Checking transaction status. RequestId: {RequestId}, AccountId: {AccountId}, Date: {Date}, SearchTerm: {SearchTerm}",
                 requestId,
-                request.TransferTransactionDetail[0].AccountIdentification,
+                senderTransactionDetail?.AccountIdentification,
                 date,
-                request.TransferTransactionDetail[0].TransactionParticulars
+                senderTransactionDetail?.TransactionParticulars
             );
 
             var statusResponse = await GetTransactionStatus(
                 requestId,
-                request.TransferTransactionDetail[0].AccountIdentification,
+                senderTransactionDetail.AccountIdentification,
                 date,
-                request.TransferTransactionDetail[0].TransactionParticulars
+                senderTransactionDetail.TransactionParticulars
             );
 
             if (statusResponse?.TranDetails != null)
@@ -199,7 +206,7 @@ namespace Transactions.API.Services
                 var transactionDetails = statusResponse.TranDetails
                     .FirstOrDefault(x =>
                         x.TransactionAmount ==
-                        request.TransferTransactionDetail[1].TransactionAmount.ToString());
+                        recipientTransactionDetail.TransactionAmount.ToString());
 
                 if (transactionDetails != null)
                 {
@@ -212,7 +219,7 @@ namespace Transactions.API.Services
                 }
             }
 
-            var dbresponse = await CheckTransactionStatusAsync(request.TransferTransactionDetail[0].ReferenceNumber);
+            var dbresponse = await CheckTransactionStatusAsync(senderTransactionDetail.ReferenceNumber);
 
             if (dbresponse == null) return null;
 
