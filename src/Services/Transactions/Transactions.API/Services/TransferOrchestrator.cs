@@ -237,7 +237,9 @@ namespace Transactions.API.Services
 
             _logger.LogInformation("Checking transaction status. RequestId: {RequestId}", channelReference);
 
-                var statusResponse = await _repository.GetTransactionAsync(channelReference);
+             var statusResponse = await _repository.GetTransactionAsync(channelReference);
+
+            _logger.LogInformation("Back from Checking transaction status. Response: {@Response}", statusResponse);
 
             return statusResponse;
         }
