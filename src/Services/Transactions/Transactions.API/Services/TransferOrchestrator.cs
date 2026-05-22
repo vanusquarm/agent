@@ -235,11 +235,11 @@ namespace Transactions.API.Services
         {
             string date = DateTime.Now.ToString("yyyy-MM-dd");
 
-            _logger.LogInformation("Checking transaction status. RequestId: {RequestId}", channelReference);
+            _logger.LogInformation("Checking Database transaction status. RequestId: {RequestId}", channelReference);
 
              var statusResponse = await _repository.GetTransactionAsync(channelReference);
 
-            _logger.LogInformation("Back from Checking transaction status. Response: {@Response}", statusResponse);
+            _logger.LogInformation("Back from Checking Database transaction status. Response: {@Response}", statusResponse);
 
             return statusResponse;
         }
