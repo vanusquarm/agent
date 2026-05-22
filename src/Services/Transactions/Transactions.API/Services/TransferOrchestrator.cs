@@ -179,47 +179,47 @@ namespace Transactions.API.Services
         {
             string date = DateTime.Now.ToString("yyyy-MM-dd");
             var senderTransactionDetail = request.TransferTransactionDetail.FirstOrDefault();
-            var recipientTransactionDetail = request.TransferTransactionDetail.Skip(1).FirstOrDefault();
-            if (senderTransactionDetail != null) 
-            { 
-                _logger.LogWarning("No transfer detail available for DB fallback. RequestId: {RequestId}", requestId);
-                date = senderTransactionDetail.TransactionValueDate.ToString("yyyy-MM-dd");
-            }
+            //var recipientTransactionDetail = request.TransferTransactionDetail.Skip(1).FirstOrDefault();
+            //if (senderTransactionDetail != null) 
+            //{ 
+            //    _logger.LogWarning("No transfer detail available for DB fallback. RequestId: {RequestId}", requestId);
+            //    date = senderTransactionDetail.TransactionValueDate.ToString("yyyy-MM-dd");
+            //}
 
-            _logger.LogInformation(
-                "Checking transaction status. RequestId: {RequestId}, AccountId: {AccountId}, Date: {Date}, SearchTerm: {SearchTerm}",
-                requestId,
-                senderTransactionDetail?.AccountIdentification,
-                date,
-                senderTransactionDetail?.TransactionParticulars
-            );
+            //_logger.LogInformation(
+            //    "Checking transaction status. RequestId: {RequestId}, AccountId: {AccountId}, Date: {Date}, SearchTerm: {SearchTerm}",
+            //    requestId,
+            //    senderTransactionDetail?.AccountIdentification,
+            //    date,
+            //    senderTransactionDetail?.TransactionParticulars
+            //);
 
-            var statusResponse = await GetTransactionStatus(
-                requestId,
-                senderTransactionDetail.AccountIdentification,
-                date,
-                senderTransactionDetail.TransactionParticulars
-            );
+            //var statusResponse = await GetTransactionStatus(
+            //    requestId,
+            //    senderTransactionDetail.AccountIdentification,
+            //    date,
+            //    senderTransactionDetail.TransactionParticulars
+            //);
 
-            if (statusResponse?.TranDetails != null)
-            {
-                var transactionDetails = statusResponse.TranDetails
-                    .FirstOrDefault(x =>
-                        x.TransactionAmount ==
-                        recipientTransactionDetail.TransactionAmount.ToString());
+            //if (statusResponse?.TranDetails != null)
+            //{
+            //    var transactionDetails = statusResponse.TranDetails
+            //        .FirstOrDefault(x =>
+            //            x.TransactionAmount ==
+            //            recipientTransactionDetail.TransactionAmount.ToString());
 
-                if (transactionDetails != null)
-                {
-                    return new IntraBankTransferResponse
-                    {
-                        TransactionDate = DateTime.Parse(transactionDetails.TransactionDate).ToString("yyyy-MM-dd"),
-                        TransactionReference = transactionDetails.TransactionIdentification,
-                        TranStatus = "Success"
-                    };
-                }
-            }
+            //    if (transactionDetails != null)
+            //    {
+            //        return new IntraBankTransferResponse
+            //        {
+            //            TransactionDate = DateTime.Parse(transactionDetails.TransactionDate).ToString("yyyy-MM-dd"),
+            //            TransactionReference = transactionDetails.TransactionIdentification,
+            //            TranStatus = "Success"
+            //        };
+            //    }
+            //}
 
-            var dbresponse = await CheckTransactionStatusAsync(senderTransactionDetail.ReferenceNumber);
+            var dbresponse = await CheckTransactionStatusAsync(senderTransactionDetail?.ReferenceNumber!);
 
             if (dbresponse == null) return null;
 
