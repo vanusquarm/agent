@@ -107,11 +107,7 @@ namespace Finacle.Infrastructure.Persistence.Repositories
                     tran_id,
                     tran_date
                 FROM
-                    (
-                        SELECT * FROM tbaadm.htd
-                        UNION ALL
-                        SELECT * FROM tbaadm.dtd
-                    )
+                    tbaadm.dtd
                 WHERE
                     REF_NUM = :channelReference
                     AND PART_TRAN_TYPE = 'D'
