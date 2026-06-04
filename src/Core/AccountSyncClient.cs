@@ -192,7 +192,7 @@ namespace Finacle.Core
             if (accountId.StartsWith("R")) // Check if argument is Retail CIF
             {
                 var customer = GetCustomer<GetRetailCustomerResponse>(accountId, requestId);
-                return (customer?.Segment == "PROMO" ||
+                return (customer?.Segment == "EMPB" ||
                     customer?.Segment == "EMR" ||
                     customer?.Segment == "EHNI" ||
                     customer?.Segment == "PROMO");
