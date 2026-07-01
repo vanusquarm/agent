@@ -146,7 +146,7 @@ namespace Customers.API.Entities
                 new CustomerDocument(
                     basicCustomerDto.DocumentName,
                     basicCustomerDto.DocumentNumber,
-                    basicCustomerDto.DocumentType ?? "National ID",
+                    basicCustomerDto.DocumentType ?? "NID",
                     basicCustomerDto.IssueDate ?? DateTime.UtcNow.ToString("yyyy-MM-dd"),
                     basicCustomerDto.ExpiryDate ?? DateTime.UtcNow.AddYears(10).ToString("yyyy-MM-dd"),
                     basicCustomerDto.PlaceOfIssue ?? "Accra",
