@@ -1,6 +1,7 @@
 using GTBStatementService;
 using GTBStatementService.Data;
 using GTBStatementService.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Infrastructure;
 using Serilog;
@@ -8,9 +9,9 @@ using Serilog;
 
 try
 {
-	var builder = Host.CreateApplicationBuilder(args);
+    var builder = WebApplication.CreateBuilder(args);
 
-	Log.Logger = new LoggerConfiguration()
+    Log.Logger = new LoggerConfiguration()
 		.ReadFrom.Configuration(builder.Configuration)
 		.CreateLogger();
 	builder.Services.AddSerilog();
@@ -37,7 +38,11 @@ try
 	builder.Services.AddHostedService<Worker>();
 
 	var app = builder.Build();
-	app.Run();
+    app.MapPost("/api/v1/statements", () =>
+    {
+        // not implemented
+    });
+    app.Run();
 
 }
 catch (Exception ex)
