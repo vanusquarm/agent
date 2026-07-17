@@ -53,7 +53,7 @@ public class PdfService : IDocument
             {
                 columns.ConstantColumn(60); // Date
                 columns.RelativeColumn(3);  //  Debit
-                columns.RelativeColumn(1Description
+                columns.RelativeColumn(1); // Description
                 columns.RelativeColumn(1);  //);  // Credit
                 columns.RelativeColumn(1);  // Balance
             });

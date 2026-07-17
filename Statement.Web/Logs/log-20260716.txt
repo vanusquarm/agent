@@ -1,0 +1,95 @@
+2026-07-16 15:59:10.172 +00:00 [INF] HTTP GET / responded 200 in 226.4744 ms
+2026-07-16 15:59:10.288 +00:00 [INF] HTTP GET /lib/jquery/dist/jquery.min.js responded 200 in 41.3965 ms
+2026-07-16 15:59:10.304 +00:00 [INF] HTTP GET /lib/bootstrap/dist/css/bootstrap.min.css responded 200 in 59.7033 ms
+2026-07-16 15:59:10.333 +00:00 [INF] HTTP GET /Statement.Web.styles.css responded 200 in 38.7404 ms
+2026-07-16 15:59:10.346 +00:00 [INF] HTTP GET /css/site.css responded 200 in 26.2830 ms
+2026-07-16 15:59:10.349 +00:00 [INF] HTTP GET /lib/bootstrap/dist/js/bootstrap.bundle.min.js responded 200 in 31.3394 ms
+2026-07-16 15:59:10.371 +00:00 [INF] HTTP GET /js/site.js responded 200 in 6.0751 ms
+2026-07-16 15:59:10.497 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 6.8219 ms
+2026-07-16 15:59:27.031 +00:00 [ERR] HTTP GET /account/login responded 500 in 10.6493 ms
+System.InvalidOperationException: Unable to resolve service for type 'Statement.Web.Interfaces.IAuthService' while attempting to activate 'Statement.Web.Controllers.AccountController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method19(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-16 15:59:27.064 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Unable to resolve service for type 'Statement.Web.Interfaces.IAuthService' while attempting to activate 'Statement.Web.Controllers.AccountController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method19(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-16 16:00:01.286 +00:00 [INF] HTTP GET / responded 200 in 155.0218 ms
+2026-07-16 16:00:01.303 +00:00 [INF] HTTP GET /Statement.Web.styles.css responded 304 in 4.1263 ms
+2026-07-16 16:00:10.889 +00:00 [INF] HTTP GET /account/login responded 200 in 39.4268 ms
+2026-07-16 16:00:10.934 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 5.3304 ms
+2026-07-16 16:00:11.873 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 0.8527 ms
+2026-07-16 16:01:19.631 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.3635 ms
+2026-07-16 16:04:16.081 +00:00 [INF] HTTP GET / responded 200 in 295.7563 ms
+2026-07-16 16:04:16.138 +00:00 [INF] HTTP GET /Statement.Web.styles.css responded 304 in 5.5604 ms
+2026-07-16 16:04:16.193 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 4.6929 ms
+2026-07-16 16:07:42.306 +00:00 [INF] HTTP GET /css/site.css responded 304 in 0.6747 ms
+2026-07-16 16:07:42.307 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 6.0741 ms
+2026-07-16 16:07:42.318 +00:00 [INF] HTTP GET /Statement.Web.styles.css responded 304 in 0.6243 ms
+2026-07-16 16:07:42.345 +00:00 [INF] HTTP GET /lib/bootstrap/dist/js/bootstrap.bundle.min.js.map responded 200 in 33.4232 ms
+2026-07-16 16:07:42.418 +00:00 [INF] HTTP GET /lib/bootstrap/dist/css/bootstrap.min.css.map responded 200 in 12.5844 ms
+2026-07-16 16:23:47.537 +00:00 [INF] HTTP GET /account/login responded 200 in 19.9147 ms
+2026-07-16 16:23:47.589 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 0.4703 ms
+2026-07-16 16:23:47.621 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.6277 ms
+2026-07-16 16:23:47.721 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 0.4269 ms
+2026-07-16 16:23:52.831 +00:00 [INF] HTTP GET /account/login responded 200 in 3.9440 ms
+2026-07-16 16:23:52.872 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 0.4372 ms
+2026-07-16 16:23:52.921 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.6861 ms
+2026-07-16 16:23:52.988 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 0.6823 ms
+2026-07-16 16:25:20.357 +00:00 [INF] HTTP GET /account/login responded 200 in 9.2457 ms
+2026-07-16 16:25:20.421 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 0.6492 ms
+2026-07-16 16:25:20.430 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.4397 ms
+2026-07-16 16:25:20.469 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 0.3618 ms
+2026-07-16 16:29:04.719 +00:00 [INF] HTTP GET / responded 200 in 306.8518 ms
+2026-07-16 16:29:04.782 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 5.7561 ms
+2026-07-16 16:29:04.775 +00:00 [INF] HTTP GET /Statement.Web.styles.css responded 304 in 0.4933 ms
+2026-07-16 16:29:04.734 +00:00 [INF] HTTP GET /css/site.css responded 304 in 9.3211 ms
+2026-07-16 16:29:04.951 +00:00 [INF] HTTP GET /js/site.js responded 304 in 0.3761 ms
+2026-07-16 16:30:12.811 +00:00 [INF] HTTP GET / responded 200 in 307.7548 ms
+2026-07-16 16:30:12.882 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 4.0114 ms
+2026-07-16 16:30:22.940 +00:00 [INF] HTTP GET /account/login responded 200 in 20.0793 ms
+2026-07-16 16:30:23.106 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 0.4949 ms
+2026-07-16 16:30:23.132 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 0.3677 ms
+2026-07-16 16:33:04.117 +00:00 [INF] HTTP GET / responded 200 in 387.5659 ms
+2026-07-16 16:33:04.254 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 404 in 6.3447 ms
+2026-07-16 16:33:04.296 +00:00 [INF] HTTP GET /Statement.Web.styles.css responded 304 in 8.2438 ms
+2026-07-16 16:35:33.209 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 32.9202 ms
+2026-07-16 16:35:33.163 +00:00 [INF] HTTP GET / responded 200 in 329.7847 ms
+2026-07-16 16:35:50.474 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 7.5472 ms
+2026-07-16 16:37:09.032 +00:00 [INF] HTTP GET / responded 200 in 225.8746 ms
+2026-07-16 16:37:19.513 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 7.8109 ms
+2026-07-16 16:38:34.109 +00:00 [INF] HTTP GET / responded 200 in 11.3989 ms
+2026-07-16 16:38:34.158 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 1.2951 ms
+2026-07-16 16:38:40.269 +00:00 [INF] HTTP GET / responded 200 in 1.6095 ms
+2026-07-16 16:38:40.326 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.5046 ms
+2026-07-16 16:38:47.130 +00:00 [INF] HTTP GET /account/login responded 200 in 31.0169 ms
+2026-07-16 16:38:47.401 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.3878 ms

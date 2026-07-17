@@ -1,8 +1,227 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard - GT Bank Ghana";
+    Layout = null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GT Bank Ghana :: Statement Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <style>
+        .gt-orange {
+        color: #F97316;
+        }
+
+        .gt-orange-bg {
+        background-color: #F97316;
+        }
+
+        .gt-orange-hover:hover {
+        background-color: #EA580C;
+        }
+
+        .card {
+        transition: all 0.3s ease;
+        }
+
+        .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Top Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <img src="~/Resources/glogo.jpg" alt="GT Bank" class="h-10 w-10 rounded-full">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">GT Bank Ghana</h1>
+                    <p class="text-xs text-gray-500 -mt-1">Statement By Email Portal</p>
+                </div>
+            </div>
+
+            <!-- Future Navigation Items -->
+            <div class="flex items-center gap-8 text-sm">
+                <a href="#" class="font-medium text-gray-700 hover:gt-orange transition">Dashboard</a>
+                <a href="#" class="font-medium text-gray-600 hover:gt-orange transition">Profile</a>
+                <a href="#" class="font-medium text-gray-600 hover:gt-orange transition">Reports</a>
+                <a href="/Account/Logout" class="flex items-center gap-2 text-gray-600 hover:text-red-600 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-10">
+        <div class="flex justify-between items-end mb-10">
+            <div>
+                <h2 class="text-3xl font-semibold text-gray-800">Customer Statements</h2>
+                <p class="text-gray-600 mt-1">Search and manage customer financial statements</p>
+            </div>
+            @if (!string.IsNullOrEmpty(ViewBag.WelcomeMessage))
+            {
+                <div class="text-right">
+                    <p class="text-sm text-gray-500">Welcome back,</p>
+                    <p class="font-semibold text-gray-800">@ViewBag.WelcomeMessage</p>
+                </div>
+            }
+        </div>
+
+        <!-- Search Card -->
+        <div class="bg-white rounded-3xl shadow p-8 mb-12">
+            <h3 class="text-lg font-semibold text-gray-700 mb-6 flex items-center gap-2">
+                <i class="fas fa-search"></i> Lookup Customer
+            </h3>
+
+            <form id="searchForm" class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                <div class="md:col-span-3">
+                    <label class="block text-sm font-medium text-gray-600 mb-2">Search Parameter</label>
+                    <select id="searchParameter" name="SearchParameter"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-orange-500">
+                        <option value="CIF_ID">CIF ID</option>
+                        <option value="AccountNumber">Account Number</option>
+                    </select>
+                </div>
+
+                <div class="md:col-span-3">
+                    <label class="block text-sm font-medium text-gray-600 mb-2">Search Value</label>
+                    <input type="text" id="searchValue" name="SearchValue"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-orange-500"
+                           placeholder="Enter CIF or Account Number" required>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-600 mb-2">Start Date</label>
+                    <input type="text" id="startDate" name="StartDate"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-orange-500"
+                           placeholder="YYYY-MM-DD" required>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-600 mb-2">End Date</label>
+                    <input type="text" id="endDate" name="EndDate"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-orange-500"
+                           placeholder="YYYY-MM-DD" required>
+                </div>
+
+                <div class="md:col-span-2 flex items-end">
+                    <button type="submit" id="searchBtn"
+                            class="w-full gt-orange-bg text-white py-3.5 rounded-2xl font-semibold gt-orange-hover transition flex items-center justify-center gap-3">
+                        <span id="btn-text">Search Customer</span>
+                        <span id="btn-loader" class="hidden"><i class="fas fa-spinner fa-spin"></i></span>
+                    </button>
+                </div>
+            </form>
+
+            <div id="searchError" class="hidden mt-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-sm"></div>
+        </div>
+
+        <!-- Results -->
+        <div id="resultsSection" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-semibold text-gray-700">Search Results</h3>
+                <div class="flex gap-4">
+                    <button id="downloadPdfBtn"
+                            class="px-6 py-3 border border-orange-500 text-orange-600 rounded-2xl hover:bg-orange-50 transition flex items-center gap-2">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                    <button id="downloadExcelBtn"
+                            class="px-6 py-3 border border-orange-500 text-orange-600 rounded-2xl hover:bg-orange-50 transition flex items-center gap-2">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                    <button id="emailBtn"
+                            class="gt-orange-bg text-white px-6 py-3 rounded-2xl hover:bg-orange-600 transition flex items-center gap-2">
+                        <i class="fas fa-envelope"></i> Email Statement
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-6 py-5 text-left text-sm font-medium text-gray-500">Account Number</th>
+                            <th class="px-6 py-5 text-left text-sm font-medium text-gray-500">Account Name</th>
+                            <th class="px-6 py-5 text-left text-sm font-medium text-gray-500">Email</th>
+                            <th class="px-6 py-5 text-left text-sm font-medium text-gray-500">Balance</th>
+                            <th class="px-6 py-5 text-left text-sm font-medium text-gray-500">Currency</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customerTable" class="divide-y divide-gray-100 text-gray-700"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+        // Initialize Flatpickr
+        flatpickr("#startDate", { dateFormat: "Y-m-d" });
+        flatpickr("#endDate", { dateFormat: "Y-m-d" });
+
+        $('#searchForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const $btn = $('#searchBtn');
+        const $text = $('#btn-text');
+        const $loader = $('#btn-loader');
+        const $error = $('#searchError');
+
+        $error.addClass('hidden');
+        $text.addClass('hidden');
+        $loader.removeClass('hidden');
+        $btn.prop('disabled', true);
+
+        $.ajax({
+        url: '/Home/Search',
+        type: 'POST',
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function (response) {
+        if (response.success) {
+        renderResults(response.data);
+        $('#resultsSection').removeClass('hidden');
+        } else {
+        $error.text(response.message).removeClass('hidden');
+        }
+        },
+        error: function () {
+        $error.text("An error occurred while searching.").removeClass('hidden');
+        },
+        complete: function () {
+        $text.removeClass('hidden');
+        $loader.addClass('hidden');
+        $btn.prop('disabled', false);
+        }
+        });
+        });
+
+        function renderResults(data) {
+        let html = '';
+        data.forEach(item => {
+        html += `
+        <tr class="hover:bg-gray-50">
+        <td class="px-6 py-5">${item.accountNumber || item.AccountNumber}</td>
+        <td class="px-6 py-5 font-medium">${item.displayName || item.DisplayName}</td>
+        <td class="px-6 py-5">${item.email || item.Email || '—'}</td>
+        <td class="px-6 py-5">${parseFloat(item.balance || item.Balance).toLocaleString()}</td>
+        <td class="px-6 py-5">${item.accountCurrency || item.AccountCurrency}</td>
+        </tr>`;
+        });
+        $('#customerTable').html(html);
+        }
+        });
+    </script>
+</body>
+</html>
