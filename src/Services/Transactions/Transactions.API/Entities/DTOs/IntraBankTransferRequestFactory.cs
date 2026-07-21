@@ -41,9 +41,9 @@ public class IntraBankTransferRequestFactory
                     TransactionValueDate = valueDate,
                     TransactionParticulars = remarksPart1,
                     Rate = IntraBankTransferConstants.Rate,
-                    PartTransactionRemarks = remarksPart2,
+                    PartTransactionRemarks = docNum,
                     ReferenceNumber = referenceNumber.Split(20, 1),
-                    PartTransactionRemarks2 = remarksPart3,
+                    PartTransactionRemarks2 = remarksPart2,
                     LienDetailsList = new List<LienDetails>(),
                     ChargeEventId = chargeEventId,
                     // InstrumentAlpha == "!" represents inward cheque
@@ -73,9 +73,9 @@ public class IntraBankTransferRequestFactory
                     TransactionValueDate = valueDate,
                     TransactionParticulars = remarksPart1,
                     Rate = IntraBankTransferConstants.Rate,
-                    PartTransactionRemarks = remarksPart2,
+                    PartTransactionRemarks = docNum,
                     ReferenceNumber = referenceNumber.Split(20, 1),
-                    PartTransactionRemarks2 = remarksPart3,
+                    PartTransactionRemarks2 = remarksPart2,
                     LienDetailsList = new List<LienDetails>(),
                     UserPartTransactionCode = explanationCode ?? IntraBankTransferConstants.UserTransactionCode,
                 }
