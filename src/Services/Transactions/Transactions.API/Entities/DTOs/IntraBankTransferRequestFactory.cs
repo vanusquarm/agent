@@ -41,7 +41,7 @@ public class IntraBankTransferRequestFactory
                     TransactionValueDate = valueDate,
                     TransactionParticulars = remarksPart1,
                     Rate = IntraBankTransferConstants.Rate,
-                    PartTransactionRemarks = docNum,
+                    PartTransactionRemarks = docNum ?? "DocNum",
                     ReferenceNumber = referenceNumber.Split(20, 1),
                     PartTransactionRemarks2 = remarksPart2,
                     LienDetailsList = new List<LienDetails>(),
@@ -56,7 +56,7 @@ public class IntraBankTransferRequestFactory
                     }: null,
                     MiscellaneousDetailsType = new TransferMiscellaneousDetailsType
                     {
-                        DocumentNumber = docNum ?? "DocNum",
+                        DocumentNumber = "DocNum",
                         Freetxt2 = requestReference,
                         Freetxt3 = requestReference,
                         Freetxt4 = batchId
@@ -73,7 +73,7 @@ public class IntraBankTransferRequestFactory
                     TransactionValueDate = valueDate,
                     TransactionParticulars = remarksPart1,
                     Rate = IntraBankTransferConstants.Rate,
-                    PartTransactionRemarks = docNum,
+                    PartTransactionRemarks = docNum ?? "DocNum",
                     ReferenceNumber = referenceNumber.Split(20, 1),
                     PartTransactionRemarks2 = remarksPart2,
                     LienDetailsList = new List<LienDetails>(),

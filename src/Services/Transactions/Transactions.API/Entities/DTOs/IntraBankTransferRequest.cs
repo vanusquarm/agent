@@ -59,7 +59,7 @@ public class IntraBankTransferTransactionDetail
  
     [JsonPropertyName("partTransactionRemarks")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string PartTransactionRemarks { get; set; }
+    public string? PartTransactionRemarks { get; set; }
  
     [JsonPropertyName("referenceNumber")]
     public string ReferenceNumber { get; set; }
