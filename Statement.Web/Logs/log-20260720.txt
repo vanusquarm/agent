@@ -1,0 +1,4 @@
+2026-07-20 16:27:00.374 +00:00 [INF] HTTP GET / responded 200 in 335.9832 ms
+2026-07-20 16:27:42.517 +00:00 [INF] HTTP POST /Home/Search responded 200 in 85.2865 ms
+2026-07-20 16:44:22.216 +00:00 [INF] HTTP GET / responded 200 in 249.9377 ms
+2026-07-20 16:44:29.098 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 6.1886 ms

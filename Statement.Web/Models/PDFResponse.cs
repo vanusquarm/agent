@@ -10,6 +10,9 @@
 
         public bool HasTransactions { get; set; }
         public bool Success { get; set; }
+
+        public int? PageCount { get; set; }
+        public int? AccountCount { get; set; }
     }
     public class PDFRequest{
         public List<AccountInfo> Accounts { get; set; }

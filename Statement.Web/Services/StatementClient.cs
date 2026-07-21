@@ -216,7 +216,7 @@ namespace Statement.Web.Services
 
             decimal openingBalance = 0m;
             decimal closingBalance = 0m;
-            using (var oraconn = new OracleConnection(System.Configuration.ConfigurationManager.ConnectionStrings["FinacleConn"].ToString()))
+            using (var oraconn = new OracleConnection(_connectionString))
             {
                 await oraconn.OpenAsync();
 

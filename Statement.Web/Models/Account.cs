@@ -280,9 +280,9 @@ namespace Statement.Web.Models
     {
         public string AccountNumber { get; set; }
         public string AccountName { get; set; }
-        public string Balance { get; set; }
+        public decimal Balance { get; set; }
         public string Currency { get; set; }
-        public string BranchCode { get; set; }
+        public int BranchCode { get; set; }
         public string ProductCode { get; set; }
         public string Email { get; set; }
     }

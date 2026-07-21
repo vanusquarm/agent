@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Profile Management - GT Bank Ghana";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="max-w-7xl mx-auto px-6 py-20">
+    <div class="text-center">
+        <div class="w-24 h-24 gt-orange-bg rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-user-circle text-white text-5xl"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Profile Management</h1>
+        <p class="text-gray-500 text-lg mb-10">Manage customer profiles for statement delivery</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <a href="@Url.Action("NewCustomer", "Profile")"
+               class="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-orange-300">
+                <div class="w-16 h-16 gt-orange-bg rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-user-plus text-white text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">New Customer</h3>
+                <p class="text-sm text-gray-500">Add a new customer to the system</p>
+            </a>
+
+            <a href="@Url.Action("UpdateCustomer", "Profile")"
+               class="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-orange-300">
+                <div class="w-16 h-16 gt-orange-bg rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-user-edit text-white text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">Update Customer</h3>
+                <p class="text-sm text-gray-500">Modify existing customer information</p>
+            </a>
+
+            <a href="@Url.Action("SearchCustomers", "Profile")"
+               class="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-orange-300">
+                <div class="w-16 h-16 gt-orange-bg rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-search text-white text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">Search Customers</h3>
+                <p class="text-sm text-gray-500">Find and view customer profiles</p>
+            </a>
+        </div>
+    </div>
+</div>

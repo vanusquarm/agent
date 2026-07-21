@@ -33,10 +33,8 @@ namespace Statement.Web.Services
 
             _channelId = configuration["FinacleSettings:ChannelId"]!;
             _staffEmpCode = configuration["FinacleSettings:StaffEmpCode"]!;
-            _chargeFixedAmount = configuration["FinacleSettings:ChargeFixedAmount"]!;
-            _StatementTransactionsProcedureName =
-                configuration["FinacleSettings:StatementTransactionsProcedureName"]
-                ?? "[dbo].[proc_Statement_Transactions]";
+            _chargeFixedAmount = configuration["StatementCharge:PerPage"]!;
+            _StatementTransactionsProcedureName =configuration["DatabaseSettings:StatementTransactionsProcedureName"] ?? "[dbo].[proc_Statement_Transactions]";
 
             _connectionString = configuration.GetConnectionString("GTMailConn")!;
         }
@@ -361,12 +359,9 @@ namespace Statement.Web.Services
                     transferResponse?.TransactionReference ??
                     "No response received";
 
-                var procedureName =
-                    _configuration["DatabaseSettings:TransactionLogProcedureName"]
-                    ?? "[dbo].[proc_LogTransaction]";
+                var procedureName = _configuration["DatabaseSettings:TransactionLogProcedureName"] ?? "[dbo].[proc_LogTransaction]";
 
-                var connectionString =
-                    _configuration.GetConnectionString("GTMailConn");
+                var connectionString = _configuration.GetConnectionString("GTMailConn");
 
                 await using var connection =
                     new SqlConnection(connectionString);
