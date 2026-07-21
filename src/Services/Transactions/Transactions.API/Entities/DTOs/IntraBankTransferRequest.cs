@@ -58,6 +58,7 @@ public class IntraBankTransferTransactionDetail
     public decimal Rate { get; set; }
  
     [JsonPropertyName("partTransactionRemarks")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string PartTransactionRemarks { get; set; }
  
     [JsonPropertyName("referenceNumber")]
