@@ -1,5 +1,14 @@
 ﻿namespace Statement.Web.Models
 {
+    public class ExistingCustomerInfo
+    {
+        public int ID { get; set; }
+        public string CustomerNumber { get; set; }
+        public string Branch { get; set; }
+        public string DisplayName { get; set; }
+        public string Email { get; set; }
+        public string Status { get; set; }
+    }
     public class NewCustomerDto
     {
         public string Branch { get; set; }
@@ -13,8 +22,6 @@
         public string ExportFile { get; set; }
         public string ReportFile { get; set; }
         public int ExportFormat { get; set; }
-
-
         public string Status { get; set; }
         public DateTime? datecreated { get; set; }
         public DateTime? lastupdateddate { get; set; }
@@ -27,15 +34,19 @@
     }
     public class Frequency
     {
+        // These map to BIT columns in database
         public bool Daily { get; set; }
         public bool Weekly { get; set; }
         public bool Monthly { get; set; }
-
-        public short? DailyOpt { get; set; } = -1;
-        public short? WeeklyOpt { get; set; } = -1;
-        public short? MonthlyOpt { get; set; } = -1;
         public bool Continuous { get; set; }
-        public int? ContinuousOpt { get; set; }
+
+
+        public int? DailyOpt { get; set; } = -1;
+        public int? WeeklyOpt { get; set; } = -1;
+        public int? MonthlyOpt { get; set; } = -1;
+        public int? ContinuousOpt { get; set; } = -1;
+
+        // This maps to INT column in database
         public int? ContinuousPerMonth { get; set; }
     }
 }

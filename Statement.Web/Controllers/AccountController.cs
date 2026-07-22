@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Statement.Web.Services;
-using Microsoft.AspNetCore.Http;
 using Statement.Web.Models;
+using Statement.Web.Interfaces;
 
 namespace Statement.Web.Controllers
 {
@@ -26,7 +21,6 @@ namespace Statement.Web.Controllers
         [HttpGet]
         public IActionResult Login(string returnUrl = "/")
         {
-            // If user is already logged in, redirect to home
             if (User.Identity?.IsAuthenticated == true)
             {
                 return RedirectToAction("Index", "Home");
@@ -47,7 +41,6 @@ namespace Statement.Web.Controllers
 
             try
             {
-                // Validate user via SSO
                 var authResult = await _ssoService.ValidateUserAsync(model.Username, model.Password);
 
                 if (!authResult.Success)
@@ -56,12 +49,16 @@ namespace Statement.Web.Controllers
                     return Json(new { success = false, message = authResult.Message ?? "Invalid username or password" });
                 }
 
-                // Create claims
+                var displayName = authResult.UserName ?? authResult.UserId;
+                var welcomeMessage = $"Welcome back, {displayName}!";
+
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, authResult.UserName ?? authResult.UserId),
+                    new Claim(ClaimTypes.Name, displayName),
                     new Claim(ClaimTypes.NameIdentifier, authResult.UserId),
                     new Claim(ClaimTypes.Role, authResult.RoleId ?? "User"),
+                    new Claim("WelcomeMessage", welcomeMessage),
+                    new Claim("FullName", displayName),
                 };
 
                 if (!string.IsNullOrEmpty(authResult.Email))
@@ -74,21 +71,13 @@ namespace Statement.Web.Controllers
                     claims.Add(new Claim("BranchCode", authResult.BranchCode));
                 }
 
-                // Add full name claim for welcome message
-                if (!string.IsNullOrEmpty(authResult.UserName))
-                {
-                    claims.Add(new Claim("FullName", authResult.UserName));
-                }
-                else if (!string.IsNullOrEmpty(authResult.UserId))
-                {
-                    claims.Add(new Claim("FullName", authResult.UserId));
-                }
-
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
                     IsPersistent = model.RememberMe,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8)
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30),
+                    IssuedUtc = DateTimeOffset.UtcNow,
+                    AllowRefresh = true
                 };
 
                 await HttpContext.SignInAsync(
@@ -96,20 +85,15 @@ namespace Statement.Web.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-                // Store user info in session for welcome message and other uses
-                HttpContext.Session.SetString("user_name", authResult.UserName ?? authResult.UserId);
+                HttpContext.Session.SetString("user_name", displayName);
                 HttpContext.Session.SetString("user_id", authResult.UserId);
                 HttpContext.Session.SetString("user_email", authResult.Email ?? "");
                 HttpContext.Session.SetString("branch_code", authResult.BranchCode ?? "");
                 HttpContext.Session.SetString("role_id", authResult.RoleId ?? "");
-
-                // Set welcome message for display
-                var welcomeMessage = $"Welcome back, {authResult.UserName ?? authResult.UserId}!";
                 HttpContext.Session.SetString("WelcomeMessage", welcomeMessage);
 
                 _logger.LogInformation("User {UserId} logged in successfully", authResult.UserId);
 
-                // Determine redirect URL
                 if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 {
                     return Json(new { success = true, redirectUrl = returnUrl });
@@ -123,6 +107,7 @@ namespace Statement.Web.Controllers
                 return Json(new { success = false, message = "An error occurred during login. Please try again." });
             }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

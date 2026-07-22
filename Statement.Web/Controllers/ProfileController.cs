@@ -37,7 +37,6 @@ namespace Statement.Web.Controllers
         {
             return View();
         }
-
         [HttpGet]
         public async Task<IActionResult> NewCustomer(string accountNumber)
         {
@@ -63,28 +62,52 @@ namespace Statement.Web.Controllers
 
             return PartialView("_NewCustomer", customerData);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveNewCustomer(NewCustomerDto model)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                return Json(new { success = false, errors });
-            }
-
             try
             {
-                var branchCode = await GetBranchCodeAsync(model.Branch);
-                model.Createdby = HttpContext.Session.GetString("user_name") ?? "System";
+                var currentUser = HttpContext.Session.GetString("user_name") ??
+                                  User.Identity?.Name ??
+                                  "System";
+
+                model.Createdby = currentUser;
+                model.lastupdatedby = currentUser;
                 model.ReportFile = "GenReport";
                 model.ExportFile = FormDisplayNameForExportFile(model.CustomerName);
                 model.ExportFormat = 4;
+
+                if (model.Frequency == null)
+                {
+                    model.Frequency = new Frequency();
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .Where(m => !string.IsNullOrEmpty(m))
+                        .ToList();
+
+                    if (errors.Any())
+                    {
+                        return Json(new { success = false, errors });
+                    }
+                }
+
+                if (string.IsNullOrEmpty(model.CIF_ID))
+                {
+                    return Json(new { success = false, message = "CIF ID is required. Please search for a customer first." });
+                }
+
+                if (string.IsNullOrEmpty(model.CustomerNumber))
+                {
+                    return Json(new { success = false, message = "Customer number is required." });
+                }
+
+                var branchCode = await GetBranchCodeAsync(model.Branch);
                 var currentDateTime = DateTime.UtcNow;
 
                 var connectionString = _configuration.GetConnectionString("GTMailConn");
@@ -94,62 +117,25 @@ namespace Statement.Web.Controllers
                     return Json(new { success = false, message = "Database configuration error" });
                 }
 
-                const string sql = @"
-                    INSERT INTO Profile (
-                        BranchCode, CustomerNo, DisplayName, ExportFile, ReportFile, Email,
-                        ExportFormat, DefaultExt, Status, UseExportFile, Allaccounts,
-                        Daily, DailyOpt, Weekly, WeeklyOpt, Monthly, MonthlyOpt,
-                        LastsentDaily, LastsentWeekly, LastsentMonthly,
-                        Createdby, datecreated, lastupdatedby, lastupdateddate,
-                        RegenerateDailyStmt, NoofDays, ContinuousPerMonth, ContinuousOpt, Continuous, CIF_ID
-                    ) VALUES (
-                        @BranchCode, @CustomerNumber, @CustomerName, @ExportFile, @ReportFile, @Email,
-                        @ExportFormat, @DefaultExt, @Status, @UseExportFile, @Allaccounts,
-                        @Daily, @DailyOpt, @Weekly, @WeeklyOpt, @Monthly, @MonthlyOpt,
-                        NULL, NULL, NULL,
-                        @Createdby, @datecreated, NULL, NULL,
-                        @RegenerateDailyStmt, NULL, @ContinuousPerMonth, @ContinuousOpt, @Continuous, @CIF_ID
-                    )";
-
                 using (var connection = new SqlConnection(connectionString))
                 {
                     await connection.OpenAsync();
-                    using (var command = new SqlCommand(sql, connection))
+
+                    var existingCustomer = await CheckIfCustomerExists(connection, model.CIF_ID);
+
+                    if (existingCustomer != null)
                     {
-                        command.Parameters.AddWithValue("@BranchCode", (object)branchCode ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@CustomerNumber", (object)model.CustomerNumber ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@CustomerName", (object)model.CustomerName ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@ExportFile", (object)model.ExportFile ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@ReportFile", (object)model.ReportFile ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@Email", (object)model.Email ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@ExportFormat", model.ExportFormat);
-                        command.Parameters.AddWithValue("@DefaultExt", (object)model.DefaultExt ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@Status", (object)model.Status ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@UseExportFile", model.UseExportFile);
-                        command.Parameters.AddWithValue("@Allaccounts", model.Allaccounts);
-                        command.Parameters.AddWithValue("@Daily", model.Frequency.Daily);
-                        command.Parameters.AddWithValue("@DailyOpt", (object)model.Frequency.DailyOpt ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@Weekly", model.Frequency.Weekly);
-                        command.Parameters.AddWithValue("@WeeklyOpt", (object)model.Frequency.WeeklyOpt ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@Monthly", model.Frequency.Monthly);
-                        command.Parameters.AddWithValue("@MonthlyOpt", (object)model.Frequency.MonthlyOpt ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@Createdby", (object)model.Createdby ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@datecreated", currentDateTime);
-                        command.Parameters.AddWithValue("@RegenerateDailyStmt", model.RegenerateDailyStmt);
-                        command.Parameters.AddWithValue("@ContinuousPerMonth", model.Frequency.ContinuousPerMonth);
-                        command.Parameters.AddWithValue("@ContinuousOpt", (object)model.Frequency.ContinuousOpt ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@Continuous", model.Frequency.Continuous);
-                        command.Parameters.AddWithValue("@CIF_ID", (object)model.CIF_ID ?? DBNull.Value);
+                        _logger.LogInformation("Customer with CIF_ID {CIF_ID} already exists. Updating instead.", model.CIF_ID);
 
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        model.ID = existingCustomer.ID;
+                        model.CustomerNumber = existingCustomer.CustomerNumber;
+                        model.Branch = existingCustomer.Branch;
 
-                        if (rowsAffected > 0)
-                        {
-                            return Json(new { success = true, message = "Customer saved successfully" });
-                        }
-
-                        _logger.LogError("No rows affected while saving customer {CustomerNumber}", model.CustomerNumber);
-                        return Json(new { success = false, message = "Failed to save customer data" });
+                        return await UpdateExistingCustomer(connection, model, currentDateTime, branchCode);
+                    }
+                    else
+                    {
+                        return await InsertNewCustomer(connection, model, currentDateTime, branchCode);
                     }
                 }
             }
@@ -170,11 +156,12 @@ namespace Statement.Web.Controllers
         {
             if (string.IsNullOrEmpty(CIF_ID))
             {
-                return View(new UpdateCustomerViewModel());
+                return View(new NewCustomerDto());
             }
 
             try
             {
+                // Get accounts from MiddlewareClient
                 var accounts = await _middlewareClient.GetCustomerCIFAccountsAsync(CIF_ID);
                 var connectionString = _configuration.GetConnectionString("GTMailConn");
 
@@ -182,7 +169,7 @@ namespace Statement.Web.Controllers
                 {
                     _logger.LogError("Database connection string 'GTMailConn' is not configured");
                     ViewBag.Error = "Database configuration error";
-                    return View(new UpdateCustomerViewModel());
+                    return View(new NewCustomerDto());
                 }
 
                 using (var connection = new SqlConnection(connectionString))
@@ -190,10 +177,10 @@ namespace Statement.Web.Controllers
                     await connection.OpenAsync();
                     using (var command = new SqlCommand(
                         @"SELECT BranchCode, CustomerNo, DisplayName, ExportFile, ReportFile, Email, ExportFormat, DefaultExt, Status,
-                          UseExportFile, Allaccounts, Daily, DailyOpt, Weekly, WeeklyOpt, Monthly, MonthlyOpt,
-                          LastsentDaily, LastsentWeekly, LastsentMonthly, Createdby, datecreated, lastupdatedby, lastupdateddate,
-                          RegenerateDailyStmt, NoofDays, ContinuousPerMonth, ContinuousOpt, Continuous, CIF_ID, ID
-                          FROM Profile WHERE CIF_ID = @CIF_ID", connection))
+                  UseExportFile, Allaccounts, Daily, DailyOpt, Weekly, WeeklyOpt, Monthly, MonthlyOpt,
+                  LastsentDaily, LastsentWeekly, LastsentMonthly, Createdby, datecreated, lastupdatedby, lastupdateddate,
+                  RegenerateDailyStmt, NoofDays, ContinuousPerMonth, ContinuousOpt, Continuous, CIF_ID, ID
+                  FROM Profile WHERE CIF_ID = @CIF_ID", connection))
                     {
                         command.Parameters.AddWithValue("@CIF_ID", CIF_ID);
                         using (var reader = await command.ExecuteReaderAsync())
@@ -216,11 +203,12 @@ namespace Statement.Web.Controllers
                                         Daily = reader.IsDBNull(reader.GetOrdinal("Daily")) ? false : reader.GetBoolean(reader.GetOrdinal("Daily")),
                                         Weekly = reader.IsDBNull(reader.GetOrdinal("Weekly")) ? false : reader.GetBoolean(reader.GetOrdinal("Weekly")),
                                         Monthly = reader.IsDBNull(reader.GetOrdinal("Monthly")) ? false : reader.GetBoolean(reader.GetOrdinal("Monthly")),
-                                        DailyOpt = reader.IsDBNull(reader.GetOrdinal("DailyOpt")) ? (short?)-1 : reader.GetInt16(reader.GetOrdinal("DailyOpt")),
-                                        WeeklyOpt = reader.IsDBNull(reader.GetOrdinal("WeeklyOpt")) ? (short?)-1 : reader.GetInt16(reader.GetOrdinal("WeeklyOpt")),
-                                        MonthlyOpt = reader.IsDBNull(reader.GetOrdinal("MonthlyOpt")) ? (short?)-1 : reader.GetInt16(reader.GetOrdinal("MonthlyOpt")),
+                                        // Fix: Use GetInt16 for smallint columns, convert to int?
+                                        DailyOpt = reader.IsDBNull(reader.GetOrdinal("DailyOpt")) ? (int?)-1 : (int)reader.GetInt16(reader.GetOrdinal("DailyOpt")),
+                                        WeeklyOpt = reader.IsDBNull(reader.GetOrdinal("WeeklyOpt")) ? (int?)-1 : (int)reader.GetInt16(reader.GetOrdinal("WeeklyOpt")),
+                                        MonthlyOpt = reader.IsDBNull(reader.GetOrdinal("MonthlyOpt")) ? (int?)-1 : (int)reader.GetInt16(reader.GetOrdinal("MonthlyOpt")),
                                         ContinuousPerMonth = reader.IsDBNull(reader.GetOrdinal("ContinuousPerMonth")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("ContinuousPerMonth")),
-                                        ContinuousOpt = reader.IsDBNull(reader.GetOrdinal("ContinuousOpt")) ? (short?)-1 : reader.GetInt16(reader.GetOrdinal("ContinuousOpt")),
+                                        ContinuousOpt = reader.IsDBNull(reader.GetOrdinal("ContinuousOpt")) ? (int?)-1 : (int)reader.GetInt16(reader.GetOrdinal("ContinuousOpt")),
                                         Continuous = reader.IsDBNull(reader.GetOrdinal("Continuous")) ? false : reader.GetBoolean(reader.GetOrdinal("Continuous")),
                                     },
                                     RegenerateDailyStmt = reader.IsDBNull(reader.GetOrdinal("RegenerateDailyStmt")) ? 0 : reader.GetInt32(reader.GetOrdinal("RegenerateDailyStmt")),
@@ -239,13 +227,13 @@ namespace Statement.Web.Controllers
                 }
 
                 ViewBag.Error = "Customer not found";
-                return View(new UpdateCustomerViewModel());
+                return View(new NewCustomerDto());
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error searching customer: {Message}", ex.Message);
                 ViewBag.Error = "Error searching customer";
-                return View(new UpdateCustomerViewModel());
+                return View(new NewCustomerDto());
             }
         }
 
@@ -280,21 +268,21 @@ namespace Statement.Web.Controllers
                     await connection.OpenAsync();
                     using (var command = new SqlCommand(
                         @"UPDATE Profile SET
-                            Email = @Email,
-                            DefaultExt = @DefaultExt,
-                            RegenerateDailyStmt = @RegenerateDailyStmt,
-                            Continuous = @Continuous,
-                            Daily = @Daily,
-                            Weekly = @Weekly,
-                            Monthly = @Monthly,
-                            DailyOpt = @DailyOpt,
-                            WeeklyOpt = @WeeklyOpt,
-                            MonthlyOpt = @MonthlyOpt,
-                            ContinuousOpt = @ContinuousOpt,
-                            Allaccounts = @Allaccounts,
-                            lastupdatedby = @lastupdatedby,
-                            lastupdateddate = @lastupdateddate
-                          WHERE ID = @ID AND CustomerNo = @CustomerNumber", connection))
+                    Email = @Email,
+                    DefaultExt = @DefaultExt,
+                    RegenerateDailyStmt = @RegenerateDailyStmt,
+                    Continuous = @Continuous,
+                    Daily = @Daily,
+                    Weekly = @Weekly,
+                    Monthly = @Monthly,
+                    DailyOpt = @DailyOpt,
+                    WeeklyOpt = @WeeklyOpt,
+                    MonthlyOpt = @MonthlyOpt,
+                    ContinuousOpt = @ContinuousOpt,
+                    Allaccounts = @Allaccounts,
+                    lastupdatedby = @lastupdatedby,
+                    lastupdateddate = @lastupdateddate
+                  WHERE ID = @ID AND CustomerNo = @CustomerNumber", connection))
                     {
                         command.Parameters.AddWithValue("@Email", (object)model.Email ?? DBNull.Value);
                         command.Parameters.AddWithValue("@DefaultExt", (object)model.DefaultExt ?? DBNull.Value);
@@ -303,10 +291,11 @@ namespace Statement.Web.Controllers
                         command.Parameters.AddWithValue("@Daily", model.Frequency.Daily);
                         command.Parameters.AddWithValue("@Weekly", model.Frequency.Weekly);
                         command.Parameters.AddWithValue("@Monthly", model.Frequency.Monthly);
-                        command.Parameters.AddWithValue("@DailyOpt", model.Frequency.DailyOpt ?? -1);
-                        command.Parameters.AddWithValue("@WeeklyOpt", model.Frequency.WeeklyOpt ?? -1);
-                        command.Parameters.AddWithValue("@MonthlyOpt", model.Frequency.MonthlyOpt ?? -1);
-                        command.Parameters.AddWithValue("@ContinuousOpt", model.Frequency.ContinuousOpt ?? -1);
+                        // Fix: Convert int? to short? for smallint columns
+                        command.Parameters.AddWithValue("@DailyOpt", (short)(model.Frequency.DailyOpt ?? -1));
+                        command.Parameters.AddWithValue("@WeeklyOpt", (short)(model.Frequency.WeeklyOpt ?? -1));
+                        command.Parameters.AddWithValue("@MonthlyOpt", (short)(model.Frequency.MonthlyOpt ?? -1));
+                        command.Parameters.AddWithValue("@ContinuousOpt", (short)(model.Frequency.ContinuousOpt ?? -1));
                         command.Parameters.AddWithValue("@Allaccounts", model.Allaccounts);
                         command.Parameters.AddWithValue("@lastupdatedby", (object)model.lastupdatedby ?? DBNull.Value);
                         command.Parameters.AddWithValue("@lastupdateddate", (object)model.lastupdateddate ?? DBNull.Value);
@@ -331,21 +320,111 @@ namespace Statement.Web.Controllers
                 return Json(new { success = false, message = "Error updating customer data" });
             }
         }
-
         [HttpGet]
-        public async Task<IActionResult> SearchCustomers(string parameter, string value)
+        public async Task<IActionResult> GetCustomerDetails(string cifId)
         {
             try
             {
-                var customers = await SearchCustomersByMailDb(parameter, value);
-                return Json(customers);
+                if (string.IsNullOrEmpty(cifId))
+                {
+                    return Json(new { success = false, message = "CIF ID is required" });
+                }
+
+                var connectionString = _configuration.GetConnectionString("GTMailConn");
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    return Json(new { success = false, message = "Database configuration error" });
+                }
+
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    using (var command = new SqlCommand(
+                        @"SELECT 
+                    ID, CIF_ID, CustomerNo, DisplayName, Email, BranchCode, 
+                    DefaultExt, Status, UseExportFile, Allaccounts,
+                    Daily, DailyOpt, Weekly, WeeklyOpt, Monthly, MonthlyOpt,
+                    Continuous, ContinuousOpt, ContinuousPerMonth,
+                    RegenerateDailyStmt,
+                    Createdby, datecreated, lastupdatedby, lastupdateddate
+                  FROM Profile WHERE CIF_ID = @CIF_ID", connection))
+                    {
+                        command.Parameters.AddWithValue("@CIF_ID", cifId);
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                var accountCount = await GetCustomerAccountCountAsync(cifId);
+
+                                var data = new
+                                {
+                                    cifId = reader["CIF_ID"].ToString(),
+                                    customerNumber = reader["CustomerNo"].ToString(),
+                                    displayName = reader["DisplayName"].ToString(),
+                                    email = reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader["Email"].ToString(),
+                                    branchCode = reader["BranchCode"].ToString(),
+                                    defaultExt = reader.IsDBNull(reader.GetOrdinal("DefaultExt")) ? null : reader["DefaultExt"].ToString(),
+                                    status = reader.IsDBNull(reader.GetOrdinal("Status")) ? null : reader["Status"].ToString(),
+                                    useExportFile = reader.IsDBNull(reader.GetOrdinal("UseExportFile")) ? false : reader.GetBoolean(reader.GetOrdinal("UseExportFile")),
+                                    allAccounts = reader.IsDBNull(reader.GetOrdinal("Allaccounts")) ? false : reader.GetBoolean(reader.GetOrdinal("Allaccounts")),
+                                    daily = reader.IsDBNull(reader.GetOrdinal("Daily")) ? false : reader.GetBoolean(reader.GetOrdinal("Daily")),
+                                    // FIX: Use GetInt16 for smallint columns, then convert to int
+                                    dailyOpt = reader.IsDBNull(reader.GetOrdinal("DailyOpt")) ? (int?)null : (int)reader.GetInt16(reader.GetOrdinal("DailyOpt")),
+                                    weekly = reader.IsDBNull(reader.GetOrdinal("Weekly")) ? false : reader.GetBoolean(reader.GetOrdinal("Weekly")),
+                                    weeklyOpt = reader.IsDBNull(reader.GetOrdinal("WeeklyOpt")) ? (int?)null : (int)reader.GetInt16(reader.GetOrdinal("WeeklyOpt")),
+                                    monthly = reader.IsDBNull(reader.GetOrdinal("Monthly")) ? false : reader.GetBoolean(reader.GetOrdinal("Monthly")),
+                                    monthlyOpt = reader.IsDBNull(reader.GetOrdinal("MonthlyOpt")) ? (int?)null : (int)reader.GetInt16(reader.GetOrdinal("MonthlyOpt")),
+                                    continuous = reader.IsDBNull(reader.GetOrdinal("Continuous")) ? false : reader.GetBoolean(reader.GetOrdinal("Continuous")),
+                                    continuousOpt = reader.IsDBNull(reader.GetOrdinal("ContinuousOpt")) ? (int?)null : (int)reader.GetInt16(reader.GetOrdinal("ContinuousOpt")),
+                                    continuousPerMonth = reader.IsDBNull(reader.GetOrdinal("ContinuousPerMonth")) ? 0 : reader.GetInt32(reader.GetOrdinal("ContinuousPerMonth")),
+                                    regenerateDailyStmt = reader.IsDBNull(reader.GetOrdinal("RegenerateDailyStmt")) ? 0 : reader.GetInt32(reader.GetOrdinal("RegenerateDailyStmt")),
+                                    createdBy = reader["Createdby"].ToString(),
+                                    dateCreated = reader.IsDBNull(reader.GetOrdinal("datecreated")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("datecreated")),
+                                    lastUpdatedBy = reader.IsDBNull(reader.GetOrdinal("lastupdatedby")) ? null : reader["lastupdatedby"].ToString(),
+                                    lastUpdatedDate = reader.IsDBNull(reader.GetOrdinal("lastupdateddate")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("lastupdateddate")),
+                                    accountCount = accountCount
+                                };
+
+                                return Json(new { success = true, data });
+                            }
+                        }
+                    }
+                }
+
+                return Json(new { success = false, message = "Customer not found" });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error searching customers");
-                return Json(new { error = "An error occurred while searching" });
+                _logger.LogError(ex, "Error getting customer details for CIF: {CIF_ID}", cifId);
+                return Json(new { success = false, message = "An error occurred while retrieving customer details" });
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> SearchCustomers(string parameter = null, string value = null)
+        {
+            var model = new SearchCustomerViewModel
+            {
+                SearchParameter = parameter ?? "cif_id",
+                SearchValue = value ?? "",
+                Customers = new List<CustomerProfileDto>()
+            };
+
+            if (!string.IsNullOrEmpty(value))
+            {
+                try
+                {
+                    model.Customers = await SearchCustomersByMailDbWithDetails(parameter, value);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error searching customers");
+                    ViewBag.Error = "An error occurred while searching. Please try again.";
+                }
+            }
+
+            return View(model);
+        }
+
 
         private async Task<int?> GetBranchCodeAsync(string branchName)
         {
@@ -509,8 +588,7 @@ namespace Statement.Web.Controllers
                 _logger.LogError(ex, "Error querying Profile table for {SearchParameter}: {SearchValue}", parameter, value);
                 return customers;
             }
-        }
-        
+        }       
         private string GetLastSixCharForCustomerNumber(string accountIdentification)
         {
             if (string.IsNullOrEmpty(accountIdentification) || accountIdentification.Length < 6)
@@ -519,6 +597,116 @@ namespace Statement.Web.Controllers
             }
             return accountIdentification.Substring(accountIdentification.Length - 6, 6);
         }
+        private async Task<int> GetCustomerAccountCountAsync(string cif)
+        {
+            try
+            {
+                var accounts = await _middlewareClient.GetCustomerCIFAccountsAsync(cif);
+                return accounts?.Count ?? 0;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+        private async Task<List<CustomerProfileDto>> SearchCustomersByMailDbWithDetails(string parameter, string value)
+        {
+            var customers = new List<CustomerProfileDto>();
+            var connectionString = _configuration.GetConnectionString("GTMailConn");
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                _logger.LogError("Database connection string 'GTMailConn' is not configured");
+                return customers;
+            }
+
+            string column;
+            switch (parameter?.ToLower())
+            {
+                case "accountname":
+                    column = "DisplayName";
+                    break;
+                case "email":
+                    column = "Email";
+                    break;
+                case "cif_id":
+                    column = "CIF_ID";
+                    break;
+                default:
+                    _logger.LogWarning("Invalid search parameter: {SearchParameter}", parameter);
+                    return customers;
+            }
+
+            string sqlCommand = $@"
+        SELECT 
+            ID, CIF_ID, CustomerNo, DisplayName, Email, BranchCode, 
+            DefaultExt, Status, UseExportFile, Allaccounts,
+            Daily, DailyOpt, Weekly, WeeklyOpt, Monthly, MonthlyOpt,
+            Continuous, ContinuousOpt, ContinuousPerMonth,
+            RegenerateDailyStmt,
+            Createdby, datecreated, lastupdatedby, lastupdateddate
+        FROM Profile
+        WHERE {column} LIKE @SearchValue
+        ORDER BY DisplayName";
+
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    using (var command = new SqlCommand(sqlCommand, connection))
+                    {
+                        command.Parameters.AddWithValue("@SearchValue", $"%{value}%");
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var customer = new CustomerProfileDto
+                                {
+                                    ID = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt32(reader.GetOrdinal("ID")),
+                                    CIF_ID = reader["CIF_ID"].ToString(),
+                                    CustomerNumber = reader["CustomerNo"].ToString(),
+                                    DisplayName = reader["DisplayName"].ToString(),
+                                    Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader["Email"].ToString(),
+                                    BranchCode = reader["BranchCode"].ToString(),
+                                    DefaultExt = reader.IsDBNull(reader.GetOrdinal("DefaultExt")) ? null : reader["DefaultExt"].ToString(),
+                                    Status = reader.IsDBNull(reader.GetOrdinal("Status")) ? null : reader["Status"].ToString(),
+                                    UseExportFile = reader.IsDBNull(reader.GetOrdinal("UseExportFile")) ? false : reader.GetBoolean(reader.GetOrdinal("UseExportFile")),
+                                    AllAccounts = reader.IsDBNull(reader.GetOrdinal("Allaccounts")) ? false : reader.GetBoolean(reader.GetOrdinal("Allaccounts")),
+                                    Daily = reader.IsDBNull(reader.GetOrdinal("Daily")) ? false : reader.GetBoolean(reader.GetOrdinal("Daily")),
+                                    // Fix: Convert smallint to int? using GetInt16
+                                    DailyOpt = reader.IsDBNull(reader.GetOrdinal("DailyOpt")) ? (int?)null : (int)reader.GetInt16(reader.GetOrdinal("DailyOpt")),
+                                    Weekly = reader.IsDBNull(reader.GetOrdinal("Weekly")) ? false : reader.GetBoolean(reader.GetOrdinal("Weekly")),
+                                    WeeklyOpt = reader.IsDBNull(reader.GetOrdinal("WeeklyOpt")) ? (int?)null : (int)reader.GetInt16(reader.GetOrdinal("WeeklyOpt")),
+                                    Monthly = reader.IsDBNull(reader.GetOrdinal("Monthly")) ? false : reader.GetBoolean(reader.GetOrdinal("Monthly")),
+                                    MonthlyOpt = reader.IsDBNull(reader.GetOrdinal("MonthlyOpt")) ? (int?)null : (int)reader.GetInt16(reader.GetOrdinal("MonthlyOpt")),
+                                    Continuous = reader.IsDBNull(reader.GetOrdinal("Continuous")) ? false : reader.GetBoolean(reader.GetOrdinal("Continuous")),
+                                    ContinuousOpt = reader.IsDBNull(reader.GetOrdinal("ContinuousOpt")) ? (int?)null : (int)reader.GetInt16(reader.GetOrdinal("ContinuousOpt")),
+                                    ContinuousPerMonth = reader.IsDBNull(reader.GetOrdinal("ContinuousPerMonth")) ? 0 : reader.GetInt32(reader.GetOrdinal("ContinuousPerMonth")),
+                                    RegenerateDailyStmt = reader.IsDBNull(reader.GetOrdinal("RegenerateDailyStmt")) ? 0 : reader.GetInt32(reader.GetOrdinal("RegenerateDailyStmt")),
+                                    CreatedBy = reader["Createdby"].ToString(),
+                                    DateCreated = reader.IsDBNull(reader.GetOrdinal("datecreated")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("datecreated")),
+                                    LastUpdatedBy = reader.IsDBNull(reader.GetOrdinal("lastupdatedby")) ? null : reader["lastupdatedby"].ToString(),
+                                    LastUpdatedDate = reader.IsDBNull(reader.GetOrdinal("lastupdateddate")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("lastupdateddate"))
+                                };
+
+                                customer.AccountCount = await GetCustomerAccountCountAsync(customer.CIF_ID);
+                                customers.Add(customer);
+                            }
+                        }
+                    }
+                }
+
+                _logger.LogInformation("Found {CustomerCount} customers for {SearchParameter}: {SearchValue}",
+                    customers.Count, parameter, value);
+                return customers;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error querying Profile table for {SearchParameter}: {SearchValue}", parameter, value);
+                throw;
+            }
+        }
         private string FormDisplayNameForExportFile(string name)
         {
             if (string.IsNullOrEmpty(name) || name.Length < 6)
@@ -526,6 +714,171 @@ namespace Statement.Web.Controllers
                 return null;
             }
             return name.Split(' ')[0] + " " + "STMT";
+        }
+        private async Task<ExistingCustomerInfo> CheckIfCustomerExists(SqlConnection connection, string cifId)
+        {
+            try
+            {
+                using (var command = new SqlCommand(
+                    @"SELECT ID, CustomerNo, BranchCode, DisplayName, Email, Status 
+              FROM Profile 
+              WHERE CIF_ID = @CIF_ID", connection))
+                {
+                    command.Parameters.AddWithValue("@CIF_ID", cifId);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            return new ExistingCustomerInfo
+                            {
+                                ID = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt32(reader.GetOrdinal("ID")),
+                                CustomerNumber = reader["CustomerNo"].ToString(),
+                                Branch = reader["BranchCode"].ToString(),
+                                DisplayName = reader["DisplayName"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                Status = reader["Status"].ToString()
+                            };
+                        }
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking if customer exists for CIF: {CIF_ID}", cifId);
+                return null;
+            }
+        }
+        private async Task<IActionResult> InsertNewCustomer(SqlConnection connection, NewCustomerDto model, DateTime currentDateTime, int? branchCode)
+        {
+            const string sql = @"
+        INSERT INTO Profile (
+            BranchCode, CustomerNo, DisplayName, ExportFile, ReportFile, Email,
+            ExportFormat, DefaultExt, Status, UseExportFile, Allaccounts,
+            Daily, DailyOpt, Weekly, WeeklyOpt, Monthly, MonthlyOpt,
+            LastsentDaily, LastsentWeekly, LastsentMonthly,
+            Createdby, datecreated, lastupdatedby, lastupdateddate,
+            RegenerateDailyStmt, NoofDays, ContinuousPerMonth, ContinuousOpt, Continuous, CIF_ID
+        ) VALUES (
+            @BranchCode, @CustomerNumber, @CustomerName, @ExportFile, @ReportFile, @Email,
+            @ExportFormat, @DefaultExt, @Status, @UseExportFile, @Allaccounts,
+            @Daily, @DailyOpt, @Weekly, @WeeklyOpt, @Monthly, @MonthlyOpt,
+            NULL, NULL, NULL,
+            @Createdby, @datecreated, @lastupdatedby, @lastupdateddate,
+            @RegenerateDailyStmt, NULL, @ContinuousPerMonth, @ContinuousOpt, @Continuous, @CIF_ID
+        );
+        SELECT SCOPE_IDENTITY();";
+
+            using (var command = new SqlCommand(sql, connection))
+            {
+                AddParameters(command, model, currentDateTime, branchCode);
+
+                var newId = await command.ExecuteScalarAsync();
+                model.ID = Convert.ToInt32(newId);
+
+                _logger.LogInformation("New customer inserted with ID: {ID} and CIF: {CIF_ID}", model.ID, model.CIF_ID);
+                return Json(new { success = true, message = "Customer saved successfully" });
+            }
+        }
+        private async Task<IActionResult> UpdateExistingCustomer(SqlConnection connection, NewCustomerDto model, DateTime currentDateTime, int? branchCode)
+        {
+            const string sql = @"
+        UPDATE Profile SET
+            DisplayName = @CustomerName,
+            Email = @Email,
+            DefaultExt = @DefaultExt,
+            Status = @Status,
+            UseExportFile = @UseExportFile,
+            Allaccounts = @Allaccounts,
+            Daily = @Daily,
+            DailyOpt = @DailyOpt,
+            Weekly = @Weekly,
+            WeeklyOpt = @WeeklyOpt,
+            Monthly = @Monthly,
+            MonthlyOpt = @MonthlyOpt,
+            Continuous = @Continuous,
+            ContinuousOpt = @ContinuousOpt,
+            ContinuousPerMonth = @ContinuousPerMonth,
+            RegenerateDailyStmt = @RegenerateDailyStmt,
+            lastupdatedby = @lastupdatedby,
+            lastupdateddate = @lastupdateddate,
+            BranchCode = @BranchCode
+        WHERE CIF_ID = @CIF_ID";
+
+            using (var command = new SqlCommand(sql, connection))
+            {
+                // Add all parameters including CIF_ID for WHERE clause
+                command.Parameters.AddWithValue("@CustomerName", (object)model.CustomerName ?? DBNull.Value);
+                command.Parameters.AddWithValue("@Email", (object)model.Email ?? DBNull.Value);
+                command.Parameters.AddWithValue("@DefaultExt", (object)model.DefaultExt ?? DBNull.Value);
+                command.Parameters.AddWithValue("@Status", (object)model.Status ?? DBNull.Value);
+                command.Parameters.AddWithValue("@UseExportFile", model.UseExportFile);
+                command.Parameters.AddWithValue("@Allaccounts", model.Allaccounts);
+                command.Parameters.AddWithValue("@Daily", model.Frequency.Daily);
+                command.Parameters.AddWithValue("@Weekly", model.Frequency.Weekly);
+                command.Parameters.AddWithValue("@Monthly", model.Frequency.Monthly);
+                command.Parameters.AddWithValue("@Continuous", model.Frequency.Continuous);
+                command.Parameters.AddWithValue("@DailyOpt", (short)(model.Frequency.DailyOpt ?? -1));
+                command.Parameters.AddWithValue("@WeeklyOpt", (short)(model.Frequency.WeeklyOpt ?? -1));
+                command.Parameters.AddWithValue("@MonthlyOpt", (short)(model.Frequency.MonthlyOpt ?? -1));
+                command.Parameters.AddWithValue("@ContinuousOpt", (short)(model.Frequency.ContinuousOpt ?? -1));
+                command.Parameters.AddWithValue("@ContinuousPerMonth", model.Frequency.ContinuousPerMonth);
+                command.Parameters.AddWithValue("@RegenerateDailyStmt", model.RegenerateDailyStmt);
+                command.Parameters.AddWithValue("@lastupdatedby", (object)model.lastupdatedby ?? DBNull.Value);
+                command.Parameters.AddWithValue("@lastupdateddate", currentDateTime);
+                command.Parameters.AddWithValue("@BranchCode", (object)branchCode ?? DBNull.Value);
+                command.Parameters.AddWithValue("@CIF_ID", (object)model.CIF_ID ?? DBNull.Value);
+
+                int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                if (rowsAffected > 0)
+                {
+                    _logger.LogInformation("Customer updated for CIF: {CIF_ID}", model.CIF_ID);
+                    return Json(new { success = true, message = "Customer updated successfully" });
+                }
+                else
+                {
+                    _logger.LogWarning("No rows updated for CIF: {CIF_ID}", model.CIF_ID);
+                    return Json(new { success = false, message = "Failed to update customer data" });
+                }
+            }
+        }
+        private void AddParameters(SqlCommand command, NewCustomerDto model, DateTime currentDateTime, int? branchCode)
+        {
+            // Basic fields
+            command.Parameters.AddWithValue("@BranchCode", (object)branchCode ?? DBNull.Value);
+            command.Parameters.AddWithValue("@CustomerNumber", (object)model.CustomerNumber ?? DBNull.Value);
+            command.Parameters.AddWithValue("@CustomerName", (object)model.CustomerName ?? DBNull.Value);
+            command.Parameters.AddWithValue("@ExportFile", (object)model.ExportFile ?? DBNull.Value);
+            command.Parameters.AddWithValue("@ReportFile", (object)model.ReportFile ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Email", (object)model.Email ?? DBNull.Value);
+            command.Parameters.AddWithValue("@ExportFormat", model.ExportFormat);
+            command.Parameters.AddWithValue("@DefaultExt", (object)model.DefaultExt ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Status", (object)model.Status ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Createdby", (object)model.Createdby ?? DBNull.Value);
+            command.Parameters.AddWithValue("@lastupdatedby", (object)model.lastupdatedby ?? DBNull.Value);
+            command.Parameters.AddWithValue("@datecreated", currentDateTime);
+            command.Parameters.AddWithValue("@lastupdateddate", currentDateTime);
+            command.Parameters.AddWithValue("@CIF_ID", (object)model.CIF_ID ?? DBNull.Value);
+
+            // BIT fields
+            command.Parameters.AddWithValue("@UseExportFile", model.UseExportFile);
+            command.Parameters.AddWithValue("@Allaccounts", model.Allaccounts);
+            command.Parameters.AddWithValue("@Daily", model.Frequency.Daily);
+            command.Parameters.AddWithValue("@Weekly", model.Frequency.Weekly);
+            command.Parameters.AddWithValue("@Monthly", model.Frequency.Monthly);
+            command.Parameters.AddWithValue("@Continuous", model.Frequency.Continuous);
+
+            // INT fields
+            command.Parameters.AddWithValue("@RegenerateDailyStmt", model.RegenerateDailyStmt);
+            command.Parameters.AddWithValue("@ContinuousPerMonth", model.Frequency.ContinuousPerMonth);
+
+            // SMALLINT fields
+            command.Parameters.AddWithValue("@DailyOpt", (short)(model.Frequency.DailyOpt ?? -1));
+            command.Parameters.AddWithValue("@WeeklyOpt", (short)(model.Frequency.WeeklyOpt ?? -1));
+            command.Parameters.AddWithValue("@MonthlyOpt", (short)(model.Frequency.MonthlyOpt ?? -1));
+            command.Parameters.AddWithValue("@ContinuousOpt", (short)(model.Frequency.ContinuousOpt ?? -1));
         }
     }
 }

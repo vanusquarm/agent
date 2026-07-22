@@ -1,0 +1,240 @@
+﻿@model Statement.Web.Models.SearchCustomerViewModel
+
+@{
+    ViewData["Title"] = "Search Customers - GT Bank Ghana";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="max-w-7xl mx-auto px-6 py-10">
+    <div class="flex items-center gap-3 mb-8">
+        <div class="w-12 h-12 gt-orange-bg rounded-full flex items-center justify-center">
+            <i class="fas fa-search text-white text-xl"></i>
+        </div>
+        <div>
+            <h2 class="text-3xl font-bold text-gray-800">Search Customers</h2>
+            <p class="text-gray-500 text-sm">Search for profiled customers by CIF ID, Account Name, or Email</p>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+        <div class="p-6 border-b border-gray-100">
+            <form id="searchForm" method="get" action="@Url.Action("SearchCustomers")" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <div class="md:col-span-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Search By</label>
+                    <select id="parameter" name="parameter" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all">
+                        <option value="cif_id" selected="@(Model.SearchParameter == "cif_id")">CIF ID</option>
+                        <option value="accountname" selected="@(Model.SearchParameter == "accountname")">Account Name</option>
+                        <option value="email" selected="@(Model.SearchParameter == "email")">Email</option>
+                    </select>
+                </div>
+                <div class="md:col-span-7">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Search Value</label>
+                    <input type="text" id="value" name="value" value="@Model.SearchValue"
+                           class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
+                           placeholder="Enter search term...">
+                </div>
+                <div class="md:col-span-2 flex items-end">
+                    <button type="submit" id="searchBtn"
+                            class="w-full gt-orange-bg text-white py-2.5 rounded-xl font-semibold hover:bg-orange-600 transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-search"></i>
+                        <span id="btn-text">Search</span>
+                        <span id="btn-loader" class="hidden"><i class="fas fa-spinner fa-spin"></i></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Count -->
+        @if (!string.IsNullOrEmpty(Model.SearchValue))
+        {
+            <div class="px-6 py-3 bg-gray-50 border-b border-gray-100">
+                <span class="text-sm text-gray-600">
+                    <i class="fas fa-users mr-2 text-orange-500"></i>
+                    Found <strong class="text-gray-800">@Model.Customers.Count</strong> customer(s) matching "<strong class="text-gray-800">@Model.SearchValue</strong>"
+                </span>
+            </div>
+        }
+    </div>
+
+    <!-- Results Table -->
+    @if (Model.Customers.Any())
+    {
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="gt-orange-bg">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-white text-sm font-semibold">#</th>
+                            <th class="px-6 py-4 text-left text-white text-sm font-semibold">CIF ID</th>
+                            <th class="px-6 py-4 text-left text-white text-sm font-semibold">Customer Name</th>
+                            <th class="px-6 py-4 text-left text-white text-sm font-semibold">Email</th>
+                            <th class="px-6 py-4 text-left text-white text-sm font-semibold">Branch</th>
+                            <th class="px-6 py-4 text-left text-white text-sm font-semibold">Status</th>
+                            <th class="px-6 py-4 text-left text-white text-sm font-semibold">Accounts</th>
+                            <th class="px-6 py-4 text-left text-white text-sm font-semibold">Created</th>
+                            <th class="px-6 py-4 text-left text-white text-sm font-semibold">Last Updated</th>
+                            <th class="px-6 py-4 text-center text-white text-sm font-semibold">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @for (int i = 0; i < Model.Customers.Count; i++)
+                        {
+                            var customer = Model.Customers[i];
+                            <tr class="hover:bg-orange-50 transition">
+                                <td class="px-6 py-4 text-sm text-gray-500">@(i + 1)</td>
+                                <td class="px-6 py-4">
+                                    <span class="font-mono text-sm font-medium text-orange-600">@customer.CIF_ID</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="font-medium text-gray-800">@customer.DisplayName</div>
+                                    <div class="text-xs text-gray-400">@customer.CustomerNumber</div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-600">
+                                    @if (!string.IsNullOrEmpty(customer.Email))
+                                    {
+                                        <a href="mailto:@customer.Email" class="text-orange-600 hover:underline">
+                                            <i class="fas fa-envelope mr-1 text-xs"></i> @customer.Email
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-gray-400">—</span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-600">@customer.BranchCode</td>
+                                <td class="px-6 py-4">
+                                    @if (customer.Status == "Yes" || customer.Status == "Active")
+                                    {
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1"></span>
+                                            Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            <span class="w-1.5 h-1.5 bg-red-500 rounded-full mr-1"></span>
+                                            Inactive
+                                        </span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-600">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        @customer.AccountCount
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500">
+                                    @if (customer.DateCreated.HasValue)
+                                    {
+                                        <div>@customer.DateCreated.Value.ToString("dd-MMM-yyyy")</div>
+                                        <div class="text-xs text-gray-400">@customer.CreatedBy</div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-gray-400">—</span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500">
+                                    @if (customer.LastUpdatedDate.HasValue)
+                                    {
+                                        <div>@customer.LastUpdatedDate.Value.ToString("dd-MMM-yyyy")</div>
+                                        <div class="text-xs text-gray-400">@customer.LastUpdatedBy</div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-gray-400">—</span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <a href="@Url.Action("UpdateCustomer", "Profile", new { CIF_ID = customer.CIF_ID })"
+                                           class="text-blue-600 hover:text-blue-800 transition" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button onclick="viewCustomerDetails('@customer.CIF_ID')"
+                                                class="text-green-600 hover:text-green-800 transition" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(Model.SearchValue))
+    {
+        <div class="text-center py-16">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-users-slash text-4xl text-gray-400"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">No customers found</h3>
+            <p class="text-gray-400">Try adjusting your search criteria</p>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-16">
+            <div class="w-24 h-24 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-search text-4xl text-orange-400"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">Search for customers</h3>
+            <p class="text-gray-400">Enter a search term above to find profiled customers</p>
+        </div>
+    }
+</div>
+
+<!-- Customer Details Modal -->
+<div id="customerDetailsModal" class="modal">
+    <div class="modal-content" style="max-width: 700px;">
+        <div class="p-6 border-b flex justify-between items-center">
+            <h3 class="text-xl font-semibold flex items-center">
+                <i class="fas fa-user text-orange-500 mr-2"></i>
+                Customer Details
+            </h3>
+            <button class="close-modal text-3xl text-gray-400 hover:text-gray-600 transition">&times;</button>
+        </div>
+        <div id="customerDetailsContent" class="p-6">
+            <div class="text-center py-8">
+                <i class="fas fa-spinner fa-spin text-3xl text-orange-500"></i>
+                <p class="text-gray-500 mt-2">Loading customer details...</p>
+            </div>
+        </div>
+        <div class="p-6 border-t flex justify-end">
+            <button class="close-modal px-6 py-3 bg-gray-200 rounded-xl font-semibold hover:bg-gray-300 transition">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var newCustomerUrl = '@Url.Action("NewCustomer", "Profile")';
+        var updateCustomerUrl = '@Url.Action("UpdateCustomer", "Profile")';
+        var searchCustomersUrl = '@Url.Action("SearchCustomers", "Profile")';
+    </script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+    </style>
+}

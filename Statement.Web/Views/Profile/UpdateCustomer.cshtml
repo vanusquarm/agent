@@ -1,10 +1,28 @@
 ﻿@model Statement.Web.Models.NewCustomerDto
-
 @{
     ViewData["Title"] = "Update Customer - GT Bank Ghana";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
 
+    .modal-content {
+        background: white;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 520px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+</style>
 <div class="max-w-7xl mx-auto px-6 py-10">
     <div class="flex items-center gap-3 mb-8">
         <div class="w-12 h-12 gt-orange-bg rounded-full flex items-center justify-center">
@@ -38,11 +56,11 @@
                 <i class="fas fa-id-card text-orange-500 mr-2"></i> Enter CIF ID
             </label>
             <div class="flex gap-3">
-                <input type="text" id="searchCustomerNumber" 
+                <input type="text" id="searchCustomerNumber"
                        class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
-                       placeholder="Enter CIF ID to load customer data" 
-                       value="@(string.IsNullOrEmpty(Model?.CIF_ID) ? "" : Model.CIF_ID)">
-                <button id="searchCustomerBtn" 
+                       placeholder="Enter CIF ID to load customer data"
+                       value="@(Model?.CIF_ID ?? "")">
+                <button id="searchCustomerBtn"
                         class="gt-orange-bg text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition-all flex items-center gap-2 min-w-[120px] justify-center">
                     <span class="button-text"><i class="fas fa-search mr-2"></i>Search</span>
                     <span class="button-loader hidden"><i class="fas fa-spinner fa-spin"></i> Searching...</span>
@@ -53,8 +71,8 @@
             </p>
         </div>
 
-        <!-- Form Section -->
-        <div id="formSection" class="@(Model?.CIF_ID != null ? "block" : "hidden")">
+        <!-- Form Section - Hidden by default, shown after search -->
+        <div id="formSection" style="display: @(Model?.CIF_ID != null ? "block" : "none");">
             <form id="updateCustomerForm" method="post" action="@Url.Action("UpdateCustomer", "Profile")" class="p-8">
                 @Html.AntiForgeryToken()
 
@@ -69,11 +87,12 @@
                 <input type="hidden" name="ExportFormat" value="" />
                 <input type="hidden" name="Createdby" value="@Model?.Createdby" />
                 <input type="hidden" name="datecreated" value="@Model?.datecreated" />
-                <input type="hidden" name="lastupdatedby" value="@Model?.lastupdatedby" />
+                <input type="hidden" name="lastupdatedby" id="lastupdatedby" value="@Model?.lastupdatedby" />
                 <input type="hidden" name="lastupdateddate" value="@Model?.lastupdateddate" />
                 <input type="hidden" name="ContinuousPerMonth" value="@Model?.Frequency?.ContinuousPerMonth" />
                 <input type="hidden" name="Allaccounts" id="allAccounts" value="@Model?.Allaccounts.ToString()" />
                 <input type="hidden" name="UseExportFile" id="useExportFile" value="@Model?.UseExportFile.ToString()" />
+                <input type="hidden" name="NoofDays" value="" />
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Non-editable fields -->
@@ -81,7 +100,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
                             <i class="fas fa-building text-orange-500 mr-2"></i> Branch
                         </label>
-                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 cursor-not-allowed" 
+                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 cursor-not-allowed"
                                value="@Model?.Branch" readonly>
                     </div>
 
@@ -89,7 +108,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
                             <i class="fas fa-id-card text-orange-500 mr-2"></i> CIF ID
                         </label>
-                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 cursor-not-allowed" 
+                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 cursor-not-allowed"
                                value="@Model?.CIF_ID" readonly>
                     </div>
 
@@ -97,7 +116,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
                             <i class="fas fa-user text-orange-500 mr-2"></i> Customer Name
                         </label>
-                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 cursor-not-allowed" 
+                        <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 cursor-not-allowed"
                                value="@Model?.CustomerName" readonly>
                     </div>
 
@@ -106,12 +125,16 @@
                             <i class="fas fa-list text-orange-500 mr-2"></i> Accounts
                         </label>
                         <select class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 cursor-not-allowed" multiple disabled>
-                            @if (Model?.Accounts != null)
+                            @if (Model?.Accounts != null && Model.Accounts.Any())
                             {
                                 foreach (var account in Model.Accounts)
                                 {
                                     <option value="@account.AccountIdentification">@account.AccountIdentification - @account.AccountCurrency</option>
                                 }
+                            }
+                            else
+                            {
+                                <option value="">No accounts found</option>
                             }
                         </select>
                     </div>
@@ -121,7 +144,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
                             <i class="fas fa-envelope text-orange-500 mr-2"></i> Email Address
                         </label>
-                        <input type="text" id="email" name="Email" 
+                        <input type="text" id="email" name="Email"
                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
                                value="@Model?.Email" placeholder="customer@email.com">
                         <p class="text-xs text-gray-400 mt-1">Separate multiple emails with semicolon (;)</p>
@@ -131,7 +154,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
                             <i class="fas fa-file-export text-orange-500 mr-2"></i> Output Format
                         </label>
-                        <select id="defaultExt" name="DefaultExt" 
+                        <select id="defaultExt" name="DefaultExt"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all">
                             <option value="pdf" selected="@(Model?.DefaultExt == "pdf")">PDF</option>
                             <option value="xls" selected="@(Model?.DefaultExt == "xls")">Excel</option>
@@ -145,15 +168,15 @@
                         </label>
                         <div class="space-y-2">
                             <label class="flex items-center p-3 border border-gray-200 rounded-xl hover:bg-orange-50 transition cursor-pointer">
-                                <input type="checkbox" name="Frequency.Daily" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" @(Model?.Frequency?.Daily == true ? "checked" : "")>
+                                <input type="checkbox" name="Frequency.Daily" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" checked="@(Model?.Frequency?.Daily == true)">
                                 <span class="ml-3 text-gray-700">Daily</span>
                             </label>
                             <label class="flex items-center p-3 border border-gray-200 rounded-xl hover:bg-orange-50 transition cursor-pointer">
-                                <input type="checkbox" name="Frequency.Weekly" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" @(Model?.Frequency?.Weekly == true ? "checked" : "")>
+                                <input type="checkbox" name="Frequency.Weekly" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" checked="@(Model?.Frequency?.Weekly == true)">
                                 <span class="ml-3 text-gray-700">Weekly</span>
                             </label>
                             <label class="flex items-center p-3 border border-gray-200 rounded-xl hover:bg-orange-50 transition cursor-pointer">
-                                <input type="checkbox" name="Frequency.Monthly" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" @(Model?.Frequency?.Monthly == true ? "checked" : "")>
+                                <input type="checkbox" name="Frequency.Monthly" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" checked="@(Model?.Frequency?.Monthly == true)">
                                 <span class="ml-3 text-gray-700">Monthly</span>
                             </label>
                         </div>
@@ -166,11 +189,11 @@
                         </label>
                         <div class="space-y-2">
                             <label class="flex items-center p-3 border border-gray-200 rounded-xl hover:bg-orange-50 transition cursor-pointer">
-                                <input type="checkbox" name="AllAccounts" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" @(Model?.Allaccounts == true ? "checked" : "")>
+                                <input type="checkbox" name="AllAccounts" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" checked="@(Model?.Allaccounts == true)">
                                 <span class="ml-3 text-gray-700">Send statements for all accounts</span>
                             </label>
                             <label class="flex items-center p-3 border border-gray-200 rounded-xl hover:bg-orange-50 transition cursor-pointer">
-                                <input type="checkbox" name="UseExportFile" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" @(Model?.UseExportFile == true ? "checked" : "") disabled>
+                                <input type="checkbox" name="UseExportFile" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" checked="@(Model?.UseExportFile == true)">
                                 <span class="ml-3 text-gray-700">Use export file</span>
                             </label>
                         </div>
@@ -183,11 +206,11 @@
                         </label>
                         <div class="flex gap-4 p-3 border border-gray-200 rounded-xl">
                             <label class="flex items-center cursor-pointer">
-                                <input type="radio" id="regenerateYes" name="RegenerateDailyStmt" value="1" class="w-4 h-4 text-orange-500 focus:ring-orange-200" @(Model?.RegenerateDailyStmt == 1 ? "checked" : "") required>
+                                <input type="radio" id="regenerateYes" name="RegenerateDailyStmt" value="1" class="w-4 h-4 text-orange-500 focus:ring-orange-200" checked="@(Model?.RegenerateDailyStmt == 1)" required>
                                 <span class="ml-2 text-gray-700">Yes</span>
                             </label>
                             <label class="flex items-center cursor-pointer">
-                                <input type="radio" id="regenerateNo" name="RegenerateDailyStmt" value="0" class="w-4 h-4 text-orange-500 focus:ring-orange-200" @(Model?.RegenerateDailyStmt == 0 ? "checked" : "") required>
+                                <input type="radio" id="regenerateNo" name="RegenerateDailyStmt" value="0" class="w-4 h-4 text-orange-500 focus:ring-orange-200" checked="@(Model?.RegenerateDailyStmt == 0)" required>
                                 <span class="ml-2 text-gray-700">No</span>
                             </label>
                         </div>
@@ -200,7 +223,7 @@
                         </label>
                         <div class="p-3 border border-gray-200 rounded-xl">
                             <label class="flex items-center cursor-pointer">
-                                <input type="checkbox" id="continuous" name="Continuous" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" @(Model?.Frequency?.Continuous == true ? "checked" : "")>
+                                <input type="checkbox" id="continuous" name="Continuous" value="true" class="w-4 h-4 text-orange-500 focus:ring-orange-200" checked="@(Model?.Frequency?.Continuous == true)">
                                 <span class="ml-3 text-gray-700">Enable Continuous Statements</span>
                             </label>
                         </div>
@@ -211,7 +234,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
                             <i class="fas fa-clock text-orange-500 mr-2"></i> Daily Option
                         </label>
-                        <input type="number" id="dailyOpt" name="DailyOpt" 
+                        <input type="number" id="dailyOpt" name="DailyOpt"
                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
                                value="@(Model?.Frequency?.DailyOpt ?? -1)" min="-1" required>
                     </div>
@@ -221,7 +244,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
                             <i class="fas fa-clock text-orange-500 mr-2"></i> Weekly Option
                         </label>
-                        <input type="number" id="weeklyOpt" name="WeeklyOpt" 
+                        <input type="number" id="weeklyOpt" name="WeeklyOpt"
                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
                                value="@(Model?.Frequency?.WeeklyOpt ?? -1)" min="-1" required>
                     </div>
@@ -231,7 +254,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
                             <i class="fas fa-clock text-orange-500 mr-2"></i> Monthly Option
                         </label>
-                        <input type="number" id="monthlyOpt" name="MonthlyOpt" 
+                        <input type="number" id="monthlyOpt" name="MonthlyOpt"
                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
                                value="@(Model?.Frequency?.MonthlyOpt ?? -1)" min="-1" required>
                     </div>
@@ -241,7 +264,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
                             <i class="fas fa-clock text-orange-500 mr-2"></i> Continuous Option
                         </label>
-                        <input type="number" id="continuousOpt" name="ContinuousOpt" 
+                        <input type="number" id="continuousOpt" name="ContinuousOpt"
                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
                                value="@(Model?.Frequency?.ContinuousOpt ?? -1)" min="-1" required>
                     </div>
@@ -249,7 +272,7 @@
 
                 <!-- Submit Button -->
                 <div class="mt-8 flex justify-center">
-                    <button type="submit" 
+                    <button type="submit"
                             class="gt-orange-bg text-white px-12 py-3.5 rounded-xl font-semibold hover:bg-orange-600 transition-all flex items-center gap-3 min-w-[200px] justify-center shadow-lg hover:shadow-orange-200/50">
                         <span class="button-text"><i class="fas fa-save mr-2"></i> Update Customer</span>
                         <span class="button-loader hidden"><i class="fas fa-spinner fa-spin"></i> Updating...</span>
@@ -281,5 +304,21 @@
 </div>
 
 @section Scripts {
+    <script>
+        var newCustomerUrl = '@Url.Action("NewCustomer", "Profile")';
+        var updateCustomerUrl = '@Url.Action("UpdateCustomer", "Profile")';
+        var searchCustomersUrl = '@Url.Action("SearchCustomers", "Profile")';
+        var profileUrls = {
+            updateCustomer: '@Url.Action("UpdateCustomer", "Profile")',
+            updateCustomerPost: '@Url.Action("UpdateCustomer", "Profile")'
+        };
+        @if (Model?.CIF_ID != null)
+        {
+        <text>
+        $('#formSection').show();
+        bindFormEvents();
+        </text>
+        }
+    </script>
     <script src="~/js/update_customer.js" type="text/javascript"></script>
 }

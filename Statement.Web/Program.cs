@@ -21,7 +21,6 @@ builder.Host.UseSerilog((ctx, lc) =>
       .Enrich.FromLogContext();
 });
 
-// Add services to the container
 builder.Services.AddControllersWithViews();
 
 // Add Session
@@ -31,6 +30,7 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 });
 
 // Add Authentication (Cookie for Web)
@@ -40,7 +40,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
         options.AccessDeniedPath = "/Account/AccessDenied";
-        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.ExpireTimeSpan = TimeSpan.FromHours(30);
         options.SlidingExpiration = true;
         options.Cookie.Name = "GTBankAuth";
         options.Cookie.HttpOnly = true;

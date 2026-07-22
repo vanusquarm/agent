@@ -6,6 +6,7 @@ using Statement.Web.Helpers;
 using Statement.Web.Interfaces;
 using Statement.Web.Models;
 using System.Data;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -41,8 +42,31 @@ namespace Statement.Web.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.WelcomeMessage = HttpContext.Session.GetString("WelcomeMessage");
+            var welcomeMessage = User.FindFirstValue("WelcomeMessage");
+
+            if (string.IsNullOrEmpty(welcomeMessage))
+            {
+                welcomeMessage = HttpContext.Session.GetString("WelcomeMessage");
+            }
+
+            if (string.IsNullOrEmpty(welcomeMessage))
+            {
+                var userName = User.Identity?.Name ?? HttpContext.Session.GetString("user_name");
+                if (!string.IsNullOrEmpty(userName))
+                {
+                    welcomeMessage = $"Welcome back, {userName}!";
+                }
+                else
+                {
+                    welcomeMessage = "Welcome to GT Bank Statement Portal!";
+                }
+
+                HttpContext.Session.SetString("WelcomeMessage", welcomeMessage);
+            }
+
+            ViewBag.WelcomeMessage = welcomeMessage;
             ViewBag.UserName = User.Identity?.Name ?? HttpContext.Session.GetString("user_name");
+
             return View();
         }
 
