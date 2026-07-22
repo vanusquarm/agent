@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Statement.Web.Filters;
 using Statement.Web.Interfaces;
 using Statement.Web.Middleware;
 using Statement.Web.Services;
@@ -75,7 +76,6 @@ builder.Services.AddControllers()
 // Add HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 
-// ============ ADD SWAGGER ============
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -90,7 +90,7 @@ builder.Services.AddSwaggerGen(c =>
             Email = "support@gtbank.com"
         }
     });
-
+    c.SchemaFilter<DateFormatSchemaFilter>();
     // Define API Key Authentication
     c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
     {

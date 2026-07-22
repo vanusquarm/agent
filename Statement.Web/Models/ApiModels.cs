@@ -8,37 +8,7 @@ namespace Statement.Web.Models
         public string Message { get; set; }
         public T Data { get; set; }
     }
-    public class EmailStatementAPIRequest
-    {
-    }
-        public class EmailStatementRequest
-    {
-        //[JsonPropertyName("cifId")]
-        //public string CIF_ID { get; set; }
-
-        //[JsonPropertyName("email")]
-        //public string Email { get; set; }
-
-        [JsonPropertyName("accounts")]
-        public List<AccountInfo> Accounts { get; set; }
-
-        [JsonPropertyName("startDate")]
-        public DateTime StartDate { get; set; }
-
-        [JsonPropertyName("endDate")]
-        public DateTime EndDate { get; set; }
-
-        //[JsonPropertyName("isCompliance")]
-        //public bool IsCompliance { get; set; }
-
-        //[JsonPropertyName("accountToDebit")]
-        //public string AccountToDebit { get; set; }
-
-        //[JsonPropertyName("debitCurrency")]
-        //public string DebitCurrency { get; set; }
-    }
-
-    public class StatementDataRequest
+    public class StatementRequest
     {
         [JsonPropertyName("accountNumber")]
         public string AccountNumber { get; set; }
@@ -48,12 +18,18 @@ namespace Statement.Web.Models
 
         [JsonPropertyName("endDate")]
         public DateTime EndDate { get; set; }
+
+        [JsonPropertyName("debitCurrency")]
+        public string? DebitCurrency { get; set; }
     }
 
-    public class MultipleStatementDataRequest
+    public class StatementEmailRequest
     {
-        [JsonPropertyName("accountNumbers")]
-        public List<string> AccountNumbers { get; set; }
+        [JsonPropertyName("accountNumber")]
+        public string AccountNumber { get; set; }
+
+        [JsonPropertyName("email")]
+        public string Email { get; set; }
 
         [JsonPropertyName("startDate")]
         public DateTime StartDate { get; set; }
@@ -62,7 +38,10 @@ namespace Statement.Web.Models
         public DateTime EndDate { get; set; }
     }
 
-    public class StatementDataResponse
+    public class StatementDataResponse{
+        public List<SingleAccountStatementData> AccountsStatementData { get; set; }
+    }
+    public class SingleAccountStatementData
     {
         [JsonPropertyName("accountNumber")]
         public string AccountNumber { get; set; }
@@ -116,27 +95,6 @@ namespace Statement.Web.Models
         public int CreditCount { get; set; }
 
         [JsonPropertyName("transactions")]
-        public List<TransactionData> Transactions { get; set; }
-    }
-
-    public class TransactionData
-    {
-        [JsonPropertyName("transactionDate")]
-        public string TransactionDate { get; set; }
-
-        [JsonPropertyName("valueDate")]
-        public string ValueDate { get; set; }
-
-        [JsonPropertyName("debit")]
-        public decimal Debit { get; set; }
-
-        [JsonPropertyName("credit")]
-        public decimal Credit { get; set; }
-
-        [JsonPropertyName("balance")]
-        public decimal Balance { get; set; }
-
-        [JsonPropertyName("remarks")]
-        public string Remarks { get; set; }
+        public List<StatementRecord> Transactions { get; set; }
     }
 }
