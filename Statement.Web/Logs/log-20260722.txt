@@ -1,0 +1,1049 @@
+2026-07-22 08:08:28.369 +00:00 [WRN] Authentication failed for user isaac.kwarteng: Authentication failed
+2026-07-22 08:10:23.890 +00:00 [INF] HTTP GET / responded 302 in 42.7996 ms
+2026-07-22 08:10:24.076 +00:00 [INF] HTTP GET /Account/Login responded 200 in 138.8119 ms
+2026-07-22 08:11:49.571 +00:00 [WRN] Authentication failed for user isaac.kwarteng: Authentication failed
+2026-07-22 08:17:42.454 +00:00 [INF] HTTP GET / responded 302 in 64.6699 ms
+2026-07-22 08:17:42.741 +00:00 [INF] HTTP GET /Account/Login responded 200 in 185.9447 ms
+2026-07-22 08:18:47.641 +00:00 [ERR] XML parsing error for user isaac.kwarteng: Data at the root level is invalid. Line 1, position 1.
+System.Xml.XmlException: Data at the root level is invalid. Line 1, position 1.
+   at System.Xml.XmlTextReaderImpl.Throw(Exception e)
+   at System.Xml.XmlTextReaderImpl.Throw(String res, String arg)
+   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()
+   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)
+   at System.Xml.XmlDocument.Load(XmlReader reader)
+   at System.Xml.XmlDocument.LoadXml(String xml)
+   at Statement.Web.Services.SSOService.ParseSoapResponse(String soapResponse, String userId) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Services\SSOService.cs:line 157
+2026-07-22 08:20:01.616 +00:00 [WRN] Login failed for user: isaac.kwarteng
+2026-07-22 08:20:04.495 +00:00 [INF] HTTP POST /Account/Login responded 200 in 126265.9596 ms
+2026-07-22 08:22:27.191 +00:00 [INF] HTTP GET / responded 302 in 36.8680 ms
+2026-07-22 08:22:27.376 +00:00 [INF] HTTP GET /Account/Login responded 200 in 114.2449 ms
+2026-07-22 08:22:43.196 +00:00 [INF] User isaac.kwarteng authenticated successfully
+2026-07-22 08:22:43.204 +00:00 [INF] User 3266 logged in successfully
+2026-07-22 08:22:43.224 +00:00 [INF] HTTP POST /Account/Login responded 200 in 249.6277 ms
+2026-07-22 08:22:43.323 +00:00 [INF] HTTP GET / responded 200 in 79.8558 ms
+2026-07-22 08:22:43.364 +00:00 [INF] HTTP GET /js/site.js responded 304 in 5.7212 ms
+2026-07-22 08:23:22.826 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 18.4434 ms
+2026-07-22 08:23:30.630 +00:00 [WRN] Invalid search parameter: null
+2026-07-22 08:23:30.653 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 53.4571 ms
+2026-07-22 08:27:06.787 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 3.1538 ms
+2026-07-22 08:27:08.560 +00:00 [ERR] The partial view '_NewCustomer' was not found. Searched locations: ["/Views/Profile/_NewCustomer.cshtml","/Views/Shared/_NewCustomer.cshtml"]
+2026-07-22 08:27:08.691 +00:00 [ERR] HTTP GET /Profile/NewCustomer responded 500 in 146.6062 ms
+System.InvalidOperationException: The view '_NewCustomer' was not found. The following locations were searched:
+/Views/Profile/_NewCustomer.cshtml
+/Views/Shared/_NewCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.PartialViewResultExecutor.ExecuteAsync(ActionContext context, PartialViewResult result)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-22 08:27:08.719 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The view '_NewCustomer' was not found. The following locations were searched:
+/Views/Profile/_NewCustomer.cshtml
+/Views/Shared/_NewCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.PartialViewResultExecutor.ExecuteAsync(ActionContext context, PartialViewResult result)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-22 08:28:01.827 +00:00 [INF] HTTP GET / responded 200 in 156.3464 ms
+2026-07-22 08:28:13.588 +00:00 [INF] HTTP GET / responded 200 in 9.7550 ms
+2026-07-22 08:28:17.414 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 30.6110 ms
+2026-07-22 08:28:19.375 +00:00 [ERR] The partial view '_NewCustomer' was not found. Searched locations: ["/Views/Profile/_NewCustomer.cshtml","/Views/Shared/_NewCustomer.cshtml"]
+2026-07-22 08:28:19.513 +00:00 [ERR] HTTP GET /Profile/NewCustomer responded 500 in 178.9141 ms
+System.InvalidOperationException: The view '_NewCustomer' was not found. The following locations were searched:
+/Views/Profile/_NewCustomer.cshtml
+/Views/Shared/_NewCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.PartialViewResultExecutor.ExecuteAsync(ActionContext context, PartialViewResult result)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-22 08:28:19.547 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The view '_NewCustomer' was not found. The following locations were searched:
+/Views/Profile/_NewCustomer.cshtml
+/Views/Shared/_NewCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.PartialViewResultExecutor.ExecuteAsync(ActionContext context, PartialViewResult result)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-22 08:29:33.766 +00:00 [INF] HTTP GET / responded 200 in 158.3466 ms
+2026-07-22 08:29:40.998 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 38.5798 ms
+2026-07-22 08:29:42.686 +00:00 [ERR] The partial view '_NewCustomer' was not found. Searched locations: ["/Views/Profile/_NewCustomer.cshtml","/Views/Shared/_NewCustomer.cshtml"]
+2026-07-22 08:29:42.798 +00:00 [ERR] HTTP GET /Profile/NewCustomer responded 500 in 164.5830 ms
+System.InvalidOperationException: The view '_NewCustomer' was not found. The following locations were searched:
+/Views/Profile/_NewCustomer.cshtml
+/Views/Shared/_NewCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.PartialViewResultExecutor.ExecuteAsync(ActionContext context, PartialViewResult result)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-22 08:29:42.824 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The view '_NewCustomer' was not found. The following locations were searched:
+/Views/Profile/_NewCustomer.cshtml
+/Views/Shared/_NewCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.PartialViewResultExecutor.ExecuteAsync(ActionContext context, PartialViewResult result)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-22 08:29:53.797 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 2.2267 ms
+2026-07-22 08:29:55.461 +00:00 [ERR] HTTP GET /Profile/UpdateCustomer responded 500 in 102.8966 ms
+System.InvalidOperationException: The model item passed into the ViewDataDictionary is of type 'Statement.Web.Models.UpdateCustomerViewModel', but this ViewDataDictionary instance requires a model item of type 'Statement.Web.Models.NewCustomerDto'.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary.EnsureCompatible(Object value)
+   at lambda_method52(Closure, ViewDataDictionary)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPagePropertyActivator.Activate(Object page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-22 08:29:55.466 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The model item passed into the ViewDataDictionary is of type 'Statement.Web.Models.UpdateCustomerViewModel', but this ViewDataDictionary instance requires a model item of type 'Statement.Web.Models.NewCustomerDto'.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary.EnsureCompatible(Object value)
+   at lambda_method52(Closure, ViewDataDictionary)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorPagePropertyActivator.Activate(Object page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-22 08:30:10.710 +00:00 [INF] HTTP GET / responded 200 in 297.5252 ms
+2026-07-22 08:30:14.288 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 9.4925 ms
+2026-07-22 08:30:16.177 +00:00 [INF] HTTP GET / responded 200 in 12.1565 ms
+2026-07-22 08:30:16.203 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 3.0322 ms
+2026-07-22 08:30:16.413 +00:00 [INF] HTTP GET /js/site.js responded 200 in 41.1284 ms
+2026-07-22 08:30:16.437 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 69.7856 ms
+2026-07-22 08:30:17.102 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 3.2978 ms
+2026-07-22 08:30:20.025 +00:00 [INF] HTTP GET / responded 200 in 8.3444 ms
+2026-07-22 08:30:20.060 +00:00 [INF] HTTP GET /js/site.js responded 200 in 6.3232 ms
+2026-07-22 08:30:20.060 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 1.0351 ms
+2026-07-22 08:30:20.104 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 7.6585 ms
+2026-07-22 08:30:20.864 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 6.1659 ms
+2026-07-22 08:30:22.184 +00:00 [INF] HTTP GET /Account/Logout responded 405 in 0.7551 ms
+2026-07-22 08:30:26.059 +00:00 [INF] HTTP GET /Account/Logout responded 405 in 2.0814 ms
+2026-07-22 08:30:27.014 +00:00 [INF] HTTP GET /Account/Logout responded 405 in 0.4524 ms
+2026-07-22 08:30:27.246 +00:00 [INF] HTTP GET /Account/Logout responded 405 in 0.4201 ms
+2026-07-22 08:30:30.305 +00:00 [INF] HTTP GET /Account/Logout responded 405 in 0.8896 ms
+2026-07-22 08:30:31.201 +00:00 [INF] HTTP GET / responded 200 in 2.8454 ms
+2026-07-22 08:30:31.229 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.6091 ms
+2026-07-22 08:30:58.524 +00:00 [INF] HTTP GET / responded 302 in 12.5507 ms
+2026-07-22 08:30:58.620 +00:00 [INF] HTTP GET /Account/Login responded 200 in 51.8747 ms
+2026-07-22 08:30:58.709 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.6039 ms
+2026-07-22 08:30:58.753 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 43.4199 ms
+2026-07-22 08:30:59.362 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 7.7110 ms
+2026-07-22 08:31:20.028 +00:00 [INF] User isaac.kwarteng authenticated successfully
+2026-07-22 08:31:33.972 +00:00 [INF] User 3266 logged in successfully
+2026-07-22 08:31:33.981 +00:00 [INF] HTTP POST /Account/Login responded 200 in 17100.9179 ms
+2026-07-22 08:31:34.036 +00:00 [INF] HTTP GET / responded 200 in 5.1959 ms
+2026-07-22 08:31:34.167 +00:00 [INF] HTTP GET /js/site.js responded 200 in 3.6261 ms
+2026-07-22 08:31:37.677 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 12.2532 ms
+2026-07-22 08:31:46.891 +00:00 [ERR] The partial view '_NewCustomer' was not found. Searched locations: ["/Views/Profile/_NewCustomer.cshtml","/Views/Shared/_NewCustomer.cshtml"]
+2026-07-22 08:31:46.938 +00:00 [ERR] HTTP GET /Profile/NewCustomer responded 500 in 67.4149 ms
+System.InvalidOperationException: The view '_NewCustomer' was not found. The following locations were searched:
+/Views/Profile/_NewCustomer.cshtml
+/Views/Shared/_NewCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.PartialViewResultExecutor.ExecuteAsync(ActionContext context, PartialViewResult result)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-22 08:31:46.970 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The view '_NewCustomer' was not found. The following locations were searched:
+/Views/Profile/_NewCustomer.cshtml
+/Views/Shared/_NewCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.PartialViewResultExecutor.ExecuteAsync(ActionContext context, PartialViewResult result)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-22 08:41:20.511 +00:00 [INF] HTTP GET / responded 200 in 176.9301 ms
+2026-07-22 08:44:38.131 +00:00 [INF] HTTP GET / responded 200 in 177.7983 ms
+2026-07-22 08:45:33.560 +00:00 [INF] HTTP GET / responded 200 in 254.9559 ms
+2026-07-22 08:45:36.471 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 6.0473 ms
+2026-07-22 08:45:38.114 +00:00 [INF] HTTP GET / responded 200 in 9.8746 ms
+2026-07-22 08:45:38.157 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 2.6407 ms
+2026-07-22 08:45:38.364 +00:00 [INF] HTTP GET /js/site.js responded 200 in 35.3672 ms
+2026-07-22 08:45:38.385 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 52.8028 ms
+2026-07-22 08:45:39.185 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 8.6643 ms
+2026-07-22 08:45:44.048 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 37.4774 ms
+2026-07-22 08:45:45.642 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 51.0086 ms
+2026-07-22 08:45:45.677 +00:00 [INF] HTTP GET /js/save_customer.js responded 200 in 6.1571 ms
+2026-07-22 08:46:05.161 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 32.2033 ms
+2026-07-22 08:46:26.850 +00:00 [ERR] Error querying Profile table for accountname: Isaac Divinus Kwarteng
+System.InvalidCastException: Unable to cast object of type 'System.Int16' to type 'System.Int32'.
+   at System.Data.SqlClient.SqlBuffer.get_Int32()
+   at System.Data.SqlClient.SqlDataReader.GetInt32(Int32 i)
+   at Statement.Web.Controllers.ProfileController.SearchCustomersByMailDbWithDetails(String parameter, String value) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 674
+2026-07-22 08:46:26.940 +00:00 [ERR] Error searching customers
+System.InvalidCastException: Unable to cast object of type 'System.Int16' to type 'System.Int32'.
+   at System.Data.SqlClient.SqlBuffer.get_Int32()
+   at System.Data.SqlClient.SqlDataReader.GetInt32(Int32 i)
+   at Statement.Web.Controllers.ProfileController.SearchCustomersByMailDbWithDetails(String parameter, String value) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 674
+   at Statement.Web.Controllers.ProfileController.SearchCustomers(String parameter, String value) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 426
+2026-07-22 08:46:26.949 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 458.8796 ms
+2026-07-22 08:46:55.534 +00:00 [ERR] Error querying Profile table for email: isaac.kwarteng@gtbank.com
+System.InvalidCastException: Unable to cast object of type 'System.Int16' to type 'System.Int32'.
+   at System.Data.SqlClient.SqlBuffer.get_Int32()
+   at System.Data.SqlClient.SqlDataReader.GetInt32(Int32 i)
+   at Statement.Web.Controllers.ProfileController.SearchCustomersByMailDbWithDetails(String parameter, String value) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 674
+2026-07-22 08:46:55.592 +00:00 [ERR] Error searching customers
+System.InvalidCastException: Unable to cast object of type 'System.Int16' to type 'System.Int32'.
+   at System.Data.SqlClient.SqlBuffer.get_Int32()
+   at System.Data.SqlClient.SqlDataReader.GetInt32(Int32 i)
+   at Statement.Web.Controllers.ProfileController.SearchCustomersByMailDbWithDetails(String parameter, String value) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 674
+   at Statement.Web.Controllers.ProfileController.SearchCustomers(String parameter, String value) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 426
+2026-07-22 08:46:55.597 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 113.2020 ms
+2026-07-22 08:46:58.267 +00:00 [ERR] Error querying Profile table for email: isaac.kwarteng@gtbank.com
+System.InvalidCastException: Unable to cast object of type 'System.Int16' to type 'System.Int32'.
+   at System.Data.SqlClient.SqlBuffer.get_Int32()
+   at System.Data.SqlClient.SqlDataReader.GetInt32(Int32 i)
+   at Statement.Web.Controllers.ProfileController.SearchCustomersByMailDbWithDetails(String parameter, String value) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 674
+2026-07-22 08:46:58.318 +00:00 [ERR] Error searching customers
+System.InvalidCastException: Unable to cast object of type 'System.Int16' to type 'System.Int32'.
+   at System.Data.SqlClient.SqlBuffer.get_Int32()
+   at System.Data.SqlClient.SqlDataReader.GetInt32(Int32 i)
+   at Statement.Web.Controllers.ProfileController.SearchCustomersByMailDbWithDetails(String parameter, String value) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 674
+   at Statement.Web.Controllers.ProfileController.SearchCustomers(String parameter, String value) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 426
+2026-07-22 08:46:58.321 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 91.8782 ms
+2026-07-22 08:48:17.377 +00:00 [INF] HTTP GET / responded 200 in 262.1023 ms
+2026-07-22 08:49:46.509 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 54.8944 ms
+2026-07-22 08:50:03.498 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 2971.1215 ms
+2026-07-22 08:54:21.251 +00:00 [INF] HTTP GET / responded 200 in 156.1931 ms
+2026-07-22 08:54:25.199 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 53.8971 ms
+2026-07-22 08:54:29.007 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 2345.5488 ms
+2026-07-22 08:54:51.029 +00:00 [INF] Fetching accounts for R000071299 [CorrelationID: null]
+2026-07-22 08:55:08.912 +00:00 [INF] Found 1 customers for cif_id: R000071299
+2026-07-22 08:55:08.918 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 32989.9723 ms
+2026-07-22 08:55:32.876 +00:00 [INF] Fetching accounts for R000071299 [CorrelationID: null]
+2026-07-22 08:55:33.101 +00:00 [ERR] The view 'UpdateCustomer' was not found. Searched locations: ["/Views/Profile/UpdateCustomer.cshtml","/Views/Shared/UpdateCustomer.cshtml"]
+2026-07-22 08:55:33.129 +00:00 [ERR] HTTP GET /Profile/UpdateCustomer responded 500 in 10329.5237 ms
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-22 08:55:33.144 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-22 08:56:04.813 +00:00 [INF] Fetching accounts for R000071299 [CorrelationID: null]
+2026-07-22 08:56:05.021 +00:00 [INF] Found 1 customers for cif_id: R000071299
+2026-07-22 08:56:05.024 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 3163.3643 ms
+2026-07-22 08:57:01.148 +00:00 [INF] Fetching accounts for R000071299 [CorrelationID: null]
+2026-07-22 08:57:07.045 +00:00 [INF] Found 1 customers for email: isaacdivinus@gmail.com
+2026-07-22 08:57:07.047 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 35627.7120 ms
+2026-07-22 08:57:47.889 +00:00 [INF] Fetching accounts for R000071299 [CorrelationID: null]
+2026-07-22 08:57:48.174 +00:00 [ERR] Error getting customer details for CIF: R000071299
+System.InvalidCastException: Unable to cast object of type 'System.Int16' to type 'System.Int32'.
+   at System.Data.SqlClient.SqlBuffer.get_Int32()
+   at System.Data.SqlClient.SqlDataReader.GetInt32(Int32 i)
+   at Statement.Web.Controllers.ProfileController.GetCustomerDetails(String cifId) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 370
+2026-07-22 08:57:48.184 +00:00 [INF] HTTP GET /Profile/GetCustomerDetails responded 200 in 313.8761 ms
+2026-07-22 09:00:49.229 +00:00 [INF] Fetching accounts for R000071299 [CorrelationID: null]
+2026-07-22 09:00:49.516 +00:00 [ERR] Error getting customer details for CIF: R000071299
+System.InvalidCastException: Unable to cast object of type 'System.Int16' to type 'System.Int32'.
+   at System.Data.SqlClient.SqlBuffer.get_Int32()
+   at System.Data.SqlClient.SqlDataReader.GetInt32(Int32 i)
+   at Statement.Web.Controllers.ProfileController.GetCustomerDetails(String cifId) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 370
+2026-07-22 09:00:49.518 +00:00 [INF] HTTP GET /Profile/GetCustomerDetails responded 200 in 301.5057 ms
+2026-07-22 09:02:30.982 +00:00 [INF] Fetching accounts for R000071299 [CorrelationID: null]
+2026-07-22 09:09:14.891 +00:00 [INF] HTTP GET / responded 200 in 304.1158 ms
+2026-07-22 09:09:19.221 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 60.4729 ms
+2026-07-22 09:09:41.138 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 2483.1805 ms
+2026-07-22 09:10:10.737 +00:00 [INF] HTTP GET /Profile/@Url.Action("NewCustomer", "Profile") responded 404 in 0.9684 ms
+2026-07-22 09:11:59.632 +00:00 [INF] HTTP GET /Profile/@Url.Action("NewCustomer", "Profile") responded 404 in 2.2723 ms
+2026-07-22 09:12:00.725 +00:00 [INF] HTTP GET /Profile/@Url.Action("NewCustomer", "Profile") responded 404 in 1.0800 ms
+2026-07-22 09:12:03.076 +00:00 [INF] HTTP GET /Profile/@Url.Action("NewCustomer", "Profile") responded 404 in 0.9764 ms
+2026-07-22 09:12:04.321 +00:00 [INF] HTTP GET /Profile/@Url.Action("NewCustomer", "Profile") responded 404 in 0.4391 ms
+2026-07-22 09:12:24.693 +00:00 [INF] HTTP GET /Profile/@Url.Action("NewCustomer", "Profile") responded 404 in 1.0698 ms
+2026-07-22 09:12:30.666 +00:00 [INF] HTTP GET /Profile/@Url.Action("NewCustomer", "Profile") responded 404 in 0.4691 ms
+2026-07-22 09:12:32.709 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 1.8871 ms
+2026-07-22 09:22:37.581 +00:00 [INF] HTTP GET / responded 200 in 164.8054 ms
+2026-07-22 09:22:42.902 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 56.0486 ms
+2026-07-22 09:22:49.140 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 4846.8649 ms
+2026-07-22 09:22:57.494 +00:00 [INF] HTTP GET /Profile/@Url.Action("NewCustomer", "Profile") responded 404 in 1.3533 ms
+2026-07-22 09:23:01.597 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 1.6982 ms
+2026-07-22 09:23:10.870 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 1581.7564 ms
+2026-07-22 09:23:10.922 +00:00 [INF] HTTP GET /js/save_customer.js responded 200 in 20.5513 ms
+2026-07-22 09:23:10.923 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 21.4329 ms
+2026-07-22 09:23:11.037 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.4107 ms
+2026-07-22 09:23:11.813 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 2.6587 ms
+2026-07-22 09:23:33.399 +00:00 [INF] Fetching account customers for 3201001054363 [RequestID: null]
+2026-07-22 09:23:36.243 +00:00 [INF] Fetching accounts for R001811691 [CorrelationID: null]
+2026-07-22 09:23:49.061 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 29366.6904 ms
+2026-07-22 09:25:12.707 +00:00 [INF] HTTP POST /Profile/SaveNewCustomer responded 200 in 48677.3907 ms
+2026-07-22 09:31:24.170 +00:00 [INF] HTTP GET / responded 200 in 437.6880 ms
+2026-07-22 09:31:24.236 +00:00 [INF] HTTP GET /js/site.js responded 200 in 17.2832 ms
+2026-07-22 09:31:30.026 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 39.4185 ms
+2026-07-22 09:31:38.438 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 7276.4400 ms
+2026-07-22 09:31:38.521 +00:00 [INF] HTTP GET /js/save_customer.js responded 200 in 3.5303 ms
+2026-07-22 09:31:50.258 +00:00 [INF] Fetching account customers for 3201001054363 [RequestID: null]
+2026-07-22 09:31:50.595 +00:00 [INF] Fetching accounts for R001811691 [CorrelationID: null]
+2026-07-22 09:31:50.895 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 3146.5861 ms
+2026-07-22 09:32:16.572 +00:00 [INF] HTTP POST /Profile/SaveNewCustomer responded 200 in 14967.7551 ms
+2026-07-22 09:32:21.686 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 2.3744 ms
+2026-07-22 09:32:23.934 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 10.5962 ms
+2026-07-22 09:32:24.000 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.7306 ms
+2026-07-22 09:32:24.075 +00:00 [INF] HTTP GET /js/save_customer.js responded 200 in 4.3261 ms
+2026-07-22 09:32:24.109 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 11.4391 ms
+2026-07-22 09:32:25.179 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 6.2401 ms
+2026-07-22 09:32:27.957 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 3.8575 ms
+2026-07-22 09:32:27.986 +00:00 [INF] HTTP GET /js/save_customer.js responded 200 in 6.4734 ms
+2026-07-22 09:32:28.001 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 9.5564 ms
+2026-07-22 09:32:28.024 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 44.6979 ms
+2026-07-22 09:32:28.758 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 3.8420 ms
+2026-07-22 09:32:39.334 +00:00 [INF] Fetching account customers for 3201001054363 [RequestID: null]
+2026-07-22 09:32:39.460 +00:00 [INF] Fetching accounts for R001811691 [CorrelationID: null]
+2026-07-22 09:32:39.618 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 3758.8966 ms
+2026-07-22 09:34:51.355 +00:00 [INF] HTTP GET / responded 200 in 191.5996 ms
+2026-07-22 09:34:51.426 +00:00 [INF] HTTP GET /js/site.js responded 200 in 13.2481 ms
+2026-07-22 09:35:00.179 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 57.7466 ms
+2026-07-22 09:35:08.625 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 51.9654 ms
+2026-07-22 09:35:08.658 +00:00 [INF] HTTP GET /js/save_customer.js responded 304 in 2.0747 ms
+2026-07-22 09:35:14.716 +00:00 [INF] Fetching account customers for 3201001054363 [RequestID: null]
+2026-07-22 09:35:15.063 +00:00 [INF] Fetching accounts for R001811691 [CorrelationID: null]
+2026-07-22 09:35:15.391 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 697.7040 ms
+2026-07-22 09:35:51.719 +00:00 [INF] HTTP POST /Profile/SaveNewCustomer responded 200 in 28986.0278 ms
+2026-07-22 09:35:54.778 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 2.7151 ms
+2026-07-22 09:35:54.838 +00:00 [INF] HTTP GET /js/save_customer.js responded 304 in 0.3988 ms
+2026-07-22 09:37:42.552 +00:00 [INF] Fetching account customers for 3201001054363 [RequestID: null]
+2026-07-22 09:37:43.007 +00:00 [INF] Fetching accounts for R001811691 [CorrelationID: null]
+2026-07-22 09:37:43.270 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 719.7553 ms
+2026-07-22 09:38:34.767 +00:00 [INF] HTTP POST /Profile/SaveNewCustomer responded 200 in 40042.8184 ms
+2026-07-22 09:38:35.907 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 13.7804 ms
+2026-07-22 09:38:35.988 +00:00 [INF] HTTP GET /js/save_customer.js responded 304 in 0.6754 ms
+2026-07-22 09:45:40.356 +00:00 [INF] HTTP GET / responded 200 in 151.3561 ms
+2026-07-22 09:45:49.809 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 43.1367 ms
+2026-07-22 09:45:51.096 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 49.7057 ms
+2026-07-22 09:45:51.169 +00:00 [INF] HTTP GET /js/save_customer.js responded 304 in 5.2360 ms
+2026-07-22 09:45:58.554 +00:00 [INF] Fetching account customers for 3201001054363 [RequestID: null]
+2026-07-22 09:45:58.608 +00:00 [ERR] API returned "ServiceUnavailable": The service is unavailable.
+2026-07-22 09:45:58.714 +00:00 [ERR] Failed to fetch account customers for 3201001054363 [RequestID: null]
+System.Net.Http.HttpRequestException: API request failed with status ServiceUnavailable
+   at Statement.Web.Services.MiddlewareClient.GetAccountsAndCustomersAsync(String accountId, String requestId, CancellationToken cancellationToken) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Services\MiddlewareClient.cs:line 108
+2026-07-22 09:45:58.830 +00:00 [ERR] Error occurred while determining customer account. API request failed with status ServiceUnavailable --    at Statement.Web.Services.MiddlewareClient.GetAccountsAndCustomersAsync(String accountId, String requestId, CancellationToken cancellationToken) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Services\MiddlewareClient.cs:line 108
+   at Statement.Web.Controllers.ProfileController.DetermineCustomerAccount(String accountNumber) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 479
+2026-07-22 09:45:58.842 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 322.6694 ms
+2026-07-22 09:46:03.776 +00:00 [INF] Fetching account customers for 3201001054363 [RequestID: null]
+2026-07-22 09:46:03.785 +00:00 [ERR] API returned "ServiceUnavailable": The service is unavailable.
+2026-07-22 09:46:03.819 +00:00 [ERR] Failed to fetch account customers for 3201001054363 [RequestID: null]
+System.Net.Http.HttpRequestException: API request failed with status ServiceUnavailable
+   at Statement.Web.Services.MiddlewareClient.GetAccountsAndCustomersAsync(String accountId, String requestId, CancellationToken cancellationToken) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Services\MiddlewareClient.cs:line 108
+2026-07-22 09:46:03.892 +00:00 [ERR] Error occurred while determining customer account. API request failed with status ServiceUnavailable --    at Statement.Web.Services.MiddlewareClient.GetAccountsAndCustomersAsync(String accountId, String requestId, CancellationToken cancellationToken) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Services\MiddlewareClient.cs:line 108
+   at Statement.Web.Controllers.ProfileController.DetermineCustomerAccount(String accountNumber) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 479
+2026-07-22 09:46:03.895 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 121.0621 ms
+2026-07-22 09:46:25.634 +00:00 [INF] Fetching account customers for 3201001054363 [RequestID: null]
+2026-07-22 09:46:25.658 +00:00 [ERR] API returned "ServiceUnavailable": The service is unavailable.
+2026-07-22 09:46:25.677 +00:00 [ERR] Failed to fetch account customers for 3201001054363 [RequestID: null]
+System.Net.Http.HttpRequestException: API request failed with status ServiceUnavailable
+   at Statement.Web.Services.MiddlewareClient.GetAccountsAndCustomersAsync(String accountId, String requestId, CancellationToken cancellationToken) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Services\MiddlewareClient.cs:line 108
+2026-07-22 09:46:25.705 +00:00 [ERR] Error occurred while determining customer account. API request failed with status ServiceUnavailable --    at Statement.Web.Services.MiddlewareClient.GetAccountsAndCustomersAsync(String accountId, String requestId, CancellationToken cancellationToken) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Services\MiddlewareClient.cs:line 108
+   at Statement.Web.Controllers.ProfileController.DetermineCustomerAccount(String accountNumber) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Controllers\ProfileController.cs:line 479
+2026-07-22 09:46:37.684 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 18768.6205 ms
+2026-07-22 09:46:50.485 +00:00 [INF] Fetching account customers for 3201001054363 [RequestID: null]
+2026-07-22 09:46:50.499 +00:00 [ERR] API returned "ServiceUnavailable": The service is unavailable.
+2026-07-22 09:46:50.514 +00:00 [ERR] Failed to fetch account customers for 3201001054363 [RequestID: null]
+System.Net.Http.HttpRequestException: API request failed with status ServiceUnavailable
+   at Statement.Web.Services.MiddlewareClient.GetAccountsAndCustomersAsync(String accountId, String requestId, CancellationToken cancellationToken) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Services\MiddlewareClient.cs:line 108
+2026-07-22 09:49:41.953 +00:00 [INF] HTTP GET / responded 200 in 165.6624 ms
+2026-07-22 10:00:24.285 +00:00 [INF] HTTP GET / responded 200 in 154.7058 ms
+2026-07-22 10:00:29.381 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 50.4269 ms
+2026-07-22 10:00:32.231 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 6.9938 ms
+2026-07-22 10:00:34.419 +00:00 [ERR] The view 'UpdateCustomer' was not found. Searched locations: ["/Views/Profile/UpdateCustomer.cshtml","/Views/Shared/UpdateCustomer.cshtml"]
+2026-07-22 10:00:34.546 +00:00 [ERR] HTTP GET /Profile/UpdateCustomer responded 500 in 181.0037 ms
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-22 10:00:34.583 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-22 10:00:34.675 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.7085 ms
+2026-07-22 10:03:11.957 +00:00 [INF] HTTP GET / responded 200 in 307.1443 ms
+2026-07-22 10:03:14.700 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 39.3984 ms
+2026-07-22 10:03:15.894 +00:00 [ERR] The view 'UpdateCustomer' was not found. Searched locations: ["/Views/Profile/UpdateCustomer.cshtml","/Views/Shared/UpdateCustomer.cshtml"]
+2026-07-22 10:03:16.046 +00:00 [ERR] HTTP GET /Profile/UpdateCustomer responded 500 in 230.3756 ms
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-22 10:03:16.088 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-22 10:04:01.842 +00:00 [INF] HTTP GET / responded 200 in 390.2455 ms
+2026-07-22 10:04:04.114 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 43.5253 ms
+2026-07-22 10:04:05.663 +00:00 [ERR] The view 'UpdateCustomer' was not found. Searched locations: ["/Views/Profile/UpdateCustomer.cshtml","/Views/Shared/UpdateCustomer.cshtml"]
+2026-07-22 10:04:05.790 +00:00 [ERR] HTTP GET /Profile/UpdateCustomer responded 500 in 185.6192 ms
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-22 10:04:05.827 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-22 10:05:27.879 +00:00 [INF] HTTP GET / responded 200 in 177.4424 ms
+2026-07-22 10:05:32.846 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 21.1989 ms
+2026-07-22 10:05:35.293 +00:00 [ERR] The view 'UpdateCustomer' was not found. Searched locations: ["/Views/Profile/UpdateCustomer.cshtml","/Views/Shared/UpdateCustomer.cshtml"]
+2026-07-22 10:05:35.423 +00:00 [ERR] HTTP GET /Profile/UpdateCustomer responded 500 in 170.8631 ms
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-22 10:05:35.441 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-22 10:07:44.266 +00:00 [INF] HTTP GET / responded 200 in 155.0193 ms
+2026-07-22 10:07:56.164 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 21.4875 ms
+2026-07-22 10:08:09.518 +00:00 [ERR] The view 'UpdateCustomer' was not found. Searched locations: ["/Views/Profile/UpdateCustomer.cshtml","/Views/Shared/UpdateCustomer.cshtml"]
+2026-07-22 10:08:09.573 +00:00 [ERR] HTTP GET /Profile/UpdateCustomer responded 500 in 11536.5899 ms
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+2026-07-22 10:08:09.594 +00:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The view 'UpdateCustomer' was not found. The following locations were searched:
+/Views/Profile/UpdateCustomer.cshtml
+/Views/Shared/UpdateCustomer.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Statement.Web.Middleware.ApiKeyMiddleware.InvokeAsync(HttpContext context) in C:\Users\isaac.kwarteng\source\repos\workstation\Middleware\Statement.Web\Middleware\ApiKeyMiddleware.cs:line 31
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-07-22 10:11:33.409 +00:00 [INF] HTTP GET / responded 200 in 292.0416 ms
+2026-07-22 10:11:37.148 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 52.2477 ms
+2026-07-22 10:11:40.648 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 2102.8388 ms
+2026-07-22 10:11:40.737 +00:00 [INF] HTTP GET /js/update_customer.js responded 200 in 5.9236 ms
+2026-07-22 10:12:08.761 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 3.1190 ms
+2026-07-22 10:12:32.310 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 6523.0471 ms
+2026-07-22 10:12:32.384 +00:00 [INF] HTTP GET /js/update_customer.js responded 304 in 0.7210 ms
+2026-07-22 10:12:46.318 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 1.1532 ms
+2026-07-22 10:15:06.263 +00:00 [INF] HTTP GET / responded 200 in 397.9148 ms
+2026-07-22 10:15:08.719 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 6.8959 ms
+2026-07-22 10:15:11.426 +00:00 [INF] HTTP GET / responded 200 in 14.6135 ms
+2026-07-22 10:15:11.479 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 3.8472 ms
+2026-07-22 10:15:11.500 +00:00 [INF] HTTP GET /js/site.js responded 200 in 46.9484 ms
+2026-07-22 10:15:11.519 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 61.8573 ms
+2026-07-22 10:15:12.302 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 2.4540 ms
+2026-07-22 10:15:13.236 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 22.4497 ms
+2026-07-22 10:15:13.341 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.6578 ms
+2026-07-22 10:15:15.171 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 65.4073 ms
+2026-07-22 10:15:15.215 +00:00 [INF] HTTP GET /js/update_customer.js responded 200 in 4.2062 ms
+2026-07-22 10:15:15.239 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.6401 ms
+2026-07-22 10:15:23.592 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 4.9225 ms
+2026-07-22 10:15:23.661 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.8790 ms
+2026-07-22 10:16:28.240 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 6.4089 ms
+2026-07-22 10:16:28.308 +00:00 [INF] HTTP GET /js/update_customer.js responded 200 in 3.7982 ms
+2026-07-22 10:16:28.615 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.5424 ms
+2026-07-22 10:16:36.610 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 2.3002 ms
+2026-07-22 10:16:36.703 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 1.5881 ms
+2026-07-22 10:16:36.703 +00:00 [INF] HTTP GET /js/update_customer.js responded 200 in 8.2799 ms
+2026-07-22 10:16:36.730 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 26.4241 ms
+2026-07-22 10:16:37.703 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 3.3163 ms
+2026-07-22 10:17:33.342 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 3.7184 ms
+2026-07-22 10:17:33.425 +00:00 [INF] HTTP GET /js/update_customer.js responded 200 in 3.2178 ms
+2026-07-22 10:17:33.965 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.3358 ms
+2026-07-22 10:18:20.146 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 15.5458 ms
+2026-07-22 10:18:20.179 +00:00 [INF] HTTP GET /js/update_customer.js responded 304 in 0.2340 ms
+2026-07-22 10:18:20.729 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.9677 ms
+2026-07-22 10:18:24.084 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 6.2307 ms
+2026-07-22 10:18:24.159 +00:00 [INF] HTTP GET /js/update_customer.js responded 200 in 4.6995 ms
+2026-07-22 10:18:24.175 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 7.2225 ms
+2026-07-22 10:18:24.180 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.8407 ms
+2026-07-22 10:18:25.145 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 3.3761 ms
+2026-07-22 10:18:31.818 +00:00 [INF] Fetching accounts for R001344218 [CorrelationID: null]
+2026-07-22 10:18:57.673 +00:00 [ERR] API returned "InternalServerError": 
+2026-07-22 10:18:57.776 +00:00 [ERR] Failed to fetch accounts for R001344218 [CorrelationID: null]
+System.Net.Http.HttpRequestException: API request failed with status InternalServerError
+   at Statement.Web.Services.MiddlewareClient.GetCustomerCIFAccountsAsync(String customerId, String requestId, CancellationToken cancellationToken)
+2026-07-22 10:18:57.894 +00:00 [ERR] Error searching customer: API request failed with status InternalServerError
+System.Net.Http.HttpRequestException: API request failed with status InternalServerError
+   at Statement.Web.Services.MiddlewareClient.GetCustomerCIFAccountsAsync(String customerId, String requestId, CancellationToken cancellationToken)
+   at Statement.Web.Controllers.ProfileController.UpdateCustomer(String CIF_ID)
+2026-07-22 10:18:57.911 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 26124.7305 ms
+2026-07-22 11:31:11.854 +00:00 [INF] HTTP GET / responded 200 in 177.4796 ms
+2026-07-22 11:31:11.958 +00:00 [INF] HTTP GET /js/site.js responded 200 in 14.1042 ms
+2026-07-22 11:35:39.271 +00:00 [INF] HTTP GET / responded 200 in 147.5154 ms
+2026-07-22 11:57:48.828 +00:00 [INF] HTTP GET / responded 200 in 153.9418 ms
+2026-07-22 12:03:07.062 +00:00 [INF] HTTP GET / responded 200 in 309.7118 ms
+2026-07-22 12:09:11.384 +00:00 [INF] HTTP GET / responded 200 in 160.3297 ms
+2026-07-22 12:11:08.519 +00:00 [INF] HTTP GET / responded 200 in 154.6480 ms
+2026-07-22 12:22:18.412 +00:00 [INF] HTTP GET / responded 200 in 315.2916 ms
+2026-07-22 12:23:27.895 +00:00 [INF] HTTP GET /api/v1/accounts/3201001054363/statements/pdf responded 401 in 22.9196 ms
+2026-07-22 12:24:22.638 +00:00 [INF] Fetching account customers for 3201001054363 [RequestID: null]
+2026-07-22 12:24:23.063 +00:00 [INF] Fetching accounts for R001811691 [CorrelationID: null]
+2026-07-22 12:24:48.748 +00:00 [INF] Fetching statement from Oracle for 3201001054003 from "2026-01-01T00:00:00.0000000" to "2026-01-31T00:00:00.0000000" [CorrelationID: null]
+2026-07-22 12:24:48.869 +00:00 [INF] Retrieved opening balance 3378 for account 3201001054003
+2026-07-22 12:24:48.872 +00:00 [INF] Executing GetClosingBalanceAsync for account 3201001054003, date 31-JAN-2026, using Finacle
+2026-07-22 12:24:48.876 +00:00 [INF] Retrieved closing balance 3803 for account 3201001054003
+2026-07-22 12:24:48.940 +00:00 [INF] Fetching statement from Oracle for 3201001054363 from "2026-01-01T00:00:00.0000000" to "2026-01-31T00:00:00.0000000" [CorrelationID: null]
+2026-07-22 12:24:48.959 +00:00 [INF] Retrieved opening balance 3537.97 for account 3201001054363
+2026-07-22 12:24:48.960 +00:00 [INF] Executing GetClosingBalanceAsync for account 3201001054363, date 31-JAN-2026, using Finacle
+2026-07-22 12:24:48.963 +00:00 [INF] Retrieved closing balance 6275.04 for account 3201001054363
+2026-07-22 12:24:48.980 +00:00 [INF] Fetching statement from Oracle for 5201001022561 from "2026-01-01T00:00:00.0000000" to "2026-01-31T00:00:00.0000000" [CorrelationID: null]
+2026-07-22 12:24:49.004 +00:00 [INF] Retrieved opening balance 0 for account 5201001022561
+2026-07-22 12:24:49.005 +00:00 [INF] Executing GetClosingBalanceAsync for account 5201001022561, date 31-JAN-2026, using Finacle
+2026-07-22 12:24:49.007 +00:00 [INF] Retrieved closing balance 0 for account 5201001022561
+2026-07-22 12:24:49.012 +00:00 [INF] Fetching statement from Oracle for 5201001023205 from "2026-01-01T00:00:00.0000000" to "2026-01-31T00:00:00.0000000" [CorrelationID: null]
+2026-07-22 12:24:49.027 +00:00 [INF] Retrieved opening balance 0 for account 5201001023205
+2026-07-22 12:24:49.027 +00:00 [INF] Executing GetClosingBalanceAsync for account 5201001023205, date 31-JAN-2026, using Finacle
+2026-07-22 12:24:49.029 +00:00 [INF] Retrieved closing balance 0 for account 5201001023205
+2026-07-22 12:24:55.637 +00:00 [INF] Fetching customer R001811691 [CorrelationID: null]
+2026-07-22 12:24:57.783 +00:00 [INF] Staff account for CIF: R001811691 - No charges applied
+2026-07-22 12:24:57.792 +00:00 [INF] HTTP GET /api/v1/accounts/3201001054363/statements/pdf responded 200 in 59420.9032 ms
+2026-07-22 12:26:28.603 +00:00 [INF] HTTP GET / responded 200 in 302.7417 ms
+2026-07-22 12:27:28.916 +00:00 [INF] HTTP GET / responded 200 in 324.2158 ms
+2026-07-22 12:27:44.729 +00:00 [INF] HTTP GET /api/v1/accounts/3201001054363/statements/json responded 401 in 11.5789 ms
+2026-07-22 12:28:07.832 +00:00 [INF] Fetching statement from Oracle for 3201001054363 from "2026-01-31T00:00:00.0000000" to "2026-01-31T00:00:00.0000000" [CorrelationID: null]
+2026-07-22 12:28:07.933 +00:00 [INF] Retrieved opening balance 6275.04 for account 3201001054363
+2026-07-22 12:28:07.936 +00:00 [INF] Executing GetClosingBalanceAsync for account 3201001054363, date 31-JAN-2026, using Finacle
+2026-07-22 12:28:07.939 +00:00 [INF] Retrieved closing balance 6275.04 for account 3201001054363
+2026-07-22 12:28:12.606 +00:00 [INF] HTTP GET /api/v1/accounts/3201001054363/statements/json responded 200 in 10475.3022 ms
+2026-07-22 12:28:43.643 +00:00 [INF] Fetching statement from Oracle for 3201001054363 from "2026-01-01T00:00:00.0000000" to "2026-01-31T00:00:00.0000000" [CorrelationID: null]
+2026-07-22 12:28:43.660 +00:00 [INF] Retrieved opening balance 3537.97 for account 3201001054363
+2026-07-22 12:28:43.661 +00:00 [INF] Executing GetClosingBalanceAsync for account 3201001054363, date 31-JAN-2026, using Finacle
+2026-07-22 12:28:43.664 +00:00 [INF] Retrieved closing balance 6275.04 for account 3201001054363
+2026-07-22 12:28:43.668 +00:00 [INF] HTTP GET /api/v1/accounts/3201001054363/statements/json responded 200 in 1873.4826 ms
+2026-07-22 12:54:59.466 +00:00 [INF] HTTP GET / responded 200 in 177.4766 ms
+2026-07-22 12:56:54.613 +00:00 [INF] HTTP GET / responded 200 in 304.6013 ms
+2026-07-22 12:58:36.078 +00:00 [INF] HTTP GET / responded 200 in 155.0572 ms
+2026-07-22 12:58:39.617 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 63.4251 ms
+2026-07-22 13:04:06.705 +00:00 [INF] HTTP GET / responded 200 in 154.6664 ms
+2026-07-22 13:13:53.405 +00:00 [INF] HTTP GET / responded 200 in 153.1360 ms
+2026-07-22 13:13:58.461 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 25.5126 ms
+2026-07-22 13:14:02.385 +00:00 [INF] HTTP GET / responded 200 in 8.6790 ms
+2026-07-22 13:14:04.372 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 4.3350 ms
+2026-07-22 13:14:07.924 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 6.3303 ms
+2026-07-22 13:14:09.967 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 2.6331 ms
+2026-07-22 13:14:09.989 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.7298 ms
+2026-07-22 13:14:10.229 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 34.6796 ms
+2026-07-22 13:14:11.089 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 16.3427 ms
+2026-07-22 13:15:13.804 +00:00 [INF] HTTP GET / responded 200 in 156.4367 ms
+2026-07-22 13:15:13.863 +00:00 [INF] HTTP GET /js/site.js responded 200 in 14.2004 ms
+2026-07-22 13:15:17.834 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 49.7646 ms
+2026-07-22 13:15:21.208 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 4.8081 ms
+2026-07-22 13:15:29.623 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 7.2309 ms
+2026-07-22 13:15:29.663 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 12.1052 ms
+2026-07-22 13:15:29.684 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.8052 ms
+2026-07-22 13:15:30.681 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 3.5577 ms
+2026-07-22 13:15:46.782 +00:00 [INF] HTTP GET /Account/Logout responded 405 in 1.7910 ms
+2026-07-22 13:16:25.286 +00:00 [INF] HTTP GET / responded 200 in 153.4411 ms
+2026-07-22 13:16:25.319 +00:00 [INF] HTTP GET /js/site.js responded 200 in 20.1594 ms
+2026-07-22 13:16:28.705 +00:00 [INF] HTTP GET /Account/Logout responded 405 in 3.6112 ms
+2026-07-22 13:19:24.330 +00:00 [INF] HTTP GET / responded 200 in 211.1338 ms
+2026-07-22 13:19:28.555 +00:00 [INF] HTTP GET /Account/Logout responded 400 in 11.3448 ms
+2026-07-22 13:19:31.718 +00:00 [INF] HTTP GET /Account/Logout responded 400 in 4.7393 ms
+2026-07-22 13:19:32.377 +00:00 [INF] HTTP GET /Account/Logout responded 400 in 0.9879 ms
+2026-07-22 13:21:54.362 +00:00 [INF] HTTP GET / responded 200 in 307.5556 ms
+2026-07-22 13:21:57.417 +00:00 [INF] HTTP POST /Account/Logout responded 302 in 31.9215 ms
+2026-07-22 13:21:57.463 +00:00 [INF] HTTP GET /Account/Login responded 200 in 34.4086 ms
+2026-07-22 13:21:59.847 +00:00 [INF] HTTP GET / responded 302 in 6.3233 ms
+2026-07-22 13:21:59.864 +00:00 [INF] HTTP GET /Account/Login responded 200 in 8.3020 ms
+2026-07-22 13:22:02.122 +00:00 [INF] HTTP GET /Account/Login responded 200 in 2.1388 ms
+2026-07-22 13:22:03.776 +00:00 [INF] HTTP GET /Account/Login responded 200 in 1.8128 ms
+2026-07-22 13:22:14.573 +00:00 [INF] HTTP GET /home/index responded 302 in 2.6377 ms
+2026-07-22 13:22:14.590 +00:00 [INF] HTTP GET /Account/Login responded 200 in 1.6759 ms
+2026-07-22 13:23:29.627 +00:00 [INF] HTTP GET / responded 302 in 38.0916 ms
+2026-07-22 13:23:29.809 +00:00 [INF] HTTP GET /Account/Login responded 200 in 106.1290 ms
+2026-07-22 13:23:47.155 +00:00 [INF] User isaac.kwarteng authenticated successfully
+2026-07-22 13:23:47.164 +00:00 [INF] User 3266 logged in successfully
+2026-07-22 13:23:47.178 +00:00 [INF] HTTP POST /Account/Login responded 200 in 2042.5621 ms
+2026-07-22 13:23:47.276 +00:00 [INF] HTTP GET / responded 200 in 74.6569 ms
+2026-07-22 13:23:49.844 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 24.1905 ms
+2026-07-22 13:23:59.443 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 31.4893 ms
+2026-07-22 13:23:59.528 +00:00 [INF] HTTP GET /js/save_customer.js responded 200 in 20.5363 ms
+2026-07-22 13:24:02.349 +00:00 [INF] HTTP GET /Home/Index responded 200 in 3.7451 ms
+2026-07-22 13:27:12.496 +00:00 [INF] HTTP GET / responded 200 in 282.8834 ms
+2026-07-22 13:27:16.497 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 39.0103 ms
+2026-07-22 13:27:33.381 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 50.2072 ms
+2026-07-22 13:27:37.004 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 18.4089 ms
+2026-07-22 13:27:43.249 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 2.2282 ms
+2026-07-22 13:28:15.115 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 10.8006 ms
+2026-07-22 13:28:15.193 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.8289 ms
+2026-07-22 13:28:15.404 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 45.2982 ms
+2026-07-22 13:28:16.149 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 14.5676 ms
+2026-07-22 13:28:21.586 +00:00 [INF] HTTP GET /Home/Index responded 200 in 3.4517 ms
+2026-07-22 13:28:21.662 +00:00 [INF] HTTP GET /js/site.js responded 200 in 5.9290 ms
+2026-07-22 13:28:25.462 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 2.1811 ms
+2026-07-22 13:28:46.125 +00:00 [INF] HTTP GET /Home/Index responded 200 in 14.2593 ms
+2026-07-22 13:31:04.670 +00:00 [INF] HTTP GET / responded 200 in 357.7574 ms
+2026-07-22 13:31:10.638 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 59.1894 ms
+2026-07-22 13:31:10.718 +00:00 [INF] HTTP GET /js/save_customer.js responded 200 in 10.9944 ms
+2026-07-22 13:31:13.626 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 80.1961 ms
+2026-07-22 13:31:13.676 +00:00 [INF] HTTP GET /js/update_customer.js responded 200 in 10.9964 ms
+2026-07-22 13:31:17.994 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 16.2750 ms
+2026-07-22 13:31:20.817 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 3.8740 ms
+2026-07-22 13:31:23.337 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 3.3712 ms
+2026-07-22 13:31:25.357 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 3.0688 ms
+2026-07-22 13:31:27.762 +00:00 [INF] HTTP GET /Home/Index responded 200 in 3.5818 ms
+2026-07-22 13:31:41.449 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 2.1838 ms
+2026-07-22 13:31:46.522 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 2.8811 ms
+2026-07-22 13:33:14.430 +00:00 [INF] HTTP GET / responded 200 in 285.2858 ms
+2026-07-22 13:33:17.967 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 29.2757 ms
+2026-07-22 13:33:21.414 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 8.8626 ms
+2026-07-22 13:33:26.000 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 3.5383 ms
+2026-07-22 13:33:28.840 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 2.9257 ms
+2026-07-22 13:33:44.770 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 52.8465 ms
+2026-07-22 13:33:58.674 +00:00 [INF] HTTP GET /Home/Index responded 200 in 4.1748 ms
+2026-07-22 13:37:17.811 +00:00 [INF] HTTP GET / responded 200 in 286.4504 ms
+2026-07-22 13:37:24.782 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 3228.3199 ms
+2026-07-22 13:37:28.975 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 1216.0978 ms
+2026-07-22 13:37:44.638 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 7768.4587 ms
+2026-07-22 13:37:51.849 +00:00 [INF] HTTP GET /Home/Index responded 200 in 3.3710 ms
+2026-07-22 13:37:53.711 +00:00 [INF] HTTP GET /Home/Index responded 200 in 7.9293 ms
+2026-07-22 13:38:16.784 +00:00 [INF] HTTP POST /Account/Logout responded 302 in 26.0890 ms
+2026-07-22 13:38:16.848 +00:00 [INF] HTTP GET /Account/Login responded 200 in 21.8412 ms
+2026-07-22 13:44:12.146 +00:00 [INF] HTTP GET / responded 302 in 31.2294 ms
+2026-07-22 13:44:12.302 +00:00 [INF] HTTP GET /Account/Login responded 200 in 116.6629 ms
+2026-07-22 13:44:26.970 +00:00 [INF] User isaac.kwarteng authenticated successfully
+2026-07-22 13:44:26.977 +00:00 [INF] User 3266 logged in successfully
+2026-07-22 13:44:26.989 +00:00 [INF] HTTP POST /Account/Login responded 200 in 183.3536 ms
+2026-07-22 13:44:27.122 +00:00 [INF] HTTP GET / responded 200 in 71.2592 ms
+2026-07-22 13:44:31.492 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 9.6606 ms
+2026-07-22 13:44:33.164 +00:00 [INF] HTTP GET /Profile/Index responded 200 in 5.2099 ms
+2026-07-22 13:44:38.991 +00:00 [INF] HTTP GET /Profile/NewCustomer responded 200 in 25.1153 ms
+2026-07-22 13:44:41.829 +00:00 [INF] HTTP GET /Profile/UpdateCustomer responded 200 in 38.9458 ms
+2026-07-22 13:44:47.937 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 17.1964 ms
+2026-07-22 13:44:54.512 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 1.8634 ms
+2026-07-22 13:44:56.881 +00:00 [INF] HTTP GET /Profile/SearchCustomers responded 200 in 4.5049 ms
+2026-07-22 13:44:56.967 +00:00 [INF] HTTP GET /.well-known/appspecific/com.chrome.devtools.json responded 404 in 0.7179 ms
+2026-07-22 13:44:57.136 +00:00 [INF] HTTP GET /Resources/glogo.jpg responded 200 in 25.0818 ms
+2026-07-22 13:44:57.568 +00:00 [INF] HTTP GET /favicon.ico responded 200 in 5.9921 ms

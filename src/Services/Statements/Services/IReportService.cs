@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace GTBStatementService.Services
 {
     public interface IReportService

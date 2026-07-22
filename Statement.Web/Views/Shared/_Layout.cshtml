@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - GT Bank Ghana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        .gt-orange {
+            color: #F97316;
+        }
+
+        .gt-orange-bg {
+            background-color: #F97316;
+        }
+
+        .gt-orange-hover:hover {
+            background-color: #EA580C;
+        }
+
+        .gt-orange-border {
+            border-color: #F97316;
+        }
+
+        .gt-orange-focus:focus {
+            border-color: #F97316;
+            ring-color: #F97316;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 8px;
+            margin-top: 4px;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.2s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #FFF7ED;
+            color: #F97316;
+        }
+
+        .dropdown-content a:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+
+        .dropdown-content a:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Fix for footer positioning */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    @Html.AntiForgeryToken()
+
+    <!-- Top Navigation -->
+    <nav class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <img src="~/Resources/glogo.jpg" alt="GT Bank" class="h-10 w-10 rounded-full">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">GT Bank Ghana</h1>
+                    <p class="text-xs text-gray-500">Statement By Email Portal</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-8 text-sm font-medium">
+                <a href="/Home/Index" class="text-gray-700 hover:text-orange-500 transition">Dashboard</a>
+                <a href="#" class="text-gray-700 hover:text-orange-500 transition">Reports</a>
+
+                <!-- Profile Dropdown -->
+                <div class="relative dropdown">
+                    <a href="/Profile/Index" class="text-gray-700 hover:text-orange-500 transition flex items-center gap-1">
+                        <i class="fas fa-user"></i> Profile
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="/Profile/NewCustomer">
+                            <i class="fas fa-user-plus mr-2 text-orange-500"></i> New Customer
+                        </a>
+                        <a href="/Profile/UpdateCustomer">
+                            <i class="fas fa-user-edit mr-2 text-orange-500"></i> Update Customer
+                        </a>
+                        <a href="/Profile/SearchCustomers">
+                            <i class="fas fa-search mr-2 text-orange-500"></i> Search Customers
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Logout as a POST form -->
+                <form asp-action="Logout" asp-controller="Account" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="flex items-center gap-2 text-red-600 hover:text-red-700 transition" 
+                            style="background: none; border: none; cursor: pointer; font-size: inherit; font-family: inherit; padding: 0;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    @{
+        var welcomeMsg = ViewBag.WelcomeMessage ?? Context.Session.GetString("WelcomeMessage");
+        if (!string.IsNullOrEmpty(welcomeMsg))
+        {
+            <div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg mx-6 my-4">
+                <div class="flex items-center">
+                    <i class="fas fa-hand-wave text-orange-500 text-2xl mr-3"></i>
+                    <span class="text-gray-800 font-medium">@welcomeMsg</span>
+                </div>
+            </div>
+        }
+    }
+
+    <!-- Main Content -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t">
+        <div class="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-gray-500">
+            <p>&copy; @DateTime.Now.Year GT Bank (Ghana) Limited - GT Bank Technology. All rights reserved.</p>
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

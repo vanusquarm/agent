@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "GT Bank Ghana - Statement By Email";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GT Bank Ghana :: Statement By Email</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        .gt-orange {
+        color: #F97316;
+        }
+
+        .gt-orange-bg {
+        background-color: #F97316;
+        }
+
+        .gt-orange-hover:hover {
+        background-color: #EA580C;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="max-w-6xl w-full mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden flex min-h-[600px]">
+
+        <!-- Left Banner -->
+        <div class="hidden md:flex w-1/2 gt-orange-bg text-white flex-col justify-between p-12">
+            <div>
+                <div class="flex items-center gap-3 mb-8">
+                    <img src="~/Resources/glogo.jpg" alt="GT Bank" class="h-16 w-16 rounded-full bg-white p-2">
+                    <div>
+                        <h1 class="text-4xl font-bold">GT Bank</h1>
+                        <p class="text-orange-100">Ghana Limited</p>
+                    </div>
+                </div>
+
+                <h2 class="text-3xl font-semibold leading-tight mb-6">
+                    Access Statement<br>by Email Portal
+                </h2>
+                <p class="text-lg text-orange-100">
+                    Log in securely to retrieve your customers' financial statements.
+                </p>
+            </div>
+
+            <div class="text-sm opacity-75">
+                © @DateTime.Now.Year GT Bank (Ghana) Technology. All rights reserved.
+            </div>
+        </div>
+
+        <!-- Right Form -->
+        <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col">
+            <div class="md:hidden mb-8 flex items-center gap-3">
+                <img src="~/Resources/glogo.jpg" alt="GT Bank" class="h-12 w-12 rounded-full">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">GT Bank</h1>
+                    <p class="text-sm text-gray-600">Statement By Email</p>
+                </div>
+            </div>
+
+            <div class="flex-1 flex flex-col justify-center">
+                <h2 class="text-3xl font-semibold text-gray-800 mb-2">Sign In</h2>
+                <p class="text-gray-600 mb-8">Enter your credentials to continue</p>
+
+                <form id="loginForm" asp-action="Login" asp-controller="Account" method="post" class="space-y-6">
+                    @Html.AntiForgeryToken()
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <input type="text" name="Username" id="Username"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition"
+                               placeholder="Enter username" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" name="Password" id="Password"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition"
+                               placeholder="Enter password" required>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input type="checkbox" name="RememberMe" id="RememberMe" value="true"
+                               class="w-4 h-4 text-orange-500 focus:ring-orange-200 border-gray-300 rounded">
+                        <label for="RememberMe" class="ml-2 text-sm text-gray-600">Remember me</label>
+                    </div>
+
+                    <!-- Hidden field for ucode if needed -->
+                    <input type="hidden" name="ucode" value="DEFAULT_CODE" />
+
+                    <div id="error-message" class="hidden bg-red-50 text-red-600 text-sm p-4 rounded-lg border border-red-200"></div>
+
+                    <button type="submit"
+                            id="submitBtn"
+                            class="w-full gt-orange-bg text-white py-4 rounded-lg font-semibold text-lg gt-orange-hover transition flex items-center justify-center gap-2">
+                        <span id="button-text">Sign In</span>
+                        <span id="button-loader" class="hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600">
+                        Need help? Contact
+                        <a href="mailto:gh.customersupport@gtbank.com"
+                           class="gt-orange hover:underline font-medium">
+                            Support
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+        // Set the RememberMe hidden value before submit
+        $('#loginForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const $btn = $('#submitBtn');
+        const $text = $('#button-text');
+        const $loader = $('#button-loader');
+        const $error = $('#error-message');
+
+        // Ensure RememberMe value is properly set
+        const rememberMe = $('#RememberMe').is(':checked');
+        $('#RememberMe').val(rememberMe);
+
+        $error.addClass('hidden');
+        $text.addClass('hidden');
+        $loader.removeClass('hidden');
+        $btn.prop('disabled', true);
+
+        $.ajax({
+        url: $(this).attr('action'),
+        type: 'POST',
+        data: $(this).serialize(),
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        dataType: 'json',
+        success: function (response) {
+        if (response.success) {
+        window.location.href = response.redirectUrl || '/Home/Index';
+        } else {
+        $error.text(response.message || 'Login failed. Please check your credentials.').removeClass('hidden');
+        }
+        },
+        error: function (xhr) {
+        let msg = 'An error occurred. Please try again.';
+        try {
+        const json = JSON.parse(xhr.responseText);
+        msg = json.message || msg;
+        } catch { }
+        $error.text(msg).removeClass('hidden');
+        },
+        complete: function () {
+        $text.removeClass('hidden');
+        $loader.addClass('hidden');
+        $btn.prop('disabled', false);
+        }
+        });
+        });
+        });
+    </script>
+</body>
+</html>
