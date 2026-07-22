@@ -1,16 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Linq;
 using Statement.Web.Interfaces;
 using Statement.Web.Models;
-using Statement.Web.Helpers;
+using System.Data;
+using System.Data.SqlClient;
+using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace Statement.Web.Controllers
 {
@@ -40,8 +35,6 @@ namespace Statement.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> NewCustomer(string accountNumber)
         {
-            ViewBag.WelcomeMessage = HttpContext.Session.GetString("WelcomeMessage");
-
             if (string.IsNullOrEmpty(accountNumber))
             {
                 return PartialView("_NewCustomer", new NewCustomerDto());
@@ -161,7 +154,6 @@ namespace Statement.Web.Controllers
 
             try
             {
-                // Get accounts from MiddlewareClient
                 var accounts = await _middlewareClient.GetCustomerCIFAccountsAsync(CIF_ID);
                 var connectionString = _configuration.GetConnectionString("GTMailConn");
 
@@ -481,8 +473,8 @@ namespace Statement.Web.Controllers
                 {
                     return null;
                 }
-                var ad = detail.AccountDetails[0]; 
-                var cd = detail.CustomerDetails[0]; 
+                var ad = detail.AccountDetails[0];
+                var cd = detail.CustomerDetails[0];
                 var allAccounts = await _middlewareClient.GetCustomerCIFAccountsAsync(cd.CustomerReference);
 
                 return new NewCustomerDto
@@ -588,7 +580,7 @@ namespace Statement.Web.Controllers
                 _logger.LogError(ex, "Error querying Profile table for {SearchParameter}: {SearchValue}", parameter, value);
                 return customers;
             }
-        }       
+        }
         private string GetLastSixCharForCustomerNumber(string accountIdentification)
         {
             if (string.IsNullOrEmpty(accountIdentification) || accountIdentification.Length < 6)

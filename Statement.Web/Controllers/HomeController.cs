@@ -42,31 +42,6 @@ namespace Statement.Web.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var welcomeMessage = User.FindFirstValue("WelcomeMessage");
-
-            if (string.IsNullOrEmpty(welcomeMessage))
-            {
-                welcomeMessage = HttpContext.Session.GetString("WelcomeMessage");
-            }
-
-            if (string.IsNullOrEmpty(welcomeMessage))
-            {
-                var userName = User.Identity?.Name ?? HttpContext.Session.GetString("user_name");
-                if (!string.IsNullOrEmpty(userName))
-                {
-                    welcomeMessage = $"Welcome back, {userName}!";
-                }
-                else
-                {
-                    welcomeMessage = "Welcome to GT Bank Statement Portal!";
-                }
-
-                HttpContext.Session.SetString("WelcomeMessage", welcomeMessage);
-            }
-
-            ViewBag.WelcomeMessage = welcomeMessage;
-            ViewBag.UserName = User.Identity?.Name ?? HttpContext.Session.GetString("user_name");
-
             return View();
         }
 

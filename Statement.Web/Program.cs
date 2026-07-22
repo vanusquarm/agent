@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.OpenApi;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using Statement.Web.Filters;
 using Statement.Web.Interfaces;
@@ -23,7 +21,10 @@ builder.Host.UseSerilog((ctx, lc) =>
       .Enrich.FromLogContext();
 });
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<WelcomeMessageFilter>();
+});
 
 // Add Session
 builder.Services.AddDistributedMemoryCache();

@@ -36,13 +36,13 @@ namespace Statement.Web.Configurations
                     | `2024-06-15` | Mid-year |
 
                     ### Account Number Format
-                    Account numbers should follow the pattern: `[1-3]XXX00[1-5]XXXXXX`
+                    Account numbers should follow GT Bank  pattern
 
                     | Example | Description |
                     |---------|-------------|
-                    | `101001234567` | Valid account format |
-                    | `201001234567` | Valid account format |
-                    | `301001234567` | Valid account format |
+                    | `1010012345671` | Valid account format |
+                    | `2010012345672` | Valid account format |
+                    | `3201001054103` | Valid account format |
 
                     ### Response Formats
                     - `pdf` - Returns a PDF file download
