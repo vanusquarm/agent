@@ -54,6 +54,13 @@ namespace Statement.Web.Configurations
 
                     ### Email Statements
                     If `email` is not provided, the system will attempt to fetch it from the customer's profile.
+
+                    ### Charges
+                    If account number is NOT a staff account and you are downloading PDF, CHARGES APPLY(GHS 5.00 per page). 
+                    This is equivalent to printing statement in the various GT Bank branches.
+
+                    Mailing statements - both excel and pdf, DOES NOT apply charges. 
+                    Downloading excel or retrieving statement json DOES NOT apply charges either.
                     "
                 });
 
