@@ -930,3 +930,16 @@ System.Net.Http.HttpRequestException: API request failed with status InternalSer
 2026-07-22 12:24:57.783 +00:00 [INF] Staff account for CIF: R001811691 - No charges applied
 2026-07-22 12:24:57.792 +00:00 [INF] HTTP GET /api/v1/accounts/3201001054363/statements/pdf responded 200 in 59420.9032 ms
 2026-07-22 12:26:28.603 +00:00 [INF] HTTP GET / responded 200 in 302.7417 ms
+2026-07-22 12:27:28.916 +00:00 [INF] HTTP GET / responded 200 in 324.2158 ms
+2026-07-22 12:27:44.729 +00:00 [INF] HTTP GET /api/v1/accounts/3201001054363/statements/json responded 401 in 11.5789 ms
+2026-07-22 12:28:07.832 +00:00 [INF] Fetching statement from Oracle for 3201001054363 from "2026-01-31T00:00:00.0000000" to "2026-01-31T00:00:00.0000000" [CorrelationID: null]
+2026-07-22 12:28:07.933 +00:00 [INF] Retrieved opening balance 6275.04 for account 3201001054363
+2026-07-22 12:28:07.936 +00:00 [INF] Executing GetClosingBalanceAsync for account 3201001054363, date 31-JAN-2026, using Finacle
+2026-07-22 12:28:07.939 +00:00 [INF] Retrieved closing balance 6275.04 for account 3201001054363
+2026-07-22 12:28:12.606 +00:00 [INF] HTTP GET /api/v1/accounts/3201001054363/statements/json responded 200 in 10475.3022 ms
+2026-07-22 12:28:43.643 +00:00 [INF] Fetching statement from Oracle for 3201001054363 from "2026-01-01T00:00:00.0000000" to "2026-01-31T00:00:00.0000000" [CorrelationID: null]
+2026-07-22 12:28:43.660 +00:00 [INF] Retrieved opening balance 3537.97 for account 3201001054363
+2026-07-22 12:28:43.661 +00:00 [INF] Executing GetClosingBalanceAsync for account 3201001054363, date 31-JAN-2026, using Finacle
+2026-07-22 12:28:43.664 +00:00 [INF] Retrieved closing balance 6275.04 for account 3201001054363
+2026-07-22 12:28:43.668 +00:00 [INF] HTTP GET /api/v1/accounts/3201001054363/statements/json responded 200 in 1873.4826 ms
+2026-07-22 12:54:59.466 +00:00 [INF] HTTP GET / responded 200 in 177.4766 ms

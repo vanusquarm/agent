@@ -7,6 +7,7 @@ using Statement.Web.Interfaces;
 using Statement.Web.Middleware;
 using Statement.Web.Services;
 using System.Text.Json.Serialization;
+using Statement.Web.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,14 +49,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.SameAsRequest;
     });
 
-// Register Services
-builder.Services.AddScoped<ISSOService, SSOService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IMiddlewareClient, MiddlewareClient>();
-builder.Services.AddScoped<IGeneratePdfService, GeneratePdfService>();
-builder.Services.AddScoped<IStatementClient, StatementClient>();
-builder.Services.AddScoped<IGenerateExcelService, GenerateExcelService>();
-builder.Services.AddScoped<IBasisFallbackService, BasisFallbackService>();
+builder.AddApplicationServices();
 
 // Configure HttpClient for MiddlewareClient
 builder.Services.AddHttpClient<IMiddlewareClient, MiddlewareClient>(client =>
@@ -77,45 +71,6 @@ builder.Services.AddControllers()
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "GT Bank Statement API",
-        Version = "v1",
-        Description = "API for generating and emailing bank statements. Use API Key for authentication.",
-        Contact = new OpenApiContact
-        {
-            Name = "GT Bank Ghana",
-            Email = "support@gtbank.com"
-        }
-    });
-    c.SchemaFilter<DateFormatSchemaFilter>();
-    // Define API Key Authentication
-    c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
-    {
-        Description = "API Key authentication. Enter your API key in the text input below.",
-        Name = "X-API-Key",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey
-    });
-
-    // Add security requirement
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "ApiKey"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
 
 var app = builder.Build();
 
