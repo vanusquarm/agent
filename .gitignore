@@ -25,3 +25,4 @@ app
 /src/Services/Customers/Customers.API/Properties/PublishProfiles
 /src/Services/Loans/Loans.API/Properties/PublishProfiles
 /src/Services/Transactions/Transactions.API/Properties/PublishProfiles
+/src/Infrastructure/Logging/Properties
