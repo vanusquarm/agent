@@ -15,7 +15,7 @@ namespace Accounts.API.Controllers
     [ApiController]
     [Route("api/v1/[controller]")]
 
-    public class AccountsController(IAccountClient accountClient, AccountValidator accountValidator, IBasisFinacleConversion basisFinacleConversion) : ControllerBase
+    public class AccountsController(IAccountClient accountClient, AccountValidator accountValidator, IBasisClient basisFinacleConversion) : ControllerBase
     {
         /// <summary>
         /// Async Method to Get Account
