@@ -591,7 +591,7 @@ namespace Accounts.API.Controllers
         /// <param name="basisAccount"></param>
         /// <returns></returns>
         [HttpPost("basisfinacle")]
-        public async Task<IActionResult> BasisFinacleAccount([FromBody] BasisAccount data)
+        public async Task<IActionResult> BasisFinacleAccount([FromBody] FinacleAccount data)
         {
             Log.Information("Recieved Request at BasisFinacleAccount: {@Request}", data);
             try
