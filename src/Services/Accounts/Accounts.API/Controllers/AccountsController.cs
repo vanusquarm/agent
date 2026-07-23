@@ -1,5 +1,6 @@
 using Accounts.API.Entities;
 using Accounts.API.Entities.DTOs;
+using Accounts.API.Entities.Models;
 using Accounts.API.Services;
 using Accounts.API.Validators;
 using Finacle.Infrastructure.Logging;
@@ -14,7 +15,7 @@ namespace Accounts.API.Controllers
     [ApiController]
     [Route("api/v1/[controller]")]
 
-    public class AccountsController(IAccountClient accountClient, AccountValidator accountValidator) : ControllerBase
+    public class AccountsController(IAccountClient accountClient, AccountValidator accountValidator, IBasisFinacleConversion basisFinacleConversion) : ControllerBase
     {
         /// <summary>
         /// Async Method to Get Account
@@ -582,6 +583,28 @@ namespace Accounts.API.Controllers
             {
                 Log.Error("Back from Creating AccountLiens with response: {@Response}", ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
                 return StatusCode((int)ex.StatusCode, ResponseManager.ReturnFinacleCallUnsuccessful(exception: ex.Content));
+            }
+        }
+        /// <summary>
+        /// Method to get finacle account number from basis account details
+        /// </summary>
+        /// <param name="basisAccount"></param>
+        /// <returns></returns>
+        [HttpPost("basisfinacle")]
+        public async Task<IActionResult> BasisFinacleAccount([FromBody] BasisAccount data)
+        {
+            Log.Information("Recieved Request at BasisFinacleAccount: {@Request}", data);
+            try
+            {
+                Log.Information("About to BasisFinacleAccount with request: {@Request}", data);
+                var basisFin = await basisFinacleConversion.ConvertToFinacleAccount(data);
+                Log.Information("Back from BasisFinacleAccount with response: {@Response}", data);
+                return Ok(basisFin);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("An exception has occured at BasisFinacleAccount with message: {Message} and stack trace: {StackTrace}", ex.Message, ex.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }
     }

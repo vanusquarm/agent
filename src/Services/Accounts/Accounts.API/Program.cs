@@ -1,4 +1,5 @@
 //using Accounts.API.Grpc;
+using Accounts.API.Entities.Models;
 using Accounts.API.Services;
 using Accounts.API.Validators;
 using Finacle.Infrastructure.Auth;
@@ -29,6 +30,7 @@ builder.Services.AddJwtMiddleware<IAccountClient>(configuration);
 builder.Services.AddOpenIdAuth(builder.Configuration, null); // Add Token Validation
 
 builder.Services.AddScoped<AccountValidator>();
+builder.Services.AddSingleton<IBasisFinacleConversion, BasisFinacleConversion>();
 
 var app = builder.Build();
 
