@@ -10,11 +10,11 @@ namespace Accounts.API.Services
     {
         Task<FinacleAccount> ConvertToFinacleAccount(BasisAccount data);
     }   
-    public class BasisFinacleConversion: IBasisClient
+    public class BasisClient: IBasisClient
     {
         private string _connectionString;
 
-        public BasisFinacleConversion(IConfiguration configuration)
+        public BasisClient(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("FinacleConn") ?? throw new InvalidOperationException("Database connection string is not configured.");
         }

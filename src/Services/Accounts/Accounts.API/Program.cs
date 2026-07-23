@@ -29,7 +29,7 @@ builder.Services.AddJwtMiddleware<IAccountClient>(configuration);
 builder.Services.AddOpenIdAuth(builder.Configuration, null); // Add Token Validation
 
 builder.Services.AddScoped<AccountValidator>();
-builder.Services.AddSingleton<IBasisClient, BasisFinacleConversion>();
+builder.Services.AddSingleton<IBasisClient, BasisClient>();
 
 var app = builder.Build();
 

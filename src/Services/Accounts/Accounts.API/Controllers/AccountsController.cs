@@ -15,7 +15,7 @@ namespace Accounts.API.Controllers
     [ApiController]
     [Route("api/v1/[controller]")]
 
-    public class AccountsController(IAccountClient accountClient, AccountValidator accountValidator, IBasisClient basisFinacleConversion) : ControllerBase
+    public class AccountsController(IAccountClient accountClient, AccountValidator accountValidator, IBasisClient basisClient) : ControllerBase
     {
         /// <summary>
         /// Async Method to Get Account
@@ -597,7 +597,7 @@ namespace Accounts.API.Controllers
             try
             {
                 Log.Information("About to BasisFinacleAccount with request: {@Request}", data);
-                var basisFin = await basisFinacleConversion.ConvertToFinacleAccount(data);
+                var basisFin = await basisClient.ConvertToFinacleAccount(data);
                 Log.Information("Back from BasisFinacleAccount with response: {@Response}", data);
                 return Ok(basisFin);
             }
