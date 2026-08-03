@@ -78,6 +78,8 @@ namespace Customers.API.Entities
 
         [JsonPropertyName("segment")]
         public string? Segment { get; set; }
+        [JsonPropertyName("subsegment")]
+        public string? SubSegment { get; set; }
 
         [JsonPropertyName("relationshipStartDate")]
         public string? RelationshipStartDate { get; set; }
@@ -178,6 +180,7 @@ namespace Customers.API.Entities
             } : null;
             PrimaryBranch = basicCustomerDto.PrimaryBranch;
             Segment = basicCustomerDto.Segment;
+            SubSegment = basicCustomerDto.SubSegment;
             RelationshipStartDate = basicCustomerDto.RelationshipStartDate ?? DateTime.UtcNow.ToString("yyyy-MM-dd");
             CountryOfPrimaryCitizenship = basicCustomerDto.CountryOfPrimaryCitizenship;
             TaxResident = basicCustomerDto.TaxResident;
@@ -247,6 +250,7 @@ namespace Customers.API.Entities
 
         public string? PrimaryBranch { get; set; }
         public string? Segment { get; set; }
+        public string? SubSegment { get; set; }
         public string? RelationshipStartDate { get; set; } = DateTime.UtcNow.ToString("yyyy-MM-dd");
         public string? CountryOfPrimaryCitizenship { get; set; }
         public string? TaxResident { get; set; }
