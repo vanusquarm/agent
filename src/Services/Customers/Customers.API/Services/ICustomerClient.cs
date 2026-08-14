@@ -18,7 +18,7 @@ namespace Customers.API.Services
         Task<dynamic> GetCorporateCustomer(string customerId, string prop);
 
         // Retail Customer
-        //[Headers("channel: COR")]
+        [Headers("channel: COR")]
         [Post("/retail-customers")]
         Task<CreateRetailCustomerResponse> CreateRetailCustomer(CreateCustomerDto createRCRequest);
 
