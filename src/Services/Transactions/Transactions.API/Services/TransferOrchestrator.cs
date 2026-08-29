@@ -243,5 +243,17 @@ namespace Transactions.API.Services
 
             return statusResponse;
         }
+
+        public async Task<PagedResult<AdapterTransactionPage>> GetAccountTransactionsAsync(
+            string accountId,
+            int pageNumber,
+            int pageSize,
+            DateTime? fromDate = null,
+            DateTime? toDate = null)
+        {
+            var statusResponse = await _repository.GetAccountTransactionsAsync(accountId, pageNumber, pageSize, fromDate, toDate);
+
+            return statusResponse;
+        }
     }
 }

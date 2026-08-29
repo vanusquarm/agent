@@ -1,13 +1,8 @@
 using Finacle.Infrastructure.Logging;
 using Finacle.Infrastructure.Utils;
-using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Serilog;
-using System.Text.Json;
-using Transactions.API.Entities;
 using Transactions.API.Entities.DTOs;
 using Transactions.API.Services;
 using Transactions.API.Validators;
@@ -83,14 +78,15 @@ public class TransactionsController : ControllerBase
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    [HttpPost("search")]
-    public async Task<IActionResult> SearchTransactions([FromBody] TransactionRequest request)
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchTransactions(string accountId, int pageNumber, int pageSize, DateTime fromDate, DateTime toDate)
     {
-        Log.Information("Recieved Request at SearchTransactions: {@Request}", request);
+        Log.Information("Recieved Request at SearchTransactions");
         try
         {
-            Log.Information("About to SearchTransactions with request: {@Request}", request);
-            var transactions = await _transactionClient.GetTransactionDetails(request);
+            Log.Information("About to SearchTransactions with request: {@Request}", new { accountId, pageNumber, pageSize, fromDate, toDate});
+            var transactions = await _transfer.GetAccountTransactionsAsync(accountId, pageNumber, pageSize, fromDate, toDate);
+
             Log.Information("Back from searching Transactions with response: {@Response}", transactions);
 
             return Ok(transactions);
