@@ -156,6 +156,8 @@ namespace Finacle.Infrastructure.Persistence.Repositories
             DateTime? toDate = null)
         {
             var offset = (pageNumber - 1) * pageSize;
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
             var startDate = (fromDate ?? (toDate ?? DateTime.UtcNow).AddDays(-90)).ToString("dd-MMM-yyyy").ToUpper();
             var endDate = (toDate ?? DateTime.UtcNow).ToString("dd-MMM-yyyy").ToUpper();
 
@@ -167,15 +169,14 @@ namespace Finacle.Infrastructure.Persistence.Repositories
                 CREDIT AS Credit,
                 RUNNING_BALANCE AS Balance,
                 DESCRIPTION AS Remarks,
-                REFERENCE AS Reference
+                REF_NUM AS Reference
             FROM TABLE(custom.get_account_statement_pipelined(
                 p_foracid    => :Foracid,
                 p_start_date => :StartDate,
                 p_end_date   => :EndDate
             ))
-            ORDER BY VALUE_DATE, TRA_DATE
-            OFFSET :Offset ROWS
-            FETCH NEXT :PageSize ROWS ONLY";
+            OFFSET (:Offset) ROWS
+            FETCH NEXT (:PageSize) ROWS ONLY";
 
             var transactions = new List<AdapterTransactionPage>();
             string _connectionString =
@@ -184,38 +185,46 @@ namespace Finacle.Infrastructure.Persistence.Repositories
 
             await using var connection = new OracleConnection(_connectionString);
 
-            await connection.OpenAsync();
-
-            await using var command = new OracleCommand(sql, connection);
-
-            command.Parameters.Add("Foracid", OracleDbType.Varchar2).Value = accountId;
-            command.Parameters.Add("StartDate", OracleDbType.Date).Value = startDate;
-            command.Parameters.Add("EndDate", OracleDbType.Date).Value = endDate;
-            command.Parameters.Add("Offset", OracleDbType.Int32).Value = offset;
-            command.Parameters.Add("PageSize", OracleDbType.Int32).Value = pageSize;
-
-            await using var reader = await command.ExecuteReaderAsync();
-
-            while (await reader.ReadAsync())
+            try
             {
-                transactions.Add(new AdapterTransactionPage
+                await connection.OpenAsync();
+
+                await using var command = new OracleCommand(sql, connection);
+
+                command.Parameters.Add("Foracid", OracleDbType.Varchar2).Value = accountId;
+                command.Parameters.Add("StartDate", OracleDbType.Varchar2).Value = startDate;
+                command.Parameters.Add("EndDate", OracleDbType.Varchar2).Value = endDate;
+                command.Parameters.Add("Offset", OracleDbType.Int32).Value = offset;
+                command.Parameters.Add("PageSize", OracleDbType.Int32).Value = pageSize;
+
+                await using var reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
                 {
-                    TransactionValueDate = reader["TransactionValueDate"] == DBNull.Value ? null : Convert.ToDateTime(reader["TransactionValueDate"]),
-                    TransactionDate = reader["TransactionDate"] == DBNull.Value ? null : Convert.ToDateTime(reader["TransactionDate"]),
-                    Debit = reader["Debit"] == DBNull.Value ? null : Convert.ToDecimal(reader["Debit"]),
-                    Credit = reader["Credit"] == DBNull.Value ? null : Convert.ToDecimal(reader["Credit"]),
-                    Balance = reader["Balance"] == DBNull.Value ? null : Convert.ToDecimal(reader["Balance"]),
-                    Reference = reader["Reference"] == DBNull.Value ? null : reader["Reference"].ToString(),
-                    Remarks = reader["Remarks"] == DBNull.Value ? null : reader["Remarks"].ToString()
-                });
-            }
+                    transactions.Add(new AdapterTransactionPage
+                    {
+                        TransactionValueDate = reader["TransactionValueDate"] == DBNull.Value ? null : Convert.ToDateTime(reader["TransactionValueDate"]),
+                        TransactionDate = reader["TransactionDate"] == DBNull.Value ? null : Convert.ToDateTime(reader["TransactionDate"]),
+                        Debit = reader["Debit"] == DBNull.Value ? null : Convert.ToDecimal(reader["Debit"]),
+                        Credit = reader["Credit"] == DBNull.Value ? null : Convert.ToDecimal(reader["Credit"]),
+                        Balance = reader["Balance"] == DBNull.Value ? null : Convert.ToDecimal(reader["Balance"]),
+                        Reference = reader["Reference"] == DBNull.Value ? null : reader["Reference"].ToString(),
+                        Remarks = reader["Remarks"] == DBNull.Value ? null : reader["Remarks"].ToString()
+                    });
+                }
 
-            return new PagedResult<AdapterTransactionPage>
+                return new PagedResult<AdapterTransactionPage>
+                {
+                    PageNumber = pageNumber,
+                    PageSize = pageSize,
+                    Data = transactions
+                };
+            }
+            catch (Exception ex)
             {
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                Data = transactions
-            };
+                _logger.LogError($"An exception occurred at GetTransactionAsync with message: {ex.Message}, stackTrace: {ex.StackTrace}");
+                return default;
+            }
         }
     }
 
